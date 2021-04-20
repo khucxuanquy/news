@@ -1,0 +1,28 @@
+export default {
+    KEY_NAME: '_POSTS',
+    namespaced: true,
+    state: {
+        posts: [],
+        totalPosts: 0
+    },
+    getters: {
+        posts: state => state.posts,
+        totalPosts: state => state.totalPosts,
+    },
+    mutations: {
+        CHANGE(state, posts) {
+            state.posts = posts;
+        },
+        CHANGE_TOTAL(state, totalPosts) {
+            state.totalPosts = totalPosts;
+        },
+    },
+    actions: {
+        CHANGE({ commit }, posts) {
+            commit('CHANGE', posts);
+        },
+        CHANGE_TOTAL({ commit }, total) {
+            commit('CHANGE_TOTAL', total);
+        }
+    }
+}

@@ -1,0 +1,118 @@
+// @import './variables.scss';
+html {
+    font-family: sans-serif;
+    line-height: 1.15;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth
+}
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: .875rem;
+    font-weight: 400;
+    height: 100vh;
+    line-height: 1.5;
+    text-align: left;
+    letter-spacing: .25px;
+    color: #333;
+    background-color: white;
+}
+
+body,
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    line-height: 1.2;
+    margin-bottom: .5rem
+}
+a {
+    text-decoration: none!important;
+    color: #333
+}
+
+a,
+button {
+    cursor: pointer
+}
+
+ul>li {
+    list-style-type: none
+}
+
+::selection {
+    background: #f6f6f6;
+    color: #00acac;
+    text-shadow: 2px 0 10px #67cccf
+}
+.text-right {
+    text-align: right!important;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.box-category {
+    position: relative;
+    border-radius: 6px;
+    width: 100%;
+    min-height: 65px;
+    margin: auto;
+    padding: 0 20px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    justify-content: space-between;
+    cursor: pointer;
+    .title {
+        color: #f7f7f7;
+        position: relative;
+        z-index: 1;
+        text-shadow: 0 0 10px #888888;
+        font-weight: bold;
+    }
+    .quantity {
+        color: black;
+        z-index: 1;
+        box-shadow: 0 0 10px #888888;
+        background: #f7f7f7;
+        border-radius: 4px;
+        width: 30px;
+        height: 25px;
+    }
+    &::after {
+        position: absolute;
+        content: "";
+        background: #00000080;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 6px;
+        transition: all .2s ease-out;
+    }
+    &:hover {
+        &::after {
+            background: transparent;
+        }
+    }
+}
+
+@import './default.scss';
+@import './responsive.scss';
+
