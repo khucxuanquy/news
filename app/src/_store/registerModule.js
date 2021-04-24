@@ -4,6 +4,7 @@ export default async function () {
         Promise.all([
             import('../lang/_store'),
             import('../pages/admin/layouts/_store'),
+            import('../pages/admin/views/messages/views/_store'),
             import('../pages/admin/views/dashboard/views/categories/_store'),
             import('../pages/admin/views/dashboard/views/posts/_store'),
             import('../pages/admin/views/dashboard/views/users/_store'),

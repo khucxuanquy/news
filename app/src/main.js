@@ -10,20 +10,48 @@ import 'element-ui/lib/theme-chalk/index.css';
 import locale from 'element-ui/lib/locale/lang/vi'
 import './styles/index.scss'; // global css
 import axios from 'axios'
-import jwt from 'jsonwebtoken'
 require('dotenv').config()
 
 Vue.use(ElementUI, { size: 'medium', locale })
 let headerGetAuth = () => ({ Authorization: localStorage.getItem('_u') || '' })
 
+let socket;
 registerModule().then(async () => {
   Vue.config.productionTip = false
+  
   if (location.pathname.includes('/admin')) {
+    let user_info = {}
     await axios.get('http://localhost:3000/API/users/getInfoUser', { headers: headerGetAuth() }).then(res => {
       const { ok, data } = res.data
       if (!ok) return localStorage.removeItem('_info')
+      user_info = data
       localStorage.setItem('_info', JSON.stringify(data))
     })
+
+    socket = await io('http://localhost:3000');
+    socket.on("connect", () => {
+      if (user_info && user_info.id) {
+        socket.emit("user_connected", {
+          id: user_info.id,
+          manager_id: user_info.manager_id,
+          socketId: socket.id,
+        });
+        socket.emit('GET_USERS_ONLINE', true)
+      }
+
+    });
+
+    window.onbeforeunload = function () {
+      if (user_info && user_info.id) {
+        socket.emit("user_disconnected", {
+          id: user_info.id,
+          manager_id: user_info.manager_id,
+          socketId: socket.id,
+        });
+
+        socket.emit('GET_USERS_ONLINE')
+      }
+    }
   }
 
   new Vue({ render: h => h(App), store, router }).$mount('#app')
@@ -47,6 +75,9 @@ registerModule().then(async () => {
       lang() {
         if (['_LANGUAGES'] in store._modules.root._children) return store._modules.root._children['_LANGUAGES'].context.getters.lang || {};
         else return {}
+      },
+      socket() {
+        return socket;
       }
     }
   })

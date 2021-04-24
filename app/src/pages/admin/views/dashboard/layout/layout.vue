@@ -84,24 +84,14 @@ export default {
   },
   created() {
     let info = localStorage.getItem('_info')
-    if(!info) return this.$router.push('/admin/login')
     info = JSON.parse(info)
-    this.CHANGE_MY_ACCOUNT(info)
 
-    if(localStorage.getItem('collapse').trim() === 'true') this.isCollapse = true;
+    if(localStorage.getItem('collapse') && localStorage.getItem('collapse').trim() === 'true') this.isCollapse = true;
 
     if(!this.categories.length) {
       this.getAPI(CATEGORIES.GET_CATEGORIES_IN_DASHBOARD, { }, res => {
         if(!res.ok) return;
         this.CHANGE_CATEGORIES(res.data)
-      })
-    }
-    
-    if(!this.users.length && info.permission >= 2) {
-      this.getAPI(USERS.GET_ALL, { }, res => {
-        const { ok, data } = res
-        if(!ok) return this.$message({type: 'Error', message: 'something error'})
-        this.CHANGE_USERS(data)
       })
     }
   },

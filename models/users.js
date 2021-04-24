@@ -8,6 +8,7 @@ class Users extends baseModel {
         this.fullName = ''
         this.password = ''
         this.manager_id = 'admin'
+        this.avatar = ''
         this.permission = 1
         this.dateCreated = ''
     }
@@ -17,6 +18,7 @@ class Users extends baseModel {
         if (dataInput.username) this.username = String(dataInput.username)
         if (dataInput.fullName) this.fullName = String(dataInput.fullName)
         if (dataInput.password) this.password = String(dataInput.password)
+        if (dataInput.avatar) this.avatar = String(dataInput.avatar)
         if (dataInput.manager_id) this.manager_id = String(dataInput.manager_id)
         if (dataInput.permission) this.permission = Number(dataInput.permission)
         this.dateCreated = +new Date()
@@ -29,6 +31,7 @@ class Users extends baseModel {
         data.fullName = this.fullName
         data.password = this.password
         data.manager_id = this.manager_id
+        data.avatar = this.avatar
         data.permission = this.permission
         data.dateCreated = this.dateCreated
         return data

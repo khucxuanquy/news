@@ -6,10 +6,9 @@ const cors = require('cors')
 // create realtime
 const server = require('http').createServer(app)
 const io = require('socket.io')(server, {
-  cors: {
-    origin: '*'
-  }
-})
+  cors: { origin: "http://localhost:8080" }
+});
+
 const { startApp } = require('./baseModels/start');
 const { l, domains } = require('./config')
 const socketIO = require('./socket')
@@ -30,6 +29,7 @@ startApp(err => {
   app.use('/API/categories', require('./routers/API/categories'))
   app.use('/API/reports', require('./routers/API/reports'))
   app.use('/API/users', require('./routers/API/users'))
+  app.use('/API/comments', require('./routers/API/comments'))
 
   app.set('view engine', 'ejs');
   // app.get('/', (req, res) => res.render(path.join(__dirname, './views/index.ejs')))

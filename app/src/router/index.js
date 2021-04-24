@@ -74,12 +74,13 @@ const ALL_ROUTER = [
             },
         ]
     },
-    // dashboard
+    // admin
     {
         path: '/admin',
         component: () => import('../pages/admin/layouts/index.vue'),
         // hidden: true,
         children: [
+            // dashboard
             {
                 path: 'dashboard',
                 component: () => import('../pages/admin/views/dashboard/layout/layout.vue'),
@@ -117,6 +118,24 @@ const ALL_ROUTER = [
                     },
                 ]
             },
+            // messenger
+            {
+                path: 'messages',
+                component: () => import('../pages/admin/views/messages/layouts'),
+                meta: {
+                    title: 'Messenger | News'
+                },
+                children: [
+                    {
+                        path: ':id',
+                        component: () => import('../pages/admin/views/messages/views'),
+                        meta: {
+                            title: 'Messenger'
+                        }
+                    },
+                ]
+            },
+            // login admin
             {
                 path: 'login',
                 component: () => import('../pages/login/dashboard/index.vue'),

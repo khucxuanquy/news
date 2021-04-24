@@ -3,10 +3,14 @@ export default {
     namespaced: true,
     state: {
         myAccount: {},
-        users: []
+        users: [],
+        idsUsersOnline: []
     },
     getters: {
-        users: state => state.users,
+        users: state => {
+            if (!state.idsUsersOnline.length) return state.users
+            return state.users.map(i => ({ ...i, status: state.idsUsersOnline.includes(i.id) ? 'online' : '' }))
+        },
         myAccount: state => state.myAccount,
     },
     mutations: {
@@ -15,6 +19,9 @@ export default {
         },
         CHANGE_MY_ACCOUNT(state, myAccount) {
             state.myAccount = myAccount;
+        },
+        CHANGE_USERS_ONLINE(state, idsUsersOnline) {
+            state.idsUsersOnline = idsUsersOnline
         }
     },
     actions: {
@@ -23,6 +30,9 @@ export default {
         },
         CHANGE_MY_ACCOUNT({ commit }, myAccount) {
             commit('CHANGE_MY_ACCOUNT', myAccount);
+        },
+        CHANGE_USERS_ONLINE({ commit }, usersOnline) {
+            commit('CHANGE_USERS_ONLINE', usersOnline);
         }
     }
 }

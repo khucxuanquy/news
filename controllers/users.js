@@ -36,7 +36,7 @@ module.exports = {
         // get all user with conditions username, password
         let { error, data } = await user.get({ fields: ['id', 'permission'], conditions: { username, password } })
         if (error) return res.send(resFail({ error }))
-        if (!data.length) res.send('Tài khoản không tồn tại') // note: logout
+        if (!data.length) return res.send('Tài khoản không tồn tại') // note: logout
         // encode token
         const { id, permission } = data[0]
         const token = signToken({ id, permission })
