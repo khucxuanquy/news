@@ -1,3 +1,8 @@
+# NEWS
+
+### copy code below then run code in your phpMyAdmin
+
+``` sql
 create table posts(
     id varchar(40) not null primary key,
     category_id varchar(40) not null,
@@ -80,3 +85,5 @@ ALTER TABLE messages ADD FOREIGN KEY (sender_id) REFERENCES users (id);
 CREATE VIEW `total_posts` AS select COUNT(id) as 'sum' from posts
 CREATE VIEW `top_categories` AS SELECT categories.id, categories.color, categories.name, categories.url, COUNT(posts.id) as total_posts FROM posts INNER JOIN categories ON categories.id = posts.category_id GROUP BY categories.name ORDER BY total_posts DESC
 CREATE VIEW `top_view_categories` AS SELECT categories.id, SUM(posts.view) as total_views FROM posts INNER JOIN categories ON categories.id = posts.category_id GROUP BY categories.name ORDER BY total_views DESC limit 0,2
+
+```
