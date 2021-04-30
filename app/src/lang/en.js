@@ -4,6 +4,7 @@ export default {
     addNewPosts: 'Add new posts',
     addNewCategories: 'Add new categories',
     addNewUsers: 'Add new Users',
+    activated: 'Activated',
 
     // B
 
@@ -16,6 +17,8 @@ export default {
     creator: 'Creator',
     chooseColor: 'Choose color',
     clearImage: 'Clear Picture',
+    activateThisPost: 'activate this post',
+    deactivateThisPost: 'deactivate this post',
     // D
     dashboard: 'Dashboard',
     description: 'Description',
@@ -48,8 +51,12 @@ export default {
 
     // M
     manage: 'Manage',
+    messenger: 'Messenger',
+
     // N
     nameCategory: 'Name category',
+    notActivated: 'Not active',
+
 
     // O
     ok: 'Ok',
@@ -72,6 +79,7 @@ export default {
     search: 'Search',
     statistic: 'Statistic',
     staff: 'Staff',
+    status: 'Status',
     // T
     title: 'Title',
     typeTitle: 'Type title',

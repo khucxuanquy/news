@@ -1,6 +1,16 @@
 <template>
   <div class="box-chat">
-    <div class="header"></div>
+    <div class="header">
+      <div>
+        <img class="avatar" src="https://news.laptrinhmaytinh.com/static/images/logo.png">
+          <strong> {{currentUser.fullName}} </strong>
+      </div>
+      <div>
+        <span class="more-info">
+          <i class="el-icon-info"></i>
+        </span>
+      </div>
+    </div>
     <div class="chat-view">
       <div class="messages-container">
         <div
@@ -16,6 +26,7 @@
             </p>
           </div>
         </div>
+        <span id="ScrollToThis"></span>
       </div>
     </div>
     <div class="input-chat">
@@ -54,13 +65,13 @@ export default {
     };
   },
   created() {
+    this.currentReceiveId = this.$route.params.id
     // group messages
     let data = []
     // console.table(data)
     let newData = this.groupMessagesBeforeSaveToStore(data)
     this.CHANGE_MESSAGES(newData);
      this.socket.on('message_client', data => {
-      console.log(data)
       this.CHAT_NEW_MESSAGE(data)
       this.$nextTick(()=> this.scrollIntoView())
     })
@@ -147,11 +158,17 @@ export default {
       conversations: "_MESSAGE/conversations",
       boxMessages: "_MESSAGE/boxMessages",
       myAccount: "_ACCOUNT/myAccount",
+      users: "_USERS/users",
     }),
+    currentUser(){
+      const { users, currentReceiveId } = this
+      return users.find(user => user.id === currentReceiveId) || {}
+    }
   },
   watch: {
     '$route.params': function({ id }) {
       this.currentReceiveId = id
+      console.log(this.currentReceiveId)
     },
   },
 };
@@ -162,17 +179,33 @@ export default {
   width: 100%;
   height: 100%;
 
-  .header {
+  &>.header {
     width: 100%;
     height: 60px;
-    background: blue;
+    padding: .5em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    img.avatar {
+      width: 50px;
+      border-radius: 50%;
+      height: 50px;
+      object-fit: contain;
+      border: thin solid;
+      padding: 5px;
+    }
+
+    .more-info {
+      font-size: 1.5em;
+    }
   }
 
   .chat-view {
     .messages-container {
       overflow-y: auto;
       height: calc(100vh - 180px);
-      background: #212121;
+      background: #cecece;
       padding-bottom: 10px;
 
       &::-webkit-scrollbar {
@@ -264,13 +297,15 @@ export default {
       textarea {
         width: 100%;
         color: #444;
-        background: #eee;
         overflow-y: auto;
-        border: none;
-        outline: none;
-        resize: none;
         font-size: 1.2em;
         line-height: 1.3;
+        height: 60px;
+        resize: none;
+        outline: none;
+        border: none;
+        box-shadow: inset 0 2px 10px #eee;
+        padding: .5em 0 0 .5em;
 
         &::-webkit-scrollbar {
           background: transparent;

@@ -57,7 +57,7 @@ export default {
     let info = localStorage.getItem('_info')
     if(info) return this.$router.push('/admin/dashboard')
     this.isExist = true
-    localStorage.removeItem('_u')
+    localStorage.clear()
   },
   mounted() {
     if (this.$refs.username) this.$refs.username.focus();
@@ -76,12 +76,14 @@ export default {
           return;
         }
         const { username, password } = this.formLogin
-        this.postAPI(USERS.LOGIN, { username, password }, data => {
+        this.postAPI(USERS.LOGIN, { username, password, admin: true }, data => {
           const { ok, message, token } = data
           if(!ok) return this.$message({ message: message || 'Đăng nhập không thành công' , type: 'waring' })
+          // if(_info.positon == 'reader') return;
           this.$message({ message, type: 'success' })
           localStorage.setItem( '_u', token)
-          location.pathname = '/admin/dashboard'
+          // location.pathname = '/admin/dashboard'
+          location.href = 'http://localhost:8080/admin/dashboard'
         });
       })
     },

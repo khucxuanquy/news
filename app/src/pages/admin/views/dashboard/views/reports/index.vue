@@ -53,7 +53,7 @@ export default {
   },
   components: {  },
   beforeCreate() {
-    if(!localStorage.getItem('_u')) return this.$router.push('/admin/login');
+    if(!localStorage.getItem('_u')) return this.$router.push('/admin/login').catch(()=>{});
   },
   created(){
     if(this.reports.length) this.isLoading = false

@@ -10,7 +10,8 @@
 import Header from "components/Header";
 import Footer from "components/footer";
 import ENUM from "const/api";
-const { CATEGORIES, POSTS } = ENUM
+import { mapGetters, mapActions } from 'vuex';
+const { CATEGORIES, POSTS, USERS } = ENUM
 
 export default {
   data: function(){
@@ -23,6 +24,21 @@ export default {
     Footer,
   },
   created() {
+    var recognition = new webkitSpeechRecognition(); // khoi tao
+    recognition.continuous = true; // tiếp tục nghe hay tắt sau khi nghe tiếp âm thanh
+    recognition.interimResults = false; // đặt cho phép có kết quả tạm thời hay không
+    recognition.lang = 'vi-VN'; // cài đặt ngôn ngữ 
+    recognition.start();
+    recognition.onresult = function(event) { 
+      console.log(event.results[event.results.length - 1][0].transcript);
+      // console.log(event.results[0]);
+    }
+    recognition.onerror = function(event) { 
+      console.log(event);
+    }
+    // let info = JSON.parse(localStorage.getItem('_user'))
+    // this.CHANGE_MY_ACCOUNT(info)
+
     let body = document.querySelector('body').getBoundingClientRect()
     if(body.width < 500) {
       this.storeVue('_HOMEPAGE').dispatch('CHANGE_RESPONSIVE', false);
@@ -45,6 +61,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      CHANGE_MY_ACCOUNT: '_ACCOUNT/CHANGE_MY_ACCOUNT',
+    }),
     CHANGE_CATEGORIES(data) {
       this.storeVue('_CATEGORIES').dispatch('CHANGE', data);
     },
@@ -61,15 +80,11 @@ export default {
     }
   },
   computed: {
-    categories() {
-      return this.storeVue('_CATEGORIES').getters.categories;
-    },
-    home() {
-      return this.storeVue('_HOMEPAGE').getters.home;
-    },
-    responsive() {
-      return this.storeVue('_HOMEPAGE').getters.responsive;
-    },
+    ...mapGetters({
+    categories: '_CATEGORIES/categories',  
+    home: '_HOMEPAGE/home',  
+    responsive: '_HOMEPAGE/responsive',
+    }),
   },
   destroyed() {
     window.removeEventListener("resize", this.handleResizeWindow);

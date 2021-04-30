@@ -20,7 +20,7 @@ export default {
   },
   created(){
     let info = localStorage.getItem('_info')
-    if(!info) return this.$router.push('/admin/login')
+    if(!info) return this.$router.push('/admin/login').catch(()=>{})
     info = JSON.parse(info)
     this.CHANGE_MY_ACCOUNT(info)
 

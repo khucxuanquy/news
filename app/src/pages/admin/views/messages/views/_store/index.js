@@ -7,10 +7,7 @@ export default {
   },
   getters: {
     conversations: state => state.conversations,
-    boxMessages: state => {
-      console.log(11, state.boxMessages)
-      return state.boxMessages
-    },
+    boxMessages: state => state.boxMessages,
   },
   mutations: {
     CHANGE_CONVERSATIONS(state, conversations) {

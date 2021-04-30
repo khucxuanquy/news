@@ -21,9 +21,9 @@ registerModule().then(async () => {
   
   if (location.pathname.includes('/admin')) {
     let user_info = {}
-    await axios.get('http://localhost:3000/API/users/getInfoUser', { headers: headerGetAuth() }).then(res => {
+    await axios.get('http://localhost:3000/API/users/getInfoUser', { params: { location: 'admin' }, headers: headerGetAuth() }).then(res => {
       const { ok, data } = res.data
-      if (!ok) return localStorage.removeItem('_info')
+      if (!ok) return localStorage.clear()
       user_info = data
       localStorage.setItem('_info', JSON.stringify(data))
     })
@@ -52,6 +52,12 @@ registerModule().then(async () => {
         socket.emit('GET_USERS_ONLINE')
       }
     }
+  } else {
+    await axios.get('http://localhost:3000/API/users/getInfoUser', { headers: headerGetAuth() }).then(res => {
+      const { ok, data } = res.data
+      if (!ok) return localStorage.clear()
+      localStorage.setItem('_user', JSON.stringify(data))
+    })
   }
 
   new Vue({ render: h => h(App), store, router }).$mount('#app')

@@ -18,7 +18,7 @@ export default {
   },
   components: { NewPost, ManagerPosts },
   beforeCreate() {
-    if(!localStorage.getItem('_u')) return this.$router.push('/admin/login');
+    if(!localStorage.getItem('_u')) return this.$router.push('/admin/login').catch(()=>{});
   },
   methods: {
     handleSubmitFinish(val) {

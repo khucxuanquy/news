@@ -48,7 +48,7 @@ export default {
   },
   components: { ManagerUser },
   beforeCreate() {
-    if(!localStorage.getItem('_u')) return this.$router.push('/admin/login');
+    if(!localStorage.getItem('_u')) return this.$router.push('/admin/login').catch(()=>{});
   },
   created(){
     if(this.myAccount.permission >= 2) this.visiabled = true

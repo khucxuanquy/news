@@ -4,6 +4,7 @@ export default {
     addNewPosts: 'Thêm bài viết mới',
     addNewCategories: 'Thêm chủ đề mới',
     addNewUsers: 'Thêm người dùng mới',
+    activated: 'Đã kích hoạt',
     // B
 
     // C
@@ -15,6 +16,8 @@ export default {
     creator: 'Người tạo',
     chooseColor: 'Chọn màu',
     clearImage: 'Xóa Ảnh',
+    activateThisPost: 'Kích hoạt bài viết này',
+    deactivateThisPost: 'Hủy kích hoạt bài viết này',
     // D
     dashboard: 'Bảng điều khiển',
     description: 'Mô tả',
@@ -48,6 +51,8 @@ export default {
 
     // M
     manage: 'Quản lí',
+    messenger: 'Tin Nhắn',
+    notActivated: 'Chưa kích hoạt',
 
     // N
     nameCategory: 'Tên chủ đề',
@@ -73,6 +78,7 @@ export default {
     search: 'Tìm kiếm',
     statistic: 'Thống kê',
     staff: 'Nhân viên',
+    status: 'Trạng thái',
     // T
     title: 'Tiêu đề',
     typeTitle: 'Nhập tiêu đề',

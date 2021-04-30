@@ -20,6 +20,7 @@ startApp(err => {
   socketIO(io)
 
   app.use('/', express.static('public'))
+  app.use('/static', express.static('static'))
   app.use(cors({ origin: domains, credentials: true }))
 
   app.use(bodyParser.json())

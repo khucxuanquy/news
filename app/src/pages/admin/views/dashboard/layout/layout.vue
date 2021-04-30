@@ -68,15 +68,14 @@ export default {
     },
     handleClickItem(name){
       if(name == 'logout') {
-        localStorage.removeItem('_u')
-        localStorage.removeItem('_info')
+        localStorage.clear()
         this.postAPI(USERS.LOGOUT, {}, _ => { } )
         this.CHANGE_POSTS([])
         this.CHANGE_USERS([])
         this.CHANGE_REPORTS([])
         this.CHANGE_MY_ACCOUNT({})
         this.CHANGE_TOTAL_POSTS(0)
-        this.$router.push('/admin/login')
+        this.$router.push('/admin/login').catch(()=>{})
       } else if (name == 'editInfo') {
 
       }

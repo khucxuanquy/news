@@ -1,6 +1,6 @@
 const Posts = require('../models/posts')
 const post = new Posts()
-const DEFAULT_FIELDS = ['id', 'category_id', 'description', 'title', 'url', 'image', 'view', 'user_id', 'dateCreated'].join()
+const DEFAULT_FIELDS = ['id', 'category_id', 'activated', 'description', 'title', 'url', 'image', 'view', 'user_id', 'dateCreated'].join()
 const DEFAULT_FIELDS_HOME = ['id', 'category_id', 'description', 'title', 'url', 'image', 'dateCreated'].join()
 const FIELDS_GET_TO_EDIT = ['category_id', 'content', 'description', 'title', 'image']
 const { resFail, resSuccess, accentedLetters } = require('../helpers')
@@ -16,10 +16,10 @@ module.exports = {
         res.send(resSuccess({ data }))
     },
     async edit(req, res) {
-        if (req.body.title) d.url = accentedLetters(req.body.title)
-        let { error, data } = await post.edit(req.body)
+        if (req.body.title) req.body.url = accentedLetters(req.body.title)
+        let { error } = await post.edit(req.body)
         if (error) return res.send(resFail({ error }))
-        res.send(resSuccess({ data }))
+        res.send(resSuccess())
 
     },
     async delete(req, res) {

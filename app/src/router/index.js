@@ -85,35 +85,42 @@ const ALL_ROUTER = [
                 path: 'dashboard',
                 component: () => import('../pages/admin/views/dashboard/layout/layout.vue'),
                 meta: {
-                    title: 'Quản lí Note Pro'
+                    title: 'Quản lí Tech News'
                 },
                 children: [
                     {
                         path: 'posts',
                         component: () => import('../pages/admin/views/dashboard/views/posts/index.vue'),
                         meta: {
-                            title: 'Quản lí bài viết | Note Pro'
+                            title: 'Quản lí bài viết | Tech News'
                         }
                     },
                     {
                         path: 'categories',
                         component: () => import('../pages/admin/views/dashboard/views/categories'),
                         meta: {
-                            title: 'Quản lí Chủ đề | Note Pro'
+                            title: 'Quản lí Chủ đề | Tech News'
                         }
                     },
                     {
                         path: 'reports',
                         component: () => import('../pages/admin/views/dashboard/views/reports'),
                         meta: {
-                            title: 'Quản lí báo cáo | Note Pro'
+                            title: 'Quản lí báo cáo | Tech News'
                         }
                     },
                     {
                         path: 'users',
                         component: () => import('../pages/admin/views/dashboard/views/users'),
                         meta: {
-                            title: 'Quản lí Người dùng | Note Pro'
+                            title: 'Quản lí Người dùng | Tech News'
+                        }
+                    },
+                    {
+                        path: 'statistics',
+                        component: () => import('../pages/admin/views/dashboard/views/statistics'),
+                        meta: {
+                            title: 'Thống kê | Tech News'
                         }
                     },
                 ]

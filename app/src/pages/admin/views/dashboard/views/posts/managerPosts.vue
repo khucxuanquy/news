@@ -1,7 +1,31 @@
 <template>
   <div id="manager-posts" v-loading.fullscreen.lock="isLoading">
     <el-table :data="posts" height="75vh">
-      <el-table-column :label="lang.picture" width="150">
+      <el-table-column type="expand">
+        <template slot-scope="props">
+          <div style="display: flex; justify-content: space-between;">
+             <el-image :src="props.row.image" fit="contain" style="width: 40%">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline"></i>
+              </div>
+            </el-image>
+            <div class="meta" style="width: 58%">
+              <p>{{lang.title}}: &nbsp; <strong>{{props.row.title}}</strong></p>
+              <p>{{lang.category}}: &nbsp; <span v-html="getCategoryById(props.row.category_id)"></span></p>
+              <p>{{lang.status}}: 
+                <el-button :type="String(props.row.activated) === 'true' ? 'primary' : 'warning'" size="small" @click="handleActivePost(props.row)">
+                  {{lang[String(props.row.activated) === 'true' ? 'activated': 'notActivated']}}
+                </el-button>
+              </p>
+              <p>{{lang.description}}: &nbsp; <strong>{{props.row.description}}</strong></p>
+              <p>{{lang.creator}}: &nbsp; <strong>{{ getAuthorById(props.user_id) || myAccount.fullName }}</strong></p>
+              <p>{{lang.view}}: &nbsp; <strong>{{props.row.view}}</strong></p>
+              <p>{{lang.dateCreated}}: &nbsp; <strong>{{convertTimestampToDate(props.row.dateCreated)}}</strong></p>
+            </div>
+          </div>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column :label="lang.picture" width="150">
         <template slot-scope="scope">
           <el-image :src="scope.row.image" fit="contain" >
             <div slot="error" class="image-slot">
@@ -9,45 +33,54 @@
             </div>
           </el-image>
         </template>
-      </el-table-column>
-      <el-table-column :label="lang.title" width="180">
+      </el-table-column> -->
+      <el-table-column :label="lang.title" min-width="120">
         <template slot-scope="{row}">
           <el-tooltip :content="row.title" placement="top-start">
             <p class="fix-line">{{ row.title }}</p>
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column :label="lang.category" width="150">
+      <el-table-column :label="lang.category" >
           <template slot-scope="{row}">
             <span v-html="getCategoryById(row.category_id)"></span>
           </template>
       </el-table-column>
-      <el-table-column :label="lang.description" width="150">
+      <el-table-column :label="lang.description" min-width="120">
           <template slot-scope="{row}">
             <el-tooltip :content="row.description" placement="top-start">
               <p class="fix-line">{{ row.description }}</p>
             </el-tooltip>
           </template>
       </el-table-column>
-      <el-table-column :label="lang.creator" width="150">
+      <el-table-column :label="lang.creator" >
           <template slot-scope="{row}">{{ getAuthorById(row.user_id) || myAccount.fullName }}</template>
       </el-table-column>
-      <el-table-column :label="lang.view" width="100">
+      <!-- <el-table-column :label="lang.view" >
           <template slot-scope="{row}">{{ row.view }}</template>
-      </el-table-column>
-      <el-table-column :label="lang.dateCreated">
+      </el-table-column> -->
+      <!-- <el-table-column :label="lang.dateCreated">
           <template slot-scope="{row}">{{ convertTimestampToDate(row.dateCreated) }}</template>
+      </el-table-column> -->
+      
+      <el-table-column :label="lang.status" min-width="120">
+          <template slot-scope="{row}">
+            <el-button :type="String(row.activated) === 'true' ? 'primary' : 'warning'" size="small" @click="handleActivePost(row)">
+              {{lang[String(row.activated) === 'true' ? 'activated': 'notActivated']}}
+            </el-button>
+          </template>
       </el-table-column>
-      <el-table-column> <!-- width="160" -->
+
+      <el-table-column min-width="160"> <!-- width="160" -->
         <template slot="header" slot-scope="scope">
           <el-input v-model="search" :placeholder="lang.search" @keyup.enter.native="searchPost"/>
         </template>
         <template slot-scope="scope">
           <el-button
-            size="mini"
+            size="small"
             @click="handleEdit(scope.$index, scope.row)">{{lang.edit}}</el-button>
           <el-button
-            size="mini"
+            size="small"
             type="danger"
             @click="handleDelete(scope.$index, scope.row)">{{lang.delete}}</el-button>
         </template>
@@ -97,6 +130,7 @@ export default {
       CHANGE_TOTAL_POSTS: '_POSTS/CHANGE_TOTAL',
       CHANGE_POSTS: '_POSTS/CHANGE',
       CHANGE_POSTS: '_POSTS/CHANGE',
+      CHANGE_ACTIVATED_POST: '_POSTS/CHANGE_ACTIVATED_POST'
     }),
     handleEdit(index, { id }){
       this.idEditPost = id
@@ -160,6 +194,25 @@ export default {
         this.CHANGE_POSTS(data)
         this.CHANGE_TOTAL_POSTS(8)
     })
+    },
+    //  function handle status post `activated`
+    handleActivePost({ activated, id }){
+      if(this.myAccount.permission < 2) return this.$message({ type: 'warning', message: 'Chỉ có admin hoặc Quản lý mới có quyền sửa trạng thái này' });
+      const { lang } = this
+      let logic_activated = !(String(activated) === 'true')
+      this.$confirm(lang[logic_activated ? 'activateThisPost' : 'deactivateThisPost'] , 'Warning', {
+          confirmButtonText: lang.ok,
+          cancelButtonText: lang.cancel,
+          type: 'warning'
+        }).then(() => {
+          // using PutAPI
+          this.putAPI(POSTS.EDIT, {id, activated: logic_activated}, r => {
+            const { ok } = r
+            if(!ok) return this.$message({ type: 'Error', message: 'Có lỗi sảy ra!' })
+            this.CHANGE_ACTIVATED_POST({ id, activated: logic_activated })
+            this.$message({ type: 'success', message: 'thành công' })
+          })
+        }).catch(() => '')
     }
   },
   mounted() {

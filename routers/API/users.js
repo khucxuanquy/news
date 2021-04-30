@@ -9,6 +9,8 @@ router.delete('/delete', verifyToken, user.delete)
 router.get('/getInfoUser', verifyToken, user.getInfoUser)
 router.get('/getUsersByPermission', verifyToken, user.getUsersByPermission)
 
+router.get('/verify', user.verify)
+router.post('/register', user.register)
 router.post('/login', user.login)
 router.post('/logout', user.logout)
 module.exports = router

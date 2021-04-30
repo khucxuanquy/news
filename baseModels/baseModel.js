@@ -12,7 +12,7 @@ class BaseModel {
      */
     async create(dataInput) {
         // random _id
-        dataInput.id = randomId.randomId()
+        dataInput.id = randomId()
         this.setter(dataInput)
         let fields = ''
         let val = ''

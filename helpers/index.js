@@ -1,15 +1,23 @@
 const jwt = require('jsonwebtoken')
+const nodemailer = require('nodemailer')
+const md5 = require('md5')
+const { l } = require('../config')
+
 const { ACCESS_TOKEN_SECRET } = process.env
 const SLASH = '/'
+const FIFTEEN_MINUTES = 15 * 60 * 60 * 1000
+const EMAIL = 'smartnewsqtd@gmail.com'
+const PASSWORD = 'A123h456C'
 
 module.exports = {
   isImage: /gif|jpg|jpeg|png|tiff|webp|psd|svg+/gi,
+  FIFTEEN_MINUTES,
   verifyToken(req, res, next) {
     const { authorization } = req.headers
     if (!authorization || authorization === 'null' || authorization === 'undefined') return res.send({ ok: false, message: 'Tài khoản chưa đăng nhập' })
     jwt.verify(authorization, ACCESS_TOKEN_SECRET, (err, dataToken) => {
       // if (err) return res.sendStatus(403) //Forbidden Error
-      if (err) return res.send({ok: false, message: 'Token invalid'})
+      if (err) return res.send({ ok: false, message: 'Token invalid' })
       req.token = dataToken
       next()
     })
@@ -102,5 +110,31 @@ module.exports = {
     str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ""); // Huyền sắc hỏi ngã nặng
     str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // Â, Ê, Ă, Ơ, Ư
     return str;
+  },
+  decodeToken(token) {
+    if (!token) return;
+    let resolve;
+    jwt.verify(token, ACCESS_TOKEN_SECRET, (err, dataToken) => resolve = dataToken)
+    return resolve;
+  },
+  async sendToEmailToVerifyAccount({ email, token }) {
+    let transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com", // default
+      port: 587, // default
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: EMAIL,
+        pass: PASSWORD,
+      },
+    })
+    return await transporter.sendMail({
+      from: EMAIL,
+      to: email,
+      subject: "Xác thực tài khoản | Smart News", // title
+      html: `<a href='http://localhost:3000/API/users/verify?token=${token}'> bấm vào đây để xác thực tài khoản </a>`, // content = html
+    })
+  },
+  hashPassword(password){
+    return md5(password)
   }
 }

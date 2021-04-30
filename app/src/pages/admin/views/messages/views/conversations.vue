@@ -58,6 +58,7 @@ $width_conversations: 400px;
   width: $width_conversations;
   height: 100%;
   overflow-y: auto;
+  background: #00000008;
 
   &::-webkit-scrollbar {
     background: transparent;

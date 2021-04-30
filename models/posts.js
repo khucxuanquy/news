@@ -11,6 +11,7 @@ class Posts extends baseModel {
         this.image = ''
         this.content = ''
         this.user_id = 'admin'
+        this.activated = 'false'
         this.view = 0
         this.dateCreated = ''
     }
@@ -24,6 +25,7 @@ class Posts extends baseModel {
         if (dataInput.image) this.image = String(dataInput.image)
         if (dataInput.content) this.content = String(dataInput.content)
         if (dataInput.user_id) this.user_id = String(dataInput.user_id)
+        if (dataInput.activated) this.activated = String(dataInput.activated)
         if (dataInput.view) this.view = String(dataInput.view)
         this.dateCreated = +new Date()
     }
@@ -38,6 +40,7 @@ class Posts extends baseModel {
         data.image = this.image
         data.content = this.content
         data.user_id = this.user_id
+        data.activated = this.activated
         data.view = this.view
         data.dateCreated = this.dateCreated
         return data
@@ -107,19 +110,19 @@ class Posts extends baseModel {
             this.sql.query(query, (error, data) => resolve({ error, data }))
         })
     }
-    async getTopPostByCategory(category_id) {
-        if (!category_id) return { error: 1 }
+    // async getTopPostByCategory(category_id) {
+    //     if (!category_id) return { error: 1 }
 
-        let queryGetTopPost = `SELECT title, posts.url as url, image FROM posts INNER JOIN categories ON categories.id = posts.category_id WHERE categories.id = '${category_id}' ORDER BY view DESC limit 0, 6`
-        return await new Promise(resolve => {
-            this.sql.query(queryGetTopPost, (error, data) => resolve({ error, data: data }))
-        })
-    }
+    //     let queryGetTopPost = `SELECT title, posts.url as url, image FROM posts INNER JOIN categories ON categories.id = posts.category_id WHERE categories.id = '${category_id}' ORDER BY view DESC limit 0, 6`
+    //     return await new Promise(resolve => {
+    //         this.sql.query(queryGetTopPost, (error, data) => resolve({ error, data: data }))
+    //     })
+    // }
     async getContent(dataInput) {
         let { category_url, post_url, isNewCategory } = dataInput
         if (!post_url || !category_url) return;
         post_url = post_url.replace(/\'/g, `\\'`).replace(/\"/g, `\\"`).replace(/\`/g, "\\`")
-        let q = `SELECT posts.id as id, title, image, content, posts.view as view, posts.dateCreated, categories.id as category_id FROM posts INNER JOIN categories ON posts.category_id = categories.id WHERE categories.url='${category_url}' AND posts.url='${post_url}'`
+        let q = `SELECT posts.id as id, title, image, content, posts.view as view, posts.dateCreated, categories.id as category_id FROM posts INNER JOIN categories ON posts.category_id = categories.id WHERE categories.url='${category_url}' AND posts.url='${post_url}' AND posts.activated='true'`
 
         return await new Promise(resolve => {
             // get post
@@ -134,7 +137,7 @@ class Posts extends baseModel {
                 // edit view
                 this.edit({ id, view: ++view })
                 if (JSON.parse(isNewCategory)) {
-                    let queryGetTopPost = `SELECT title, posts.url as url, image FROM posts INNER JOIN categories ON categories.id = posts.category_id WHERE categories.id = '${category_id}' ORDER BY view DESC limit 0, 6`
+                    let queryGetTopPost = `SELECT title, posts.url as url, image FROM posts INNER JOIN categories ON categories.id = posts.category_id WHERE categories.id = '${category_id}' AND posts.activated='true' ORDER BY view DESC limit 0, 6`
                     let { error, data } = await new Promise(resolve => this.sql.query(queryGetTopPost, (error, data) => resolve({ error, data })))
                     if (error) data = []
                     related_post = data
@@ -148,7 +151,8 @@ class Posts extends baseModel {
         let { category_url, limit, from } = dataInput
         let select = ['posts.title', 'posts.image', 'posts.url', 'posts.description', 'posts.dateCreated', 'categories.id as category_id'].join();
         let q = `SELECT ${select} FROM posts INNER JOIN categories ON posts.category_id = categories.id `;
-        if (category_url && category_url != 'news') q += `WHERE categories.url='${category_url}' `;
+        if (category_url && category_url != 'news') q += `WHERE categories.url='${category_url}' && posts.activated='true' `;
+        else q += `WHERE posts.activated='true' `
         q += `ORDER BY dateCreated DESC limit ${from}, ${limit}`;
 
         return await new Promise(resolve => {
@@ -166,13 +170,13 @@ class Posts extends baseModel {
         const SELECT = `SELECT ${DEFAULT_FIELDS_HOME} FROM posts`
 
         let arrQuery = [
-            `${SELECT} ORDER BY dateCreated DESC limit 0, 8`,
-            `${SELECT} WHERE dateCreated BETWEEN '${+new Date() - ONE_DAY * 7}' AND '${+new Date()}' ORDER BY view DESC limit 0, 4`,
-            `${SELECT} WHERE dateCreated BETWEEN '${+new Date() - ONE_DAY * 30}' AND '${+new Date()}' ORDER BY view DESC limit 0, 4`
+            `${SELECT} WHERE posts.activated='true' ORDER BY dateCreated DESC limit 0, 8`,
+            `${SELECT} WHERE posts.activated='true' AND dateCreated BETWEEN '${+new Date() - ONE_DAY * 7}' AND '${+new Date()}' ORDER BY view DESC limit 0, 4`,
+            `${SELECT} WHERE posts.activated='true' AND dateCreated BETWEEN '${+new Date() - ONE_DAY * 30}' AND '${+new Date()}' ORDER BY view DESC limit 0, 4`
         ]
 
         for (const i of arrCategories) {
-            arrQuery.push(`SELECT posts.id, title, posts.url as url, image, posts.dateCreated FROM posts INNER JOIN categories ON categories.id = posts.category_id WHERE categories.id = '${i.id}' ORDER BY view DESC limit 0, 4`)
+            arrQuery.push(`SELECT posts.id, title, posts.url as url, image, posts.dateCreated FROM posts INNER JOIN categories ON categories.id = posts.category_id WHERE posts.activated='true' AND categories.id = '${i.id}' ORDER BY view DESC limit 0, 4`)
         }
 
         return Promise.all(arrQuery.map(query => new Promise(resolve => {

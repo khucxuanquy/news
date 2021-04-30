@@ -62,14 +62,18 @@
 
       <!-- RIGHT -->
       <el-col :md="8">
-        <aside v-if="topNewFeed[0] && topPostsOfWeek[0]">
-          <TextHeading :title="'TOP'" color="red"/>
-          <Box :data="topNewFeed[0]" large :style="responsive.isDesktop ? 'padding: 0 0 1rem .5rem': ''" />
-          <Box :data="post" mini :height="80" v-for="post in topNewFeed.filter((i, index) => index != 0)" :key="post.id + Math.random().toString(36)"/>
-
-          <TextHeading :title="'Top của tuần'" color="red"/>
-          <Box :data="topPostsOfWeek[0]" large :style="responsive.isDesktop ? 'padding: 0 0 1rem .5rem': ''" />
-          <Box :data="post" mini :height="80" v-for="post in topPostsOfWeek.filter((item, index) => index != 0)" :key="post.id + Math.random().toString(36)" />
+        <aside>
+          <div v-if="topNewFeed[0]">
+            <TextHeading :title="'TOP'" color="red"/>
+            <Box :data="topNewFeed[0]" large :style="responsive.isDesktop ? 'padding: 0 0 1rem .5rem': ''" />
+            <Box :data="post" mini :height="80" v-for="post in topNewFeed.filter((i, index) => index != 0)" :key="post.id + Math.random().toString(36)"/>
+          </div>
+          <iframe frameborder="0" style="margin-top: 5em" width="100%" height="400px" src="https://webtygia.com/api/xang-dau?bgheader=9c27b0&colorheader=ffffff&padding=5&fontsize=13"></iframe>
+          <div v-if="topPostsOfWeek[0]">
+            <TextHeading :title="'Top của tuần'" color="red"/>
+            <Box :data="topPostsOfWeek[0]" large :style="responsive.isDesktop ? 'padding: 0 0 1rem .5rem': ''" />
+            <Box :data="post" mini :height="80" v-for="post in topPostsOfWeek.filter((item, index) => index != 0)" :key="post.id + Math.random().toString(36)" />
+          </div>
         </aside>
       </el-col>
     </el-row>
