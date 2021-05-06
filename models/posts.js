@@ -190,8 +190,8 @@ class Posts extends baseModel {
                 const topPostsOfMonth = res[2]
                 // bài viết nhiều view nhất của chủ đề
                 let sectionBottom = {}
-                sectionBottom[arrCategories[0].id] = res[3]
-                sectionBottom[arrCategories[1].id] = res[4]
+                if(res[3].length) sectionBottom[arrCategories[0].id] = res[3]
+                if(res[4].length) sectionBottom[arrCategories[1].id] = res[4]
                 return Promise.resolve({ data: { topNewFeed, topPostsOfWeek, topPostsOfMonth, sectionBottom } })
             }).catch(error => {
                 console.log('\x1b[31m', error)

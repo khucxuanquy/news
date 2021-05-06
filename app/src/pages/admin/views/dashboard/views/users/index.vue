@@ -58,11 +58,17 @@ export default {
       CHANGE_USERS: '_USERS/CHANGE'
     }),
     submit() {
-      const {users, formUser} = this
+      const {users, formUser, myAccount} = this
+      console.log({users, formUser, myAccount})
       const { fullName, password, permission, username } = formUser
       if(!fullName || !password || !permission ||!username ) return this.$message({ message: 'Vui lòng nhập đầy đủ thông tin', type: 'warning' })
+
+      let position = 'staff'
+      if(permission === 3) position = 'admin'
+      else if(permission === 2) position = 'manager'
+
       if(users.some(i=> i.username == username)) return this.$message({ message: 'username đã tồn tại', type: 'warning' })
-      this.postAPI(USERS.CREATE, { ...formUser }, r => {
+      this.postAPI(USERS.CREATE, { ...formUser, manager_id: myAccount.id, position }, r => {
         const {ok, data} = r
         if(!ok) return this.$message({ message: 'Có lỗi sảy ra', type: 'Error' })
         this.CHANGE_USERS([...users, data])

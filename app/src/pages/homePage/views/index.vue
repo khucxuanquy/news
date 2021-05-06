@@ -45,7 +45,7 @@
             <el-row>
                 <el-col :md="18">
                 <!-- CATEGORY 1 -->
-                <div v-if="sectionBottom[0]">
+                <div v-if="sectionBottom[0] && sectionBottom[0].data.length">
                   <TextAngleSharp :title="sectionBottom[0].name" :color="sectionBottom[0].color" />
                   <el-row>
                     <el-col :md="12"> 
@@ -58,7 +58,7 @@
                 </div>
 
                 <!-- CATEGORY 2 -->
-                <div v-if="sectionBottom[1]">
+                <div v-if="sectionBottom[1] && sectionBottom[1].data.length">
                   <TextAngleSharp :title="sectionBottom[1].name" :color="sectionBottom[1].color" />
                   <el-row>
                     <el-col :md="12">

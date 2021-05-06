@@ -13,6 +13,7 @@ module.exports = {
         if (dataGetUser.length) return res.send(resFail({ message: 'Tài khoản đã tồn tại' }));
 
         // let's create user
+        req.body.password = hashPassword(req.body.password)
         const { error, data } = await user.create(req.body);
         if (error) return res.send(resFail({ error }));
         res.send(resSuccess({ data }));
