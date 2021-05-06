@@ -52,24 +52,31 @@ const ALL_ROUTER = [
         hidden: true,
         children: [
             {
-                path: '/login',
+                path: 'login',
                 component: () => import('../pages/login/homepage/login.vue'),
                 meta: {
                     title: 'Đăng nhập'
                 }
             },
             {
-                path: '/register',
+                path: 'register',
                 component: () => import('../pages/login/homepage/register.vue'),
                 meta: {
                     title: 'Đăng kí'
                 }
             },
             {
-                path: '/forgotPassword',
+                path: 'forgotPassword',
                 component: () => import('../pages/login/homepage/forgotPassword.vue'),
                 meta: {
                     title: 'Lấy lại mật khẩu'
+                }
+            },
+            {
+                path: 'resetPassword/:id',
+                component: () => import('../pages/login/homepage/forgotPassword.vue'),
+                meta: {
+                    title: 'Tạo mật khẩu mới'
                 }
             },
         ]

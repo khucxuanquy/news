@@ -19,7 +19,7 @@ module.exports = {
     },
 
     async edit(req, res) {
-        if(req.body.password) req.body.password = hashPassword(req.body.password)
+        if (req.body.password) req.body.password = hashPassword(req.body.password)
         let { error } = await user.edit(req.body)
         if (error) return res.send(resFail({ error }))
         res.send(resSuccess())
@@ -40,7 +40,7 @@ module.exports = {
         if (!data.length) return res.send('Tài khoản không tồn tại') // note: logout
         // encode token
         const { id, permission, position } = data[0]
-        if(admin && position === 'reader') return res.send(resFail({ message: 'Bạn không có quyền truy cập' }))
+        if (admin && position === 'reader') return res.send(resFail({ message: 'Bạn không có quyền truy cập' }))
         const token = signToken({ id, permission })
         res.send(resSuccess({ token, message: 'Đăng nhập thành công' }))
     },
@@ -50,7 +50,7 @@ module.exports = {
         const { location } = req.query
         let { error, data } = await user.get({ fields: ['id', 'fullName', 'permission', 'position'], conditions: { id } })
         if (error) return res.send(resFail({ error }))
-        if(location && data[0].position == 'reader') return res.send(resFail())
+        if (location && data[0].position == 'reader') return res.send(resFail())
         if (!data.length) return res.send(resFail({ message: 'logout now' })) // note: logout
         res.send(resSuccess({ data: data[0] }))
     },
@@ -84,10 +84,10 @@ module.exports = {
 
     async verify(req, res) {
         const { token } = req.query
-        if(!token) return res.send(resFail({message: 'Token không hợp lệ'}))
+        if (!token) return res.send(resFail({ message: 'Token không hợp lệ' }))
         let body = decodeToken(token) // body: { email, password, fullName }
-        if(!body || (body && !body.email)) return res.send(resFail({message: 'Token không hợp lệ'}));
-        if(+new Date() - body.iat * 1000 > FIFTEEN_MINUTES) return res.send(resFail({message: 'Token đã hết hạn'}));
+        if (!body || (body && !body.email)) return res.send(resFail({ message: 'Token không hợp lệ' }));
+        if (+new Date() - body.iat * 1000 > FIFTEEN_MINUTES) return res.send(resFail({ message: 'Token đã hết hạn' }));
         const { error: errorCheck, data: dataCheck } = await user.get({ fields: ['id'], conditions: { username: body.email } })
         if (errorCheck) return res.send(resFail({ error: errorCheck }))
         if (dataCheck.length) return res.send('Tài khoản Đã tồn tại')
@@ -101,4 +101,11 @@ module.exports = {
         if (error) return res.send(resFail({ error }));
         res.send(resSuccess({ data }));
     },
+
+    async forgotPassword(req, res) {
+        const { email } = req.body
+        let { error, data } = await user.get({ fields: ['id'], conditions: { username: email } })
+        if (error) return res.send(resFail({ error }))
+        if (data.length) return res.send('Tài khoản Đã tồn tại')
+    }
 }

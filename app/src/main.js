@@ -14,12 +14,25 @@ require('dotenv').config()
 
 Vue.use(ElementUI, { size: 'medium', locale })
 let headerGetAuth = () => ({ Authorization: localStorage.getItem('_u') || '' })
+const loadScript = (src, async = true, type = "text/javascript") => {
+  const el = document.createElement("script");
+  const container = document.head || document.body;
+  el.type = type;
+  el.async = async;
+  el.src = src;
+  el.addEventListener("load", () => console.log('load script success'));
+  el.addEventListener("error", () => console.log('load script fail'));
+  container.appendChild(el);
+};
 
 let socket;
 registerModule().then(async () => {
   Vue.config.productionTip = false
-  
+
   if (location.pathname.includes('/admin')) {
+    loadScript("http://localhost:3000/static/js/jquery_3.5.1.js");
+    loadScript("https://cdn.tiny.cloud/1/pmx69zke0g1nne4ogs14gbeuj5l5w4sw5wzip9j4xxjlzsyl/tinymce/5/tinymce.min.js", true);
+
     let user_info = {}
     await axios.get('http://localhost:3000/API/users/getInfoUser', { params: { location: 'admin' }, headers: headerGetAuth() }).then(res => {
       const { ok, data } = res.data

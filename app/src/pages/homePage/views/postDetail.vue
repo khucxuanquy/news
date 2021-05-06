@@ -89,6 +89,7 @@ import ENUM from 'const/api'
 const { POSTS } = ENUM
 
 import CONST from 'const/const'
+import { mapGetters } from 'vuex';
 export default {
   data() {
     return {
@@ -126,6 +127,11 @@ export default {
         this.topPosts = related_post.map(i => ({...i, category: this.getCategoryById(data.category_id)}))
       } else this.topPosts = getTopPosts.related_post.map(i => ({...i, category: this.getCategoryById(getTopPosts.category_id)}))
       this.visible = true
+
+      // this.$nextTick(() => {
+      //   let _content = document.querySelector('.content').innerText
+      //   responsiveVoice.speak(_content, "Vietnamese Male")
+      // })
     });
   },
   methods: {
@@ -159,30 +165,23 @@ export default {
     }
   },
   computed: {
-    home(){
-      return this.storeVue('_HOMEPAGE').getters.home || []
-    },
+    ...mapGetters({
+      home: "_HOMEPAGE/home",
+      cacheContent: "_POST_DETAIL/cacheContent",
+      highlightPost: "_POST_DETAIL/highlightPost",
+      categories: "_CATEGORIES/categories",
+      responsive: "_HOMEPAGE/responsive",
+    }),
     topNewFeed(){
       return this.home.topNewFeed.map(i => ({...i, category: this.getCategoryById(i.category_id), dateCreated: this.convertDate(i.dateCreated)})).filter((i,index)=> index < 3)
     },
     topPostsOfWeek(){
       return this.home.topPostsOfWeek.map(i => ({...i, category: this.getCategoryById(i.category_id), dateCreated: this.convertDate(i.dateCreated)})) 
     },
-    cacheContent(){
-      return this.storeVue('_POST_DETAIL').getters.cacheContent;
-    },
-    highlightPost(){
-      return this.storeVue('_POST_DETAIL').getters.highlightPost
-    },
-    categories(){
-      return this.storeVue('_CATEGORIES').getters.categories;
-    },
-    responsive(){
-      return this.storeVue("_HOMEPAGE").getters.responsive || {}
-    }
   },
   watch: {
     '$route.params': function(currentParams) {
+      responsiveVoice.cancel()
       this.visible = false
       const { category_url, post_url } = currentParams
       // tìm xem trong store có data này chưa
@@ -203,6 +202,12 @@ export default {
           this.topPosts = related_post.map(i => ({...i, category: this.getCategoryById(data.category_id)}))
         } else this.topPosts = getTopPosts.related_post.map(i => ({...i, category: this.getCategoryById(getTopPosts.category_id)}))
         this.visible = true
+
+        // this.$nextTick(() => {
+        //   let _content = document.querySelector('.content').innerText
+        //   responsiveVoice.speak(_content, "Vietnamese Male")
+        // })
+        
       })
     },
     'detail.title': title => document.title = title

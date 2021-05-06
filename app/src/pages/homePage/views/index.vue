@@ -22,7 +22,7 @@
                     <Box :data="topPostsOfWeek[0]" large :style="responsive.isDesktop ? 'padding: 0 0 1rem .5rem' : ''" />
                     <Box :data="posts" mini :height="80" v-for="(posts, index) in topPostsOfWeek.filter((item, index) => index != 0)" :key="index" />
                   </div>
-                  <iframe frameborder="0" width="100%" height="400px" src="https://webtygia.com/api/xang-dau?bgheader=9c27b0&colorheader=ffffff&padding=5&fontsize=13"></iframe>
+                  <!-- <iframe frameborder="0" width="100%" height="400px" src="https://webtygia.com/api/xang-dau?bgheader=9c27b0&colorheader=ffffff&padding=5&fontsize=13"></iframe> -->
 
                   <img src="https://demo.themewinter.com/wp/digiqoles/wp-content/uploads/2020/07/sidebar_banner.png" style='margin: 1rem 0'>
                   <div v-if="topPostsOfMonth[0]">
@@ -30,7 +30,7 @@
                     <Box :data="topPostsOfMonth[0]" large :style="responsive.isDesktop ? 'padding: 0 0 1rem .5rem' : ''" />
                     <Box :data="p" mini :height="80" v-for="(p, i) in topPostsOfMonth.filter((item, index) => index != 0)" :key="i+5"/>
                   </div>
-                  <iframe frameborder="0" style="margin-top: 5em" height="520px" width="100%" src="https://webtygia.com/api/cong-cu-chuyen-doi-tien-te?maukhungketqua=fe803b&mauchuketqua=ffffff&sizechuketqua=20&fontsize=13&border=1&hienthamkhao=0"></iframe>
+                  <!-- <iframe frameborder="0" style="margin-top: 5em" height="520px" width="100%" src="https://webtygia.com/api/cong-cu-chuyen-doi-tien-te?maukhungketqua=fe803b&mauchuketqua=ffffff&sizechuketqua=20&fontsize=13&border=1&hienthamkhao=0"></iframe> -->
                 </aside>
                 </el-col>
             </el-row>

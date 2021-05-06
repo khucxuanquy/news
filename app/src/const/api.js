@@ -13,6 +13,7 @@ export default {
         GET_POSTS_BY_CATEGORY: URL + 'posts/getPostsByCategory',
         SEARCH: URL + 'posts/search',
         SEARCH_BY_PERMISSION: URL + 'posts/searchByPermission',
+        GET_OVERVIEW_STATISTICS: URL + 'posts/overviewStatistic'
     },
     CATEGORIES: {
         CREATE: URL + 'categories/create',
@@ -39,5 +40,9 @@ export default {
         CHECK_LOGIN : URL + 'users/checkLogin',
         GET_ALL: URL + 'users/getUsersByPermission',
         GET_INFO_USER: URL + 'users/getInfoUser'
+    },
+    STATISTICS: {
+        GET: URL + 'statistics/getStatistics',
+        GET_BY_DATE_PICKER: URL + 'statistics/getByDatePicker'
     }
 }

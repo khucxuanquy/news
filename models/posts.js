@@ -1,4 +1,6 @@
 const baseModel = require('../baseModels/baseModel')
+const { rangeMonth, rangeWeek, ONE_HOUR, ONE_DAY } = require('../helpers')
+const cacheRedis = require('./cacheRedis')
 
 class Posts extends baseModel {
     constructor() {
@@ -122,7 +124,7 @@ class Posts extends baseModel {
         let { category_url, post_url, isNewCategory } = dataInput
         if (!post_url || !category_url) return;
         post_url = post_url.replace(/\'/g, `\\'`).replace(/\"/g, `\\"`).replace(/\`/g, "\\`")
-        let q = `SELECT posts.id as id, title, image, content, posts.view as view, posts.dateCreated, categories.id as category_id FROM posts INNER JOIN categories ON posts.category_id = categories.id WHERE categories.url='${category_url}' AND posts.url='${post_url}' AND posts.activated='true'`
+        let q = `SELECT posts.id as id, title, image, content, posts.view as view, posts.dateCreated, categories.id as category_id FROM posts INNER JOIN categories ON posts.category_id = categories.id WHERE categories.url='${category_url}' AND posts.url='${post_url}' AND posts.activated LIKE 'true'`
 
         return await new Promise(resolve => {
             // get post
@@ -136,8 +138,9 @@ class Posts extends baseModel {
 
                 // edit view
                 this.edit({ id, view: ++view })
+                cacheRedis.setCache({ key: 'statistics', value: id })
                 if (JSON.parse(isNewCategory)) {
-                    let queryGetTopPost = `SELECT title, posts.url as url, image FROM posts INNER JOIN categories ON categories.id = posts.category_id WHERE categories.id = '${category_id}' AND posts.activated='true' ORDER BY view DESC limit 0, 6`
+                    let queryGetTopPost = `SELECT title, posts.url as url, image FROM posts INNER JOIN categories ON categories.id = posts.category_id WHERE categories.id = '${category_id}' AND posts.activated LIKE 'true' ORDER BY view DESC limit 0, 6`
                     let { error, data } = await new Promise(resolve => this.sql.query(queryGetTopPost, (error, data) => resolve({ error, data })))
                     if (error) data = []
                     related_post = data
@@ -151,8 +154,8 @@ class Posts extends baseModel {
         let { category_url, limit, from } = dataInput
         let select = ['posts.title', 'posts.image', 'posts.url', 'posts.description', 'posts.dateCreated', 'categories.id as category_id'].join();
         let q = `SELECT ${select} FROM posts INNER JOIN categories ON posts.category_id = categories.id `;
-        if (category_url && category_url != 'news') q += `WHERE categories.url='${category_url}' && posts.activated='true' `;
-        else q += `WHERE posts.activated='true' `
+        if (category_url && category_url != 'news') q += `WHERE categories.url='${category_url}' && posts.activated LIKE 'true' `;
+        else q += `WHERE posts.activated LIKE 'true' `
         q += `ORDER BY dateCreated DESC limit ${from}, ${limit}`;
 
         return await new Promise(resolve => {
@@ -161,7 +164,6 @@ class Posts extends baseModel {
     }
 
     async home({ DEFAULT_FIELDS_HOME }) {
-        const ONE_DAY = 60 * 60 * 24 * 1000
         let arrCategories = await new Promise(resolve => this.sql.query(`SELECT * FROM top_view_categories`, (err, r) => resolve(r)))
         // 8 bài mới nhất 
         // 4 bài hay nhất 7 ngay qua
@@ -170,13 +172,13 @@ class Posts extends baseModel {
         const SELECT = `SELECT ${DEFAULT_FIELDS_HOME} FROM posts`
 
         let arrQuery = [
-            `${SELECT} WHERE posts.activated='true' ORDER BY dateCreated DESC limit 0, 8`,
-            `${SELECT} WHERE posts.activated='true' AND dateCreated BETWEEN '${+new Date() - ONE_DAY * 7}' AND '${+new Date()}' ORDER BY view DESC limit 0, 4`,
-            `${SELECT} WHERE posts.activated='true' AND dateCreated BETWEEN '${+new Date() - ONE_DAY * 30}' AND '${+new Date()}' ORDER BY view DESC limit 0, 4`
+            `${SELECT} WHERE posts.activated LIKE 'true' ORDER BY dateCreated DESC limit 0, 8`,
+            `${SELECT} WHERE posts.activated LIKE 'true' AND dateCreated BETWEEN '${+new Date() - ONE_DAY * 7}' AND '${+new Date()}' ORDER BY view DESC limit 0, 4`,
+            `${SELECT} WHERE posts.activated LIKE 'true' AND dateCreated BETWEEN '${+new Date() - ONE_DAY * 30}' AND '${+new Date()}' ORDER BY view DESC limit 0, 4`
         ]
 
         for (const i of arrCategories) {
-            arrQuery.push(`SELECT posts.id, title, posts.url as url, image, posts.dateCreated FROM posts INNER JOIN categories ON categories.id = posts.category_id WHERE posts.activated='true' AND categories.id = '${i.id}' ORDER BY view DESC limit 0, 4`)
+            arrQuery.push(`SELECT posts.id, title, posts.url as url, image, posts.dateCreated FROM posts INNER JOIN categories ON categories.id = posts.category_id WHERE posts.activated LIKE 'true' AND categories.id = '${i.id}' ORDER BY view DESC limit 0, 4`)
         }
 
         return Promise.all(arrQuery.map(query => new Promise(resolve => {
@@ -197,6 +199,37 @@ class Posts extends baseModel {
             })
 
     }
+
+    async overviewStatistic() {
+        let _week = rangeWeek(+new Date())
+        let _month = rangeMonth(+new Date())
+        let _date = { start: +new Date(new Date().setHours(0, 0, 0, 0)), end: +new Date() }
+
+        let SELECT = `SELECT COUNT(id) as quantity FROM posts `
+        let arrQuery = [
+            `${SELECT} WHERE activated LIKE 'true' AND dateCreated BETWEEN '${_date.start}' AND '${_date.end}'`,
+            `${SELECT} WHERE activated LIKE 'true' AND dateCreated BETWEEN '${+_week.start}' AND '${+_week.end}'`,
+            `${SELECT} WHERE activated LIKE 'true' AND dateCreated BETWEEN '${+_month.start}' AND '${+_month.end}'`,
+            `SELECT posts.user_id, COUNT(id) as amountPosts, SUM(posts.view) as totalView FROM posts WHERE activated LIKE 'true' AND dateCreated BETWEEN '${+_week.start}' AND '${+_week.end}' GROUP BY posts.user_id`,
+            `SELECT posts.user_id, COUNT(id) as amountPosts, SUM(posts.view) as totalView FROM posts WHERE activated LIKE 'true' AND dateCreated BETWEEN '${+_month.start}' AND '${+_month.end}' GROUP BY posts.user_id`,
+        ]
+
+        return Promise.all(arrQuery.map(query => new Promise(resolve => {
+            this.sql.query(query, (err, data) => err ? resolve([]) : resolve(data))
+        })))
+            .then(res => {
+                let quantityInDate = res[0][0].quantity,
+                    quantityInWeek = res[1][0].quantity,
+                    quantityInMonth = res[2][0].quantity,
+                    topEmployeesInWeek = res[3],
+                    topEmployeesInMonth = res[4];
+                return Promise.resolve({ data: { quantityInDate, quantityInWeek, quantityInMonth, topEmployeesInWeek, topEmployeesInMonth } })
+            }).catch(error => {
+                console.log('\x1b[31m', error)
+                return Promise.resolve({ error })
+            })
+    }
+
 
 }
 

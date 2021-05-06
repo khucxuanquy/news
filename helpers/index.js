@@ -5,13 +5,23 @@ const { l } = require('../config')
 
 const { ACCESS_TOKEN_SECRET } = process.env
 const SLASH = '/'
-const FIFTEEN_MINUTES = 15 * 60 * 60 * 1000
-const EMAIL = 'smartnewsqtd@gmail.com'
-const PASSWORD = 'A123h456C'
+const EMAIL = 'smartnewsqtd@gmail.com',
+  PASSWORD = 'A123h456C',
+  FIFTEEN_MINUTES = 15 * 60 * 1000,
+  ONE_HOUR = FIFTEEN_MINUTES * 4,
+  ONE_DAY = 24 * ONE_HOUR,
+  ONE_WEEK = 7 * ONE_DAY,
+  ONE_MONTH = 4 * ONE_WEEK,
+  ONE_YEAR = 12 * ONE_MONTH;
 
 module.exports = {
   isImage: /gif|jpg|jpeg|png|tiff|webp|psd|svg+/gi,
   FIFTEEN_MINUTES,
+  ONE_HOUR,
+  ONE_DAY,
+  ONE_WEEK,
+  ONE_MONTH,
+  ONE_YEAR,
   verifyToken(req, res, next) {
     const { authorization } = req.headers
     if (!authorization || authorization === 'null' || authorization === 'undefined') return res.send({ ok: false, message: 'Tài khoản chưa đăng nhập' })
@@ -41,7 +51,6 @@ module.exports = {
     return Math.random().toString(36).slice(2) + Math.random().toString(16).slice(2)
   },
   rangeWeek: function (timestamp) {
-    const ONE_DAY = 1000 * 60 * 60 * 24
     if (!timestamp) timestamp = +new Date()
     let dt = new Date(Number(timestamp))
     dt = new Date(new Date().setHours(0, 0, 0, 0))
@@ -56,11 +65,13 @@ module.exports = {
     return { start, end }
   },
   /**
-  * @param {String} type 0, 1, 2
+  * @param {String} type 0, 1, 2, 3, 4
   * @param {String} date 
   * @example 0: +new Date() -> yyyy/mm/dd (1608301361443 -> '2020/12/18')
   *          1: ddmmyyy -> yyyy/mm/dd ('18122020' -> '2020/12/18')
   *          2: yyyymmdd -> dd/mm/yyyy ('20201218' -> '18122020')
+  *          3: 1619985600000 -> '3/5'
+  *          4: 1619985600000 -> '15h'
   * ---------------
   */
   convertDate: function (type, date) {
@@ -85,6 +96,17 @@ module.exports = {
         DATE = date.slice(6, date.length)
         return DATE + MONTH + YEAR;
       }
+      case 3: {
+        date = new Date(date)
+        let _date = date.getDate();
+        let _month = date.getMonth() + 1;
+        return _date + '/' + _month;
+      }
+      case 4: {
+        date = new Date(date)
+        let _hours = date.getHours();
+        return _hours + 'h';
+      }
       default: return false;
     }
   },
@@ -104,7 +126,7 @@ module.exports = {
     str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
     str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
     str = str.replace(/đ/g, "d");
-    str = str.replace(/ /g, "_");
+    str = str.replace(/\s|\\|\/|\#|\?|\&|\=/g, "_");
     str = str.replace(/\'|\"|\`/g, "");
     // Some system encode vietnamese combining accent as individual utf-8 characters
     str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ""); // Huyền sắc hỏi ngã nặng
@@ -134,7 +156,7 @@ module.exports = {
       html: `<a href='http://localhost:3000/API/users/verify?token=${token}'> bấm vào đây để xác thực tài khoản </a>`, // content = html
     })
   },
-  hashPassword(password){
+  hashPassword(password) {
     return md5(password)
   }
 }

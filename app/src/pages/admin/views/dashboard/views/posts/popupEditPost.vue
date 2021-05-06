@@ -76,7 +76,6 @@ export default {
     }
   },
   components: { Tiny },
-  beforeCreate() { this.isFinishLoad = false },
   created() { },
   methods: {
     submit() {

@@ -2,7 +2,6 @@
 /public
 /views
 /test
-/socket
 .env
 SQL.sql
 task.txt

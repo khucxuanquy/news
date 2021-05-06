@@ -28,13 +28,17 @@ export default {
     recognition.continuous = true; // tiếp tục nghe hay tắt sau khi nghe tiếp âm thanh
     recognition.interimResults = false; // đặt cho phép có kết quả tạm thời hay không
     recognition.lang = 'vi-VN'; // cài đặt ngôn ngữ 
-    recognition.start();
+    // recognition.start();
     recognition.onresult = function(event) { 
       console.log(event.results[event.results.length - 1][0].transcript);
       // console.log(event.results[0]);
     }
     recognition.onerror = function(event) { 
-      console.log(event);
+      // console.log('on_error', event);
+    }
+    recognition.onend = function(event) { 
+      // console.log('on_end', event);
+      // recognition.start();
     }
     // let info = JSON.parse(localStorage.getItem('_user'))
     // this.CHANGE_MY_ACCOUNT(info)
@@ -88,6 +92,11 @@ export default {
   },
   destroyed() {
     window.removeEventListener("resize", this.handleResizeWindow);
+  },
+  watch: {
+    '$route.params': function() {
+      responsiveVoice.cancel()
+    }
   },
 };
 </script>

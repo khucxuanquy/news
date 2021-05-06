@@ -9,6 +9,7 @@ export default async function () {
             import('../pages/admin/views/dashboard/views/posts/_store'),
             import('../pages/admin/views/dashboard/views/users/_store'),
             import('../pages/admin/views/dashboard/views/reports/_store'),
+            import('../pages/admin/views/dashboard/views/statistics/_store'),
             import('../pages/homePage/layout/_store'),
             import('../pages/homePage/views/_store'),
         ]).then(data => {

@@ -30,6 +30,7 @@ startApp(err => {
   app.use('/API/categories', require('./routers/API/categories'))
   app.use('/API/reports', require('./routers/API/reports'))
   app.use('/API/users', require('./routers/API/users'))
+  app.use('/API/statistics', require('./routers/API/statistics'))
   app.use('/API/comments', require('./routers/API/comments'))
 
   app.set('view engine', 'ejs');

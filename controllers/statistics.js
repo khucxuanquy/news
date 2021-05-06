@@ -1,16 +1,24 @@
 const Statistics = require('../models/statistics')
 const statistic = new Statistics()
-const { resFail, resSuccess, randomId } = require('../helpers')
+const { resFail, resSuccess } = require('../helpers')
+const cacheRedis = require('../models/cacheRedis')
+const cron = require('cron');
+
+new cron.CronJob({
+    // cronTime: '* * * * *',  // At every minute
+    cronTime: '0 * * * *', // At minute 0 past every hour
+    // cronTime: '*/30 * * * *', // At every 30th minute
+    start: true,
+    timeZone: 'Asia/Ho_Chi_Minh', // Lưu ý set lại time zone cho đúng 
+    onTick: async function () {
+        // let { data } = await cacheRedis.getCache({ key: 'statistics' })
+        // data = data ? JSON.parse(data) : []
+        // data.forEach(item => statistic.create(item));
+        // await cacheRedis.deleteCache({ key: 'statistics' })
+    },
+}).start();
 
 module.exports = {
-    async create(req, res) {
-        req.body.id = randomId()
-        let { error } = await statistic.create(req.body)
-        if (error) return res.send(resFail({ error }))
-        res.send(resSuccess())
-
-    },
-
     async delete(req, res) {
         const { id } = req.query
         let { error } = await statistic.delete(id)
@@ -18,17 +26,13 @@ module.exports = {
         res.send(resSuccess())
     },
     async getStatistics(req, res) {
-        const {} = req.query
-        /*
-            SELECT posts.title, SUM(statistic.view) as 'tong' FROM `statistic` INNER JOIN `posts` ON posts.id = statistic.post_id GROUP BY posts.title
-            SELECT posts.category_id, SUM(statistic.view) as 'tong' FROM `statistic` INNER JOIN `posts` ON posts.id = statistic.post_id GROUP BY posts.category_id
-            SELECT posts.title, SUM(statistic.view) as 'tong' FROM `statistic` INNER JOIN `posts` ON posts.id = statistic.post_id GROUP BY posts.title
-         */
-    }
-
-    // async getReports(req, res) {
-    //     let { error, data } = await statistic.getReports(req.token)
-    //     if (error) return res.send(resFail({ error }))
-    //     res.send(resSuccess({ data }))
-    // },
+        let { error, data } = await statistic.getStatistics(req.query)
+        if (error) return res.send(resFail({ error }))
+        res.send(resSuccess({ data }))
+    },
+    async getByDatePicker(req, res) {
+        let { error, data } = await statistic.getByDatePicker(req.query)
+        if (error) return res.send(resFail({ error }))
+        res.send(resSuccess({ data }))
+    },
 }

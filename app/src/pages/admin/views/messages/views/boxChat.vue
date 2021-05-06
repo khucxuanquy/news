@@ -168,7 +168,7 @@ export default {
   watch: {
     '$route.params': function({ id }) {
       this.currentReceiveId = id
-      console.log(this.currentReceiveId)
+      // console.log(this.currentReceiveId)
     },
   },
 };
