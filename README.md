@@ -34,7 +34,7 @@ create table users(
     permission int(1) not null,
     avatar varchar(200) not null,
     position varchar(10) not null,
-    dateCreated varchar(13),
+    dateCreated varchar(13)
 );
 
 create table reports(
@@ -59,6 +59,10 @@ create table comments (
     id varchar(40) not null primary key,
     post_id varchar(40) not null,
     user_id varchar(40) not null,
+    reaction varchar(15) not null,          -- like
+    reply_id_comment varchar(40) not null,  -- id_comment reply
+    position varchar(10) not null,          -- parent ~ child
+    amount_child_comment Int(5) not null,   -- số lượng comment reply (chỉ áp dụng cho comment paren)
     content text,
     dateCreated varchar(13)
 );
@@ -70,6 +74,10 @@ create table statistics (
     dateCreated varchar(13)
 );
 
+CREATE VIEW `total_posts` AS select COUNT(id) as 'sum' from posts;
+CREATE VIEW `top_categories` AS SELECT categories.id, categories.color, categories.name, categories.url, COUNT(posts.id) as total_posts FROM posts INNER JOIN categories ON categories.id = posts.category_id GROUP BY categories.name ORDER BY total_posts DESC;
+CREATE VIEW `top_view_categories` AS SELECT categories.id, SUM(posts.view) as total_views FROM posts INNER JOIN categories ON categories.id = posts.category_id GROUP BY categories.name ORDER BY total_views DESC limit 0,2;
+
 ALTER TABLE posts ADD FOREIGN KEY (category_id) REFERENCES categories (id);
 ALTER TABLE posts ADD FOREIGN KEY (user_id) REFERENCES users (id);
 ALTER TABLE reports ADD FOREIGN KEY (post_id) REFERENCES posts (id);
@@ -80,10 +88,4 @@ ALTER TABLE comments ADD FOREIGN KEY (user_id) REFERENCES users (id);
 
 ALTER TABLE messages ADD FOREIGN KEY (receive_id) REFERENCES users (id);
 ALTER TABLE messages ADD FOREIGN KEY (sender_id) REFERENCES users (id);
-
-
-CREATE VIEW `total_posts` AS select COUNT(id) as 'sum' from posts
-CREATE VIEW `top_categories` AS SELECT categories.id, categories.color, categories.name, categories.url, COUNT(posts.id) as total_posts FROM posts INNER JOIN categories ON categories.id = posts.category_id GROUP BY categories.name ORDER BY total_posts DESC
-CREATE VIEW `top_view_categories` AS SELECT categories.id, SUM(posts.view) as total_views FROM posts INNER JOIN categories ON categories.id = posts.category_id GROUP BY categories.name ORDER BY total_views DESC limit 0,2
-
 ```

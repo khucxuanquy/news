@@ -4,5 +4,6 @@ module.exports.startApp = async callback => {
         if (err) return callback(err)
         require('./baseModel');
         callback(null);
+        setInterval(() => dbSql.query('SELECT 1 + 1 AS ping'), 20000);
     });
 }
