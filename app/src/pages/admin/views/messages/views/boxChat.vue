@@ -22,7 +22,7 @@
           <div class="avatar"><img :src="item.avatar || Logo" /></div>
           <div class="chat-content">
             <p class="text" v-for="m in item.messages" :key="m.id">
-              <span>{{ m.message }}</span>
+              <span>{{ m.content }}</span>
             </p>
           </div>
         </div>
@@ -68,10 +68,9 @@ export default {
     this.currentReceiveId = this.$route.params.id
     // group messages
     let data = []
-    // console.table(data)
     let newData = this.groupMessagesBeforeSaveToStore(data)
     this.CHANGE_MESSAGES(newData);
-     this.socket.on('message_client', data => {
+    this.socket.on('CLIENT_RECEIVE_MESSAGE', data => {
       this.CHAT_NEW_MESSAGE(data)
       this.$nextTick(()=> this.scrollIntoView())
     })
@@ -88,11 +87,11 @@ export default {
         id: Math.random().toString(36).slice(2),
         sender_id: this.myAccount.id,
         receive_id: this.currentReceiveId,
-        message: this.content,
+        content: this.content,
         dateCreated: String(+new Date()),
       }
-      this.CHAT_NEW_MESSAGE(data)
-      this.socket.emit('message_server', data)
+      // this.CHAT_NEW_MESSAGE(data)
+      this.socket.emit('SEND_MESSAGE', data)
       this.$nextTick(()=> this.scrollIntoView())
       setTimeout(() => (this.content = ""), 0);
     },
@@ -111,7 +110,7 @@ export default {
           messages: [
             {
               id: data[i].id,
-              message: data[i].message,
+              content: data[i].content,
               dateCreated: data[i].dateCreated,
             },
           ],
@@ -120,7 +119,7 @@ export default {
         if (data[i + 1] && data[i].sender_id === data[i + 1].sender_id) {
           newData[newData.length - 1].messages.push({
             id: data[i + 1].id,
-            message: data[i + 1].message,
+            content: data[i + 1].content,
           });
           let temp = null;
           for (let j = i + 1; j < data.length - 1; j++) {
@@ -128,7 +127,7 @@ export default {
             if (data[j + 1] && data[j].sender_id === data[j + 1].sender_id) {
               newData[newData.length - 1].messages.push({
                 id: data[i + 1].id,
-                message: data[i + 1].message,
+                content: data[i + 1].content,
                 dateCreated: data[i + 1].dateCreated,
               });
             } else break;
@@ -158,16 +157,17 @@ export default {
       conversations: "_MESSAGE/conversations",
       boxMessages: "_MESSAGE/boxMessages",
       myAccount: "_ACCOUNT/myAccount",
-      users: "_USERS/users",
+      friends: "_MESSAGE/friends",
     }),
     currentUser(){
-      const { users, currentReceiveId } = this
-      return users.find(user => user.id === currentReceiveId) || {}
+      const { friends, currentReceiveId } = this
+      return friends.find(user => user.id === currentReceiveId) || {}
     }
   },
   watch: {
     '$route.params': function({ id }) {
       this.currentReceiveId = id
+      console.log(id)
       // console.log(this.currentReceiveId)
     },
   },

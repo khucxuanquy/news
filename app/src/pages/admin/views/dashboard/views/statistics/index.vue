@@ -1,24 +1,24 @@
 <template>
   <div id="statistics">
     <div class="overview-box">
-      <h2>Số bài viết được xuất bản</h2>
+      <h3>Số bài viết được xuất bản</h3>
       <el-row class="overview-box" type="flex" justify="space-between">
         <el-col :md="8">
           <div class="box-child">
             <span>Hôm nay </span>
-            <strong>{{ overview.quantityInDate }}</strong>
+            <strong>{{ overview.quantityInDate || 0 }}</strong>
           </div>
         </el-col>
         <el-col :md="8">
           <div class="box-child">
             <span> Tuần này </span
-            ><strong>{{ overview.quantityInWeek }}</strong>
+            ><strong>{{ overview.quantityInWeek || 0 }}</strong>
           </div>
         </el-col>
         <el-col :md="8">
           <div class="box-child">
             <span> Tháng này </span
-            ><strong>{{ overview.quantityInMonth }}</strong>
+            ><strong>{{ overview.quantityInMonth || 0 }}</strong>
           </div>
         </el-col>
       </el-row>
@@ -162,6 +162,13 @@ export default {
   height: calc(100vh - 50px);
   overflow-y: auto;
   .overview-box {
+    padding: 1em 2em 2em;
+    background: lightskyblue;
+
+    h3 {
+      margin: 0 0 0.5em 0.6em;
+      color: #000000a6;
+    }
     .box-child {
       text-align: center;
       background: #e4e4e4;

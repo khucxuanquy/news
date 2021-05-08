@@ -1,28 +1,17 @@
 const Messages = require('../models/messages')
 const message = new Messages()
 const { resFail, resSuccess, randomId } = require('../helpers')
-
 // realtime system
 
 module.exports = {
-    async create(req) {
-        req.body.id = randomId()
-        let { error, data } = await message.create(req.body)
-        if (error) return resFail({ error })
-        return resSuccess({ data })
-
+    async create(dataInput) {
+        return await message.create(dataInput)
     },
-    async edit(req) {
-        let { error } = await message.edit(req.body)
-        if (error) return resFail({ error })
-        return resSuccess()
+    async edit(dataInput) {
+        return await message.edit(dataInput)
     },
-    async delete(req) {
-        const { id } = req.body
-        let { error } = await message.delete(id)
-        if (error) return resFail({ error })
-        return resSuccess()
-
+    async delete(id) {
+        return await message.delete(id)
     },
     // async getAllCategories(req) {
     //     let { error, data } = await message.getAllCategories()

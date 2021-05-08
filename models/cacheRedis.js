@@ -54,18 +54,24 @@ class CacheRedis {
 // module.exports = new CacheRedis()
 
 // for not install redis
-
+let STORE_CACHE_REDIS = {}
 module.exports = {
-  deleteCache() {
-    return {}
+  deleteCache({ key }) {
+    delete STORE_CACHE_REDIS[key]
   },
-  getCache() {
-    return {
-      error: null,
-      data: []
-    }
+  getCache({ key }) {
+    return Promise.resolve({ data: STORE_CACHE_REDIS[key] })
   },
-  setCache() {
-    return {}
+  setCache({ key, value }) {
+    let post_id = value;
+    let dateCreated = String(new Date().setMinutes(1, 0, 0));
+
+    if (STORE_CACHE_REDIS[key]) {
+      let index = STORE_CACHE_REDIS[key].findIndex(i => i.post_id == post_id)
+      if (index > -1) STORE_CACHE_REDIS[key][index].view += 1
+      else STORE_CACHE_REDIS[key].push({ post_id, view: 1, dateCreated })
+    } else STORE_CACHE_REDIS[key] = [{ post_id, view: 1, dateCreated }]
+
+    return;
   }
 }

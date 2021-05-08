@@ -2,7 +2,7 @@
     <div class="header-dashboard">
       <transition name="el-fade-in-linear">
         <el-menu :default-active="indexMenu" @select="handleChangeLayout" :collapse="isCollapse">
-           <el-menu-item index="/admin/messages/zxc">
+           <el-menu-item index="/admin/messages/">
             <i class="el-icon-s-comment"></i> 
             <span slot="title">{{lang.messenger}}</span>
           </el-menu-item>
@@ -22,7 +22,7 @@
             <i class="el-icon-warning"></i>
             <span slot="title">{{lang.reports}}</span>
           </el-menu-item>
-          <el-menu-item index="/admin/dashboard/statistics" v-if="myAccount && myAccount.permission >= 2" disabled_>
+          <el-menu-item index="/admin/dashboard/statistics" v-if="myAccount && myAccount.permission >= 2">
             <i class="el-icon-s-data"></i>
             <span slot="title">{{lang.statistic}}</span>
           </el-menu-item>

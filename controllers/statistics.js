@@ -11,10 +11,15 @@ new cron.CronJob({
     start: true,
     timeZone: 'Asia/Ho_Chi_Minh', // Lưu ý set lại time zone cho đúng 
     onTick: async function () {
-        // let { data } = await cacheRedis.getCache({ key: 'statistics' })
+        let { data } = await cacheRedis.getCache({ key: 'statistics' })
+        // for cacheRedis
         // data = data ? JSON.parse(data) : []
-        // data.forEach(item => statistic.create(item));
-        // await cacheRedis.deleteCache({ key: 'statistics' })
+
+        // for Not install cacheRedis
+        data = data || []
+        
+        data.forEach(item => statistic.create(item));
+        await cacheRedis.deleteCache({ key: 'statistics' })
     },
 }).start();
 

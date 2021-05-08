@@ -49,10 +49,10 @@ module.exports = {
     async getInfoUser(req, res) {
         const { id, iat } = req.token
         const { location } = req.query
-        let { error, data } = await user.get({ fields: ['id', 'fullName', 'permission', 'position'], conditions: { id } })
+        let { error, data } = await user.get({ fields: ['id', 'fullName', 'permission', 'position', 'manager_id'], conditions: { id } })
         if (error) return res.send(resFail({ error }))
-        if (location && data[0].position == 'reader') return res.send(resFail())
         if (!data.length) return res.send(resFail({ message: 'logout now' })) // note: logout
+        if (location && data[0].position == 'reader') return res.send(resFail())
         res.send(resSuccess({ data: data[0] }))
     },
 
@@ -100,7 +100,8 @@ module.exports = {
         }
         const { error, data } = await user.create(obj);
         if (error) return res.send(resFail({ error }));
-        res.send(resSuccess({ data }));
+        res.send(`Xác Thực thành công, <a href='http://localhost:8080/home/login'>Bấm vào đây để đăng nhập</a>`);
+        // res.redirect('')
     },
 
     async forgotPassword(req, res) {
@@ -108,5 +109,12 @@ module.exports = {
         let { error, data } = await user.get({ fields: ['id'], conditions: { username: email } })
         if (error) return res.send(resFail({ error }))
         if (data.length) return res.send('Tài khoản Đã tồn tại')
+    },
+
+    // realtime
+    async getUsersInMessenger(dataInput) {
+        let { error, data } = await user.getUsersInMessenger(dataInput)
+        if (error) return { error };
+        return { data }
     }
 }

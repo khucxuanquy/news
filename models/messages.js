@@ -7,7 +7,7 @@ class Messages extends baseModel {
         this.sender_id = ''
         this.receive_id = ''
         this.content = ''
-        this.images = ''
+        this.image = ''
         this.dateCreated = ''
     }
 
@@ -16,7 +16,7 @@ class Messages extends baseModel {
         if (dataInput.sender_id) this.sender_id = String(dataInput.sender_id)
         if (dataInput.receive_id) this.receive_id = String(dataInput.receive_id)
         if (dataInput.content) this.content = String(dataInput.content)
-        if (dataInput.images) this.images = String(dataInput.images)
+        if (dataInput.image) this.image = String(dataInput.image)
         this.dateCreated = +new Date()
     }
 
@@ -26,10 +26,19 @@ class Messages extends baseModel {
         data.sender_id = this.sender_id
         data.receive_id = this.receive_id
         data.content = this.content
-        data.images = this.images
+        data.image = this.image
         data.dateCreated = this.dateCreated
         return data
     }
+
+    // getMessage({ sender_id, receive_id }) {
+    //     // lepwxqbc0u4049ce5731285
+    //     // u0daxxx0t0gimuxgytvlij
+    //     // SELECT * FROM messages WHERE (receive_id='lepwxqbc0u4049ce5731285' OR receive_id='u0daxxx0t0gimuxgytvlij') AND (sender_id='lepwxqbc0u4049ce5731285' OR sender_id='u0daxxx0t0gimuxgytvlij')
+    //     let query = `SELECT * FROM messages WHERE (receive_id='${sender_id}' OR receive_id='${receive_id}') AND (sender_id='${sender_id}' OR sender_id='${receive_id}') `
+    //     query += `ORDER BY dateCreated limit 0,15`
+
+    // }
 
 }
 

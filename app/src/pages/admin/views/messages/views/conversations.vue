@@ -2,9 +2,10 @@
   <div class="conversations">
     <BoxConversation
       :DATA="user"
-      v-for="user in users"
+      v-for="user in friends.filter(i => myAccount.id !== i.id)"
       :key="user.id"
       @click.native="activeBoxMessage(user.id)"
+      :class="user.id === $route.params.id ? 'active' : ''"
     />
   </div>
 </template>
@@ -28,15 +29,18 @@ export default {
   },
   created() {
     this.socket.on("LIST_USERS_ONLINE", (data) => {
-      this.CHANGE_USERS_ONLINE(data);
+      this.CHANGE_FRIENDS_ONLINE(data);
     });
+
+    // this.$route.params.id
+    console.log({params: this.$route.params.id})
   },
   components: {
     BoxConversation,
   },
   methods: {
     ...mapActions({
-      CHANGE_USERS_ONLINE: "_USERS/CHANGE_USERS_ONLINE",
+      CHANGE_FRIENDS_ONLINE: "_MESSAGE/CHANGE_FRIENDS_ONLINE",
     }),
     activeBoxMessage(id) {
       if (!id || this.$route.params.id == id) return;
@@ -45,7 +49,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      users: "_USERS/users",
+      friends: "_MESSAGE/friends",
+      myAccount: "_ACCOUNT/myAccount"
     }),
   },
 };

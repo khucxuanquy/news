@@ -44,7 +44,7 @@ $height_box: 80px;
   user-select: none;
   transition: background .2s cubic-bezier(0.075, 0.82, 0.165, 1);
 
-  &:hover {
+  &.active, &:hover {
     background: #d5e1e1;
     cursor: pointer;
   }

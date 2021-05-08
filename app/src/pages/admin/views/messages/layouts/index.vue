@@ -1,5 +1,5 @@
 <template>
-  <div id="messenger">
+  <div id="messenger" v-if="friends.length">
     <div class="header">
       <router-link to="/admin/dashboard">
         <i class="fas fa-angle-double-left"></i> <span>Trở về dashboard</span>
@@ -13,17 +13,45 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 export default {
   created() {
     let info = JSON.parse(localStorage.getItem("_info"))
     if(info && (!info.hasOwnProperty('id') || !this.myAccount.hasOwnProperty('id'))) return this.$router.push('/admin/login').catch(()=>{});
+
+    if(!this.$route.params.id) {
+      let checkUsers = setInterval(() => {
+        if(this.friends.length) {
+          // new change
+          let id = this.friends.filter(i => this.myAccount.id !== i.id)
+          this.$router.push(id)
+          clearInterval(checkUsers)
+        }
+      }, 150);
+    }
+
+    if(!this.friends.length) {
+      this.socket.on('CLIENT_FRIENDS', data => {
+        this.CHANGE_FRIENDS(data)
+      })
+      this.socket.emit('GET_FRIENDS', {
+        id: this.myAccount.id,
+        permission: this.myAccount.permission,
+        manager_id: this.myAccount.manager_id,
+      })
+    }
+  },
+  methods: {
+    ...mapActions({
+      CHANGE_FRIENDS: '_MESSAGE/CHANGE_FRIENDS',
+    })
   },
   computed: {
     ...mapGetters({
-      myAccount: '_ACCOUNT/myAccount'
+      myAccount: '_ACCOUNT/myAccount',
+      friends: '_MESSAGE/friends'
     })
-  }
+  },
 };
 </script>
 

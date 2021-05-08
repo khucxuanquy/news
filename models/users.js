@@ -52,6 +52,24 @@ class Users extends baseModel {
             this.sql.query(q, (error, data) => resolve({ error, data }))
         })
     }
+
+    async getUsersInMessenger(dataInput) {
+        let { id, permission, manager_id } = dataInput
+        if (!id || !permission || !manager_id) return { error: 'Thiếu trường id, permission hoặc manager_id' };
+        // thieu manager_id
+
+        let query = `SELECT id, avatar, fullName FROM users WHERE NOT position = 'reader' `
+
+        // *) admin : ORDER BY permission 
+        // *) manager : permission =3, manager_id = id,
+        // *) staff: permission = 2, id == manager_id, 
+        if (permission === 2) query += `AND permission = 3 OR manager_id='${id}' `;
+        if (permission === 1) query += `AND permission = 3 OR id='${manager_id}' `
+        query += 'ORDER BY permission DESC'
+        return await new Promise(resolve => {
+            this.sql.query(query, (error, data) => resolve({ error, data }))
+        })
+    }
 }
 
 module.exports = Users

@@ -3,11 +3,18 @@ export default {
   namespaced: true,
   state: {
     conversations: [],
-    boxMessages: []
+    boxMessages: [],
+    friends: [],
+    idsFriendsOnline: []
   },
   getters: {
     conversations: state => state.conversations,
     boxMessages: state => state.boxMessages,
+    idsFriendsOnline: state => state.idsFriendsOnline,
+    friends: state => {
+      if (!state.idsFriendsOnline.length) return state.friends
+      return state.friends.map(i => ({ ...i, status: state.idsFriendsOnline.includes(i.id) ? 'online' : '' }))
+    },
   },
   mutations: {
     CHANGE_CONVERSATIONS(state, conversations) {
@@ -23,7 +30,7 @@ export default {
       if (lastBoxMessage && lastBoxMessage.sender_id === data.sender_id) {
         state.boxMessages[boxMessages.length - 1].messages.push({
           id: data.id,
-          message: data.message,
+          content: data.content,
           dateCreated: data.dateCreated
         })
       }
@@ -33,13 +40,19 @@ export default {
         messages: [
           {
             id: data.id,
-            message: data.message,
+            content: data.content,
             dateCreated: data.dateCreated,
           },
         ],
       })
 
-    }
+    },
+    CHANGE_FRIENDS(state, friends) {
+      state.friends = friends;
+    },
+    CHANGE_FRIENDS_ONLINE(state, idsFriendsOnline) {
+      state.idsFriendsOnline = idsFriendsOnline;
+    },
   },
   actions: {
     CHANGE_CONVERSATIONS({ commit }, data) {
@@ -51,6 +64,11 @@ export default {
     CHAT_NEW_MESSAGE({ commit }, data) {
       commit('CHAT_NEW_MESSAGE', data);
     },
-
+    CHANGE_FRIENDS({ commit }, friends) {
+      commit('CHANGE_FRIENDS', friends);
+    },
+    CHANGE_FRIENDS_ONLINE({ commit }, idsFriendsOnline) {
+      commit('CHANGE_FRIENDS_ONLINE', idsFriendsOnline);
+    }
   }
 }
