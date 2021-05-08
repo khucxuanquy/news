@@ -31,15 +31,21 @@ class Messages extends baseModel {
         return data
     }
 
-    // getMessage({ sender_id, receive_id }) {
-    //     // lepwxqbc0u4049ce5731285
-    //     // u0daxxx0t0gimuxgytvlij
-    //     // SELECT * FROM messages WHERE (receive_id='lepwxqbc0u4049ce5731285' OR receive_id='u0daxxx0t0gimuxgytvlij') AND (sender_id='lepwxqbc0u4049ce5731285' OR sender_id='u0daxxx0t0gimuxgytvlij')
-    //     let query = `SELECT * FROM messages WHERE (receive_id='${sender_id}' OR receive_id='${receive_id}') AND (sender_id='${sender_id}' OR sender_id='${receive_id}') `
-    //     query += `ORDER BY dateCreated limit 0,15`
+    async getMessage({ sender_id, receive_id, from, limit }) {
+        from = from || 0;
+        if (limit && limit > 30) limit = 30
+        limit = limit || 15
+        if (!sender_id || !receive_id) return { error: 'Thiếu trường sender_id hoặc receive_id' };
+        // lepwxqbc0u4049ce5731285
+        // u0daxxx0t0gimuxgytvlij
+        // SELECT * FROM messages WHERE (receive_id='lepwxqbc0u4049ce5731285' OR receive_id='u0daxxx0t0gimuxgytvlij') AND (sender_id='lepwxqbc0u4049ce5731285' OR sender_id='u0daxxx0t0gimuxgytvlij')
+        let query = `SELECT * FROM messages WHERE (receive_id='${sender_id}' OR receive_id='${receive_id}') AND (sender_id='${sender_id}' OR sender_id='${receive_id}') `
+        query += `ORDER BY dateCreated limit ${from},${limit}`
 
-    // }
-
+        return await new Promise(resolve => {
+            this.sql.query(query, (error, data) => resolve({ error, data }))
+        })
+    }
 }
 
 module.exports = Messages

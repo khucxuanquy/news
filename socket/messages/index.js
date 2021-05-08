@@ -1,4 +1,5 @@
-const { yellow, green } = require('../../config/log')
+const { yellow, green } = require('../../config/log');
+const messages = require('../../controllers/messages');
 const message = require('../../controllers/messages')
 /**
  * 
@@ -21,6 +22,13 @@ module.exports = ({ io, socket, idStore }) => {
       // socket.broadcast.emit('message_client', data)
     }
   });
+
+  socket.on('GET_MESSAGES', async dataInput => {
+    let { receive_id, sender_id, from, limit } = dataInput
+    let { error, data } = await message.getMessage({ receive_id, sender_id, from, limit })
+    if (error) return;
+    io.to(socket.id).emit('CLIENT_GET_MESSAGES', data)
+  })
 };
 
 // https://viblo.asia/p/tat-tan-tat-nhung-lenh-emit-trong-socketio-Qbq5Qj8wKD8

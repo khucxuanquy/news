@@ -2,7 +2,7 @@
   <router-view />
 </template>
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import ENUM from "const/api";
 const { USERS } = ENUM;
 
@@ -16,6 +16,11 @@ export default {
     ...mapActions({
       CHANGE_MY_ACCOUNT: "_ACCOUNT/CHANGE_MY_ACCOUNT",
       CHANGE_USERS: "_USERS/CHANGE",
+    }),
+  },
+  computed: {
+    ...mapGetters({
+      idsFriendsOnline: "_MESSAGE/idsFriendsOnline",
     }),
   },
   created() {
@@ -32,6 +37,12 @@ export default {
         this.CHANGE_USERS(data);
       });
     }
+    let checkUsers = setInterval(() => {
+      if (!this.idsFriendsOnline.length) {
+        this.socket.emit("GET_USERS_ONLINE");
+        clearInterval(checkUsers);
+      }
+    }, 1000);
   },
 };
 </script>

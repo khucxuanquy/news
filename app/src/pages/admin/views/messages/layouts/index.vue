@@ -23,7 +23,7 @@ export default {
       let checkUsers = setInterval(() => {
         if(this.friends.length) {
           // new change
-          let id = this.friends.filter(i => this.myAccount.id !== i.id)
+          let id = this.friends.filter(i => this.myAccount.id !== i.id)[0].id
           this.$router.push(id)
           clearInterval(checkUsers)
         }

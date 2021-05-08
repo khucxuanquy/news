@@ -2,7 +2,7 @@
   <div class="conversations">
     <BoxConversation
       :DATA="user"
-      v-for="user in friends.filter(i => myAccount.id !== i.id)"
+      v-for="user in friends.filter((i) => myAccount.id !== i.id)"
       :key="user.id"
       @click.native="activeBoxMessage(user.id)"
       :class="user.id === $route.params.id ? 'active' : ''"
@@ -29,11 +29,12 @@ export default {
   },
   created() {
     this.socket.on("LIST_USERS_ONLINE", (data) => {
+      console.log(32, data)
       this.CHANGE_FRIENDS_ONLINE(data);
     });
 
     // this.$route.params.id
-    console.log({params: this.$route.params.id})
+    console.log({ params: this.$route.params.id });
   },
   components: {
     BoxConversation,
@@ -50,7 +51,7 @@ export default {
   computed: {
     ...mapGetters({
       friends: "_MESSAGE/friends",
-      myAccount: "_ACCOUNT/myAccount"
+      myAccount: "_ACCOUNT/myAccount",
     }),
   },
 };

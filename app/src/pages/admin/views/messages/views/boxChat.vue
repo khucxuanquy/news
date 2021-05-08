@@ -65,7 +65,8 @@ export default {
     };
   },
   created() {
-    this.currentReceiveId = this.$route.params.id
+    let { id } = this.$route.params
+    this.currentReceiveId = id
     // group messages
     let data = []
     let newData = this.groupMessagesBeforeSaveToStore(data)
@@ -74,6 +75,18 @@ export default {
       this.CHAT_NEW_MESSAGE(data)
       this.$nextTick(()=> this.scrollIntoView())
     })
+    this.socket.on('CLIENT_GET_MESSAGES', data => {
+      let newData = this.groupMessagesBeforeSaveToStore(data)
+      this.CHANGE_MESSAGES(newData);
+    })
+      
+    if(this.friends.length) {
+      let index = this.friends.findIndex(user => user.id === id)
+      if(index > -1) {
+        this.getMessages()
+      } else this.$router.push('/admin/messages')
+      
+    }
   },
   methods: {
     ...mapActions({
@@ -144,6 +157,15 @@ export default {
       //   lastMessage.scrollIntoView()
       // }
       
+    },
+    getMessages(){
+      let d = {
+        sender_id:  this.myAccount.id,
+        receive_id: this.currentReceiveId,
+        fron: 0,
+        limit: 15
+      }
+      this.socket.emit('GET_MESSAGES', d)
     }
   },
   mounted() {

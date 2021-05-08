@@ -44,24 +44,21 @@ registerModule().then(async () => {
     socket = await io('http://localhost:3000');
     socket.on("connect", () => {
       if (user_info && user_info.id) {
-        socket.emit("user_connected", {
+        socket.emit("USER_CONNECTED", {
           id: user_info.id,
           manager_id: user_info.manager_id,
           socketId: socket.id,
         });
-        socket.emit('GET_USERS_ONLINE', true)
       }
-
     });
 
     window.onbeforeunload = function () {
       if (user_info && user_info.id) {
-        socket.emit("user_disconnected", {
+        socket.emit("USER_DISCONNECTED", {
           id: user_info.id,
           manager_id: user_info.manager_id,
           socketId: socket.id,
         });
-
         socket.emit('GET_USERS_ONLINE')
       }
     }

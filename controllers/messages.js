@@ -13,9 +13,7 @@ module.exports = {
     async delete(id) {
         return await message.delete(id)
     },
-    // async getAllCategories(req) {
-    //     let { error, data } = await message.getAllCategories()
-    //     if (error) return resFail({ error })
-    //     return resSuccess({ data: data })
-    // },
+    async getMessage(dataInput) {
+        return await message.getMessage(dataInput)
+    },
 }
