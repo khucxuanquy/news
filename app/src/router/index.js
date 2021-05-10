@@ -49,6 +49,7 @@ const ALL_ROUTER = [
     // home login
     {
         path: '/home',
+        component: () => import('../pages/login/homepage/layout'),
         hidden: true,
         children: [
             {
@@ -74,7 +75,7 @@ const ALL_ROUTER = [
             },
             {
                 path: 'resetPassword/:id',
-                component: () => import('../pages/login/homepage/forgotPassword.vue'),
+                component: () => import('../pages/login/homepage/resetPassword.vue'),
                 meta: {
                     title: 'Tạo mật khẩu mới'
                 }

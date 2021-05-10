@@ -1,7 +1,11 @@
 <template>
   <div class="login container">
     <div class="logo">
-      <img src="https://laptrinhmaytinh.com/assets/images/logo_lg.png" class="rounded" alt="logo" />
+      <img
+        src="https://laptrinhmaytinh.com/assets/images/logo_lg.png"
+        class="rounded"
+        alt="logo"
+      />
     </div>
     <h3>Đăng nhập</h3>
     <div class="input-group mb-3">
@@ -45,6 +49,7 @@
 </template>
 
 <script>
+import ENUM from "const/api";
 
 export default {
   data() {
@@ -77,11 +82,20 @@ export default {
       }
     },
     loginToPage() {
-      if (this.validate()) {
-        console.log("success");
-      } else {
-        console.log("false");
-      }
+      let d = {
+        username: "conankun7012@gmail.com",
+        password: "conanA@",
+      };
+      this.postAPI(ENUM.USERS.LOGIN, d, (response) => {
+        console.log(response);
+        localStorage.setItem("_u", response.toke);
+      });
+
+      // if (this.validate()) {
+
+      // } else {
+      //   console.log("false");
+      // }
     },
   },
 };

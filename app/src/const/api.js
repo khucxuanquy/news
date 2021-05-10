@@ -39,7 +39,10 @@ export default {
         LOGOUT: URL + 'users/logout',
         CHECK_LOGIN : URL + 'users/checkLogin',
         GET_ALL: URL + 'users/getUsersByPermission',
-        GET_INFO_USER: URL + 'users/getInfoUser'
+        GET_INFO_USER: URL + 'users/getInfoUser',
+        
+        REGISTER: URL + 'users/register',
+        FORGOT_PASSWORD: URL + 'users/forgotPassword',
     },
     STATISTICS: {
         GET: URL + 'statistics/getStatistics',
