@@ -74,7 +74,7 @@ const ALL_ROUTER = [
                 }
             },
             {
-                path: 'resetPassword/:id',
+                path: 'resetPassword/:token',
                 component: () => import('../pages/login/homepage/resetPassword.vue'),
                 meta: {
                     title: 'Tạo mật khẩu mới'

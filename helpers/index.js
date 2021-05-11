@@ -14,6 +14,11 @@ const EMAIL = 'smartnewsqtd@gmail.com',
   ONE_MONTH = 4 * ONE_WEEK,
   ONE_YEAR = 12 * ONE_MONTH;
 
+  const template = {
+    register: '',
+    forgotPassword: ''
+  }
+
 module.exports = {
   isImage: /gif|jpg|jpeg|png|tiff|webp|psd|svg+/gi,
   FIFTEEN_MINUTES,
@@ -152,11 +157,33 @@ module.exports = {
     return await transporter.sendMail({
       from: EMAIL,
       to: email,
-      subject: "Xác thực tài khoản | Smart News", // title
+      subject: "Xác thực tài khoản | Tech News", // title
       html: `<a href='http://localhost:3000/API/users/verify?token=${token}'> bấm vào đây để xác thực tài khoản </a>`, // content = html
+    })
+  },
+  async sendToEmailToChangePassword({ email, token }) {
+    let transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com", // default
+      port: 587, // default
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: EMAIL,
+        pass: PASSWORD,
+      },
+    })
+    return await transporter.sendMail({
+      from: EMAIL,
+      to: email,
+      subject: "Thay đổi mật khẩu | Smart News", // title
+      html: `<a href='http://localhost:8080/home/resetpassword/${token}'> bấm vào đây để đổi mật khẩu </a>`, // content = html
     })
   },
   hashPassword(password) {
     return md5(password)
+  },
+  checkTypeEmail(email) {
+    if(!email) return false;
+    let regex = /^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/
+    return regex.test(email.trim())
   }
 }

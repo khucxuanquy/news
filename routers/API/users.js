@@ -10,6 +10,8 @@ router.get('/getInfoUser', verifyToken, user.getInfoUser)
 router.get('/getUsersByPermission', verifyToken, user.getUsersByPermission)
 
 router.get('/verify', user.verify)
+router.get('/verifyForgotPassword', user.verifyForgotPassword)
+router.post('/changePassword', user.changePassword)
 router.post('/forgotPassword', user.forgotPassword)
 router.post('/register', user.register)
 router.post('/login', user.login)

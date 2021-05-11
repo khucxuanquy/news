@@ -43,6 +43,8 @@ export default {
         
         REGISTER: URL + 'users/register',
         FORGOT_PASSWORD: URL + 'users/forgotPassword',
+        VERIFY_FORGOT_PASSWORD: URL + 'users/verifyForgotPassword',
+        CHANGE_PASSWORD: URL + 'users/changePassword',
     },
     STATISTICS: {
         GET: URL + 'statistics/getStatistics',

@@ -1,5 +1,5 @@
 <template>
-  <div class="box-chat">
+  <div class="box-chat" v-loading.fullscreen.lock="isLoading">
     <div class="header">
       <div>
         <img class="avatar" src="https://news.laptrinhmaytinh.com/static/images/logo.png">
@@ -13,10 +13,11 @@
     </div>
     <div class="chat-view">
       <div class="messages-container">
+        <div id="ScrollPositionTop"></div>
         <div
           v-for="item in boxMessages"
           :key="item.id"
-          :class="item.sender_id == myAccount.id ? 'me' : ''"
+          :class="setClassNameForChatItem(item)"
           class="chat-item"
         >
           <div class="avatar"><img :src="item.avatar || Logo" /></div>
@@ -61,43 +62,53 @@ export default {
       content: "",
       Logo,
       currentHeight: 0,
-      currentReceiveId: null
+      currentReceiveId: null, // id người nhận tin nhắn
+      from: 0,
+      limit: 20,
+      isLoading: false,
+      maxMessages: false, // check xem đã lấy hết message trong DB chưa
+
+
+      scrollHeight: null,
+      scrollTop: null,
     };
   },
   created() {
     let { id } = this.$route.params
     this.currentReceiveId = id
     // group messages
-    let data = []
-    let newData = this.groupMessagesBeforeSaveToStore(data)
-    this.CHANGE_MESSAGES(newData);
     this.socket.on('CLIENT_RECEIVE_MESSAGE', data => {
       this.CHAT_NEW_MESSAGE(data)
-      this.$nextTick(()=> this.scrollIntoView())
+      this.$nextTick(()=> this.scrollToBottom())
     })
     this.socket.on('CLIENT_GET_MESSAGES', data => {
-      let newData = this.groupMessagesBeforeSaveToStore(data)
-      this.CHANGE_MESSAGES(newData);
+      if(data.length < this.limit) this.maxMessages = true;
+      data = data.reverse()
+      // neu from !== 0 tuc la load New Messages
+      this[!this.from ? 'CHANGE_MESSAGES' : 'PUSH_MESSAGES_AFTER_GET'](this.groupMessagesBeforeSaveToStore(data))
+      if(!this.from) this.$nextTick(() => this.scrollToBottom())
+      this.$nextTick(() => this.tickToScroll())
+      this.isLoading = false
     })
       
     if(this.friends.length) {
       let index = this.friends.findIndex(user => user.id === id)
       if(index > -1) {
+        this.isLoading = true
         this.getMessages()
-      } else this.$router.push('/admin/messages')
-      
+      } else this.$router.push('/admin/dashboard')
     }
   },
   methods: {
     ...mapActions({
       CHANGE_CONVERSATIONS: "_MESSAGE/CHANGE_CONVERSATIONS",
       CHANGE_MESSAGES: "_MESSAGE/CHANGE_MESSAGES",
-      CHAT_NEW_MESSAGE: "_MESSAGE/CHAT_NEW_MESSAGE"
+      CHAT_NEW_MESSAGE: "_MESSAGE/CHAT_NEW_MESSAGE",
+      PUSH_MESSAGES_AFTER_GET: "_MESSAGE/PUSH_MESSAGES_AFTER_GET"
     }),
     submit() {
       if(!this.content) return;
       let data = {
-        id: Math.random().toString(36).slice(2),
         sender_id: this.myAccount.id,
         receive_id: this.currentReceiveId,
         content: this.content,
@@ -105,7 +116,6 @@ export default {
       }
       // this.CHAT_NEW_MESSAGE(data)
       this.socket.emit('SEND_MESSAGE', data)
-      this.$nextTick(()=> this.scrollIntoView())
       setTimeout(() => (this.content = ""), 0);
     },
     test(e) {
@@ -119,7 +129,6 @@ export default {
         newData.push({
           sender_id: data[i].sender_id,
           receive_id: data[i].receive_id,
-          avatar: data[i].avatar,
           messages: [
             {
               id: data[i].id,
@@ -133,42 +142,73 @@ export default {
           newData[newData.length - 1].messages.push({
             id: data[i + 1].id,
             content: data[i + 1].content,
+            dateCreated: data[i + 1].dateCreated,
           });
-          let temp = null;
-          for (let j = i + 1; j < data.length - 1; j++) {
+          let temp = i + 1; // fix for loop
+          for (let j = i + 1; j < data.length; j++) {
             temp = j;
             if (data[j + 1] && data[j].sender_id === data[j + 1].sender_id) {
               newData[newData.length - 1].messages.push({
-                id: data[i + 1].id,
-                content: data[i + 1].content,
-                dateCreated: data[i + 1].dateCreated,
+                id: data[j + 1].id,
+                content: data[j + 1].content,
+                dateCreated: data[j + 1].dateCreated,
               });
             } else break;
           }
           i = temp;
         }
       }
+      // if(newData.length) newData[newData.length - 1].tick = true;
       return newData;
     },
-    scrollIntoView(){
+    scrollToBottom(){
       // let position_messageContainer = document.querySelector(".messages-container").getBoundingClientRect()
+      document.querySelector("#ScrollToThis").scrollIntoView()
       // let lastMessage = document.querySelector(".messages-container>div").lastChild.lastChild
       // if((lastMessage.getBoundingClientRect().bottom - position_messageContainer.height/2) < position_messageContainer.bottom) {
       //   lastMessage.scrollIntoView()
       // }
-      
     },
     getMessages(){
+      if(this.maxMessages) return;
       let d = {
-        sender_id:  this.myAccount.id,
+        sender_id: this.myAccount.id,
         receive_id: this.currentReceiveId,
-        fron: 0,
-        limit: 15
+        from: this.from * this.limit,
+        limit: this.limit
       }
       this.socket.emit('GET_MESSAGES', d)
+    },
+    LoadNewData(){
+      if(this.maxMessages) return;
+      this.from += 1;
+      let { scrollHeight, scrollTop } = document.querySelector('.messages-container')
+      this.scrollHeight = scrollHeight
+      this.scrollTop = scrollTop
+      this.getMessages()
+    },
+    tickToScroll(){
+      if(this.from) {
+        let container = document.querySelector('.messages-container')
+        container.scrollTop = container.scrollHeight - this.scrollHeight + this.scrollTop
+        // let tickPoint = document.querySelector('.messages-container>.tick')
+        // tickPoint.scrollIntoView({ behavior: 'smooth' })
+      }
+    },
+    setClassNameForChatItem(item){
+      let className = '';
+      if(!item) return className;
+      if(item.sender_id == this.myAccount.id) className += 'me';
+      return className;
     }
   },
   mounted() {
+    let container = document.querySelector('.messages-container')
+    let debounce_timer;
+    container.addEventListener('scroll', () => {
+      if (debounce_timer) clearTimeout(debounce_timer);
+      debounce_timer = setTimeout(() => container.scrollTop < 120 ? this.LoadNewData() : '', 20);
+    })
     // let textarea = document.querySelector('.input-chat__textarea>textarea')
     // let height_div = document.querySelector('.hiddenDiv').getBoundingClientRect().height
     // textarea.style.height = height_div + 'px'
@@ -189,8 +229,11 @@ export default {
   watch: {
     '$route.params': function({ id }) {
       this.currentReceiveId = id
-      console.log(id)
-      // console.log(this.currentReceiveId)
+      this.isLoading = true
+      // reset
+      this.maxMessages = false
+      this.from = 0;
+      this.getMessages()
     },
   },
 };

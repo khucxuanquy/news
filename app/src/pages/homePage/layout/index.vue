@@ -24,6 +24,10 @@ export default {
     Footer,
   },
   created() {
+    let _user = localStorage.getItem("_user");
+    _user = JSON.parse(_user);
+    this.CHANGE_USER_INFO(_user);
+
     var recognition = new webkitSpeechRecognition(); // khoi tao
     recognition.continuous = true; // tiếp tục nghe hay tắt sau khi nghe tiếp âm thanh
     recognition.interimResults = false; // đặt cho phép có kết quả tạm thời hay không
@@ -67,6 +71,7 @@ export default {
   methods: {
     ...mapActions({
       CHANGE_MY_ACCOUNT: '_ACCOUNT/CHANGE_MY_ACCOUNT',
+      CHANGE_USER_INFO: '_HOMEPAGE/CHANGE_USER_INFO'
     }),
     CHANGE_CATEGORIES(data) {
       this.storeVue('_CATEGORIES').dispatch('CHANGE', data);

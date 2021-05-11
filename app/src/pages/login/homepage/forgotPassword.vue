@@ -35,6 +35,8 @@
 </template>
 
 <script>
+import ENUM from 'const/api'
+const { USERS } = ENUM
 export default {
   data() {
     return {
@@ -54,9 +56,14 @@ export default {
     },
     sendToEmail() {
       if (this.validateValue()) {
-        console.log("success");
+        this.postAPI(USERS.FORGOT_PASSWORD, { email: this.email }, res => {
+          let { ok, message } = res
+          if(!ok) return this.$message({ message, type: 'warnig' })
+          this.$message({ message, type: 'success' })
+        })
+
       } else {
-        console.log("false");
+        this.$message({ message: 'invalid validate form', type: "warning" });
       }
     },
   },

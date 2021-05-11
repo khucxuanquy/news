@@ -1,5 +1,5 @@
 <template>
-  <div class="login container">
+  <div class="login container" >
     <div class="logo">
       <img
         src="https://laptrinhmaytinh.com/assets/images/logo_lg.png"
@@ -42,8 +42,8 @@
       </button>
     </div>
     <div class="d-flex justify-content-between my-2">
-      <a href="#">Quên mật khẩu</a>
-      <a href="#">Đăng kí</a>
+      <router-link to="/home/forgotPassword">Quên mật khẩu</router-link>
+      <router-link to="/home/register">Đăng kí</router-link>
     </div>
   </div>
 </template>
@@ -82,20 +82,21 @@ export default {
       }
     },
     loginToPage() {
-      let d = {
-        username: "conankun7012@gmail.com",
-        password: "conanA@",
-      };
-      this.postAPI(ENUM.USERS.LOGIN, d, (response) => {
-        console.log(response);
-        localStorage.setItem("_u", response.toke);
-      });
-
-      // if (this.validate()) {
-
-      // } else {
-      //   console.log("false");
-      // }
+      if (this.validate()) {
+        let d = {
+          username: this.userGmail, // "conankun7012@gmail.com",
+          password: this.userPassword, // "conanA@",
+        };
+        this.postAPI(ENUM.USERS.LOGIN, d, response => {
+          let { ok, message, token } = response
+          if(!ok)return this.$message({ message: 'Đăng nhập không thành công', type: 'warning' })
+          this.$message({ message, type: 'success' })
+          localStorage.setItem("_u", token);
+          location.pathname = ''
+        });
+      } else {
+        this.$message({ message: 'invalid validate form', type: "warning" });
+      }
     },
   },
 };
@@ -108,6 +109,11 @@ export default {
   border: thin solid #ebeef5;
   box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
   background-color: #fff;
+
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%,-50%);
 }
 .login > * {
   padding: 5px;

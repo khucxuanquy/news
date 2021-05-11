@@ -29,12 +29,10 @@ export default {
   },
   created() {
     this.socket.on("LIST_USERS_ONLINE", (data) => {
-      console.log(32, data)
       this.CHANGE_FRIENDS_ONLINE(data);
     });
 
     // this.$route.params.id
-    console.log({ params: this.$route.params.id });
   },
   components: {
     BoxConversation,

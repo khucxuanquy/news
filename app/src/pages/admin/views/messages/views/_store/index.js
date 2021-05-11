@@ -23,6 +23,9 @@ export default {
     CHANGE_MESSAGES(state, boxMessages) {
       state.boxMessages = boxMessages;
     },
+    PUSH_MESSAGES_AFTER_GET(state, boxMessages){
+      state.boxMessages.unshift(...boxMessages);
+    },
     CHAT_NEW_MESSAGE(state, data) {
       let { boxMessages } = state
       const lastBoxMessage = boxMessages[boxMessages.length - 1]
@@ -69,6 +72,9 @@ export default {
     },
     CHANGE_FRIENDS_ONLINE({ commit }, idsFriendsOnline) {
       commit('CHANGE_FRIENDS_ONLINE', idsFriendsOnline);
-    }
+    },
+    PUSH_MESSAGES_AFTER_GET({ commit }, data) {
+      commit('PUSH_MESSAGES_AFTER_GET', data);
+    },
   }
 }

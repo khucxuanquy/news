@@ -17,7 +17,7 @@
         required
         type="text"
         class="form-control"
-        placeholder="Tên tài khoản"
+        placeholder="Họ và Tên"
         aria-label="User name"
         aria-describedby="basic-addon1"
       />
@@ -83,7 +83,7 @@
       </button>
     </div>
     <div class="d-flex justify-content-center">
-      <a href="#">Đã có tài khoản</a>
+      <router-link to="/home/login">Đã có tài khoản</router-link>
     </div>
   </div>
 </template>
@@ -172,26 +172,25 @@ export default {
       return false;
     },
     RegisterToPage() {
-      let d = {
-        email: "conankun7012@gmail.com",
-        fullName: "conan",
-        password: "conanA@",
-        rePassword: "conanA@",
-      };
-      // conankun7012@gmail.com
-      this.postAPI(ENUM.USERS.REGISTER, d, (response) => {
-        console.log(response);
-      });
-      // if(this.validate()){
-      // console.log("success")
-      //    this.postData()
+      if(this.validate()){
+        let d = {
+          email: this.userGmail,
+          fullName: this.userName,
+          password: this.userPassword,
+          rePassword: this.userRePassword,
+        };
 
-      // }
-      // else{
-      //     console.log("false")
-      // }
+        this.postAPI(ENUM.USERS.REGISTER, d, (response) => {
+          let { ok, message } = response
+          if(!ok) return this.$message({ type: 'warning', message })
+          this.$message({ type: 'warning', message, duration: 5000 })
+          this.$route.push('/')
+        });
+      }
+      else {
+        this.$message({ message: 'invalid validate form', type: "warning" });
+      }
     },
-    postData() {},
   },
 };
 </script>
@@ -203,6 +202,11 @@ export default {
   border: thin solid #ebeef5;
   box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
   background-color: #fff;
+
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%,-40%);
 }
 .register > * {
   padding: 5px;
