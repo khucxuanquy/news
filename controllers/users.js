@@ -1,5 +1,5 @@
 const Users = require('../models/users')
-const FIELDS = ['id', 'fullName', 'manager_id', 'permission', 'username', 'dateCreated'].join()
+const FIELDS = ['id', 'fullName', 'avatar', 'manager_id', 'permission', 'username', 'dateCreated'].join()
 const { signToken, resFail, resSuccess, randomId, sendToEmailToVerifyAccount, decodeToken, FIFTEEN_MINUTES, hashPassword, checkTypeEmail, sendToEmailToChangePassword, ONE_DAY } = require('../helpers')
 const { l } = require('../config')
 const user = new Users()
@@ -38,7 +38,7 @@ module.exports = {
         // get all user with conditions username, password
         let { error, data } = await user.get({ fields: ['id', 'permission', 'position'], conditions: { username, password: hashPassword(password) } })
         if (error) return res.send(resFail({ error }))
-        if (!data.length) return res.send('Tài khoản không tồn tại') // note: logout
+        if (!data.length) return res.send({ message: 'Tài khoản không tồn tại' }) // note: logout
         // encode token
         const { id, permission, position } = data[0]
         if (admin && position === 'reader') return res.send(resFail({ message: 'Bạn không có quyền truy cập' }))

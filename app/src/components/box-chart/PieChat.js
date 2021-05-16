@@ -2,7 +2,14 @@ const colors = ['#6df8f1', '#f86e7d', '#f8ae6f', '#f6eb81', '#d780f5', '#80f58a'
 import { Pie } from 'vue-chartjs'
 export default {
   extends: Pie,
-  props: ['DATA'],
+  props: {
+    DATA: {
+      type: Object
+    },
+    title: {
+      type: String
+    }
+  },
   data() {
     return {
       options: {
@@ -20,6 +27,10 @@ export default {
     }
   },
   mounted() {
+    if (this.title) this.options.title = {
+      display: true,
+      text: this.title
+    }
     let dataBefore = JSON.parse(JSON.stringify(this.DATA))
     let config = {
       borderColor: 'white',

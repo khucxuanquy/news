@@ -9,13 +9,15 @@ export default {
             topEmployeesInWeek: [],
             topEmployeesInMonth: [],
         },
-        categoryMostInterest: [],
+        categoryMostInterest: null,
+        statisticCategories: null,
         viewsByDatePicker: null
     },
     getters: {
         overview: state => state.overview,
         categoryMostInterest: state => state.categoryMostInterest,
         viewsByDatePicker: state => state.viewsByDatePicker,
+        statisticCategories: state => state.statisticCategories,
     },
     mutations: {
         CHANGE_OVERVIEW(state, overview) {
@@ -27,6 +29,9 @@ export default {
         CHANGE_VIEWS_BY_DATE_PICKER(state, viewsByDatePicker) {
             state.viewsByDatePicker = viewsByDatePicker;
         },
+        CHANGE_STATISTIC_CATEGORIES(state, statisticCategories) {
+            state.statisticCategories = statisticCategories;
+        },
     },
     actions: {
         CHANGE_OVERVIEW({ commit }, overview) {
@@ -37,6 +42,9 @@ export default {
         },
         CHANGE_VIEWS_BY_DATE_PICKER({ commit }, viewsByDatePicker) {
             commit('CHANGE_VIEWS_BY_DATE_PICKER', viewsByDatePicker);
+        },
+        CHANGE_STATISTIC_CATEGORIES({ commit }, statisticCategories) {
+            commit('CHANGE_STATISTIC_CATEGORIES', statisticCategories);
         },
     }
 }

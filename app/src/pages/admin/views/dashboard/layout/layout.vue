@@ -3,7 +3,7 @@
     <Header :isCollapse="isCollapse"></Header>
     <div class="main-dashboard">
       <div class="topbar">
-        <h5 style="margin: 0" @click="handleCollapseNavbar()">
+        <h5 style="margin: 0; cursor: pointer;" @click="handleCollapseNavbar()">
           <i class="el-icon-more-outline"></i>
         </h5>
         <div style="margin-right: 1rem">
@@ -23,7 +23,6 @@
               </el-dropdown-menu>
           </el-dropdown>
         </div>
-
       </div>
       <router-view />
     </div>

@@ -26,7 +26,8 @@ export default {
   created() {
     let _user = localStorage.getItem("_user");
     _user = JSON.parse(_user);
-    this.CHANGE_USER_INFO(_user);
+    if(_user) this.CHANGE_USER_INFO(_user);
+    
 
     var recognition = new webkitSpeechRecognition(); // khoi tao
     recognition.continuous = true; // tiếp tục nghe hay tắt sau khi nghe tiếp âm thanh

@@ -22,7 +22,7 @@
             <i class="el-icon-warning"></i>
             <span slot="title">{{lang.reports}}</span>
           </el-menu-item>
-          <el-menu-item index="/admin/dashboard/statistics" v-if="myAccount && myAccount.permission >= 2">
+          <el-menu-item index="/admin/dashboard/statistics" v-if="myAccount && myAccount.permission >= 3">
             <i class="el-icon-s-data"></i>
             <span slot="title">{{lang.statistic}}</span>
           </el-menu-item>
@@ -72,6 +72,7 @@
     height: 100vh;
     .el-menu {
       height: 100vh;
+      overflow-y: auto;
       // padding-top: 2rem;
     }
   }

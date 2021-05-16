@@ -2,7 +2,7 @@
   <div class="box-chat" v-loading.fullscreen.lock="isLoading">
     <div class="header">
       <div>
-        <img class="avatar" src="https://news.laptrinhmaytinh.com/static/images/logo.png">
+        <img class="avatar" src="http://localhost:3000/static/images/avatar-default.jpg">
           <strong> {{currentUser.fullName}} </strong>
       </div>
       <div>
@@ -20,7 +20,7 @@
           :class="setClassNameForChatItem(item)"
           class="chat-item"
         >
-          <div class="avatar"><img :src="item.avatar || Logo" /></div>
+          <div class="avatar"><img :src="item.avatar || 'http://localhost:3000/static/images/avatar-default.jpg'" /></div>
           <div class="chat-content">
             <p class="text" v-for="m in item.messages" :key="m.id">
               <span>{{ m.content }}</span>
@@ -54,13 +54,11 @@
 </template>
 
 <script>
-import Logo from "assets/logo.png";
 import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
       content: "",
-      Logo,
       currentHeight: 0,
       currentReceiveId: null, // id người nhận tin nhắn
       from: 0,
@@ -240,6 +238,11 @@ export default {
 </script>
 
 <style lang="scss">
+@mixin text-gradient {
+  color: transparent;
+  background-image: linear-gradient(45deg, #2ed8b6, #59e0c5);
+  -webkit-background-clip: text;
+}
 .box-chat {
   width: 100%;
   height: 100%;
@@ -270,7 +273,7 @@ export default {
     .messages-container {
       overflow-y: auto;
       height: calc(100vh - 180px);
-      background: #cecece;
+      background: #eee;
       padding-bottom: 10px;
 
       &::-webkit-scrollbar {
@@ -312,7 +315,8 @@ export default {
               position: relative;
               padding: 6px 8px;
               border-radius: 6px;
-              background: #eee;
+              background: whitesmoke;
+              box-shadow: #0000001a 0px 0px 20px;
             }
           }
         }

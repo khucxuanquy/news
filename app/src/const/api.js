@@ -48,6 +48,7 @@ export default {
     },
     STATISTICS: {
         GET: URL + 'statistics/getStatistics',
-        GET_BY_DATE_PICKER: URL + 'statistics/getByDatePicker'
+        GET_BY_DATE_PICKER: URL + 'statistics/getByDatePicker',
+        STATISTIC_CATEGORY: URL + 'statistics/statisticCategories'
     }
 }

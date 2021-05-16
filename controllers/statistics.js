@@ -17,7 +17,7 @@ new cron.CronJob({
 
         // for Not install cacheRedis
         data = data || []
-        
+
         data.forEach(item => statistic.create(item));
         await cacheRedis.deleteCache({ key: 'statistics' })
     },
@@ -37,6 +37,11 @@ module.exports = {
     },
     async getByDatePicker(req, res) {
         let { error, data } = await statistic.getByDatePicker(req.query)
+        if (error) return res.send(resFail({ error }))
+        res.send(resSuccess({ data }))
+    },
+    async statisticCategories(req, res) {
+        let { error, data } = await statistic.statisticCategories(req.query)
         if (error) return res.send(resFail({ error }))
         res.send(resSuccess({ data }))
     },

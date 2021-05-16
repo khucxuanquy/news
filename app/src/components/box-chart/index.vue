@@ -1,8 +1,8 @@
 <template>
-  <LineChart v-if="typeChart.toLowerCase() == 'line'" :DATA="DATA" />
-  <PieChat v-else-if="typeChart.toLowerCase() == 'pie'" :DATA="DATA" />
-  <BarChart v-else-if="typeChart.toLowerCase() == 'bar'" :DATA="DATA" />
-  <HorizontalBarChart v-else :DATA="DATA" />
+  <LineChart v-if="typeChart.toLowerCase() == 'line'" :DATA="DATA" :title="title" />
+  <PieChat v-else-if="typeChart.toLowerCase() == 'pie'" :DATA="DATA" :title="title" />
+  <BarChart v-else-if="typeChart.toLowerCase() == 'bar'" :DATA="DATA" :title="title" />
+  <HorizontalBarChart v-else :DATA="DATA" :title="title" />
 </template>
 
 <script>
@@ -24,6 +24,10 @@ export default {
     },
     DATA: {
       type: Object,
+    },
+    title : {
+      type: String,
+      default: ''
     }
   },
 };

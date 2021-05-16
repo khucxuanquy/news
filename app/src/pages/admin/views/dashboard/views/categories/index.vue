@@ -1,5 +1,5 @@
 <template>
-  <div id="categories-dashboard" v-if="visiabled">
+  <div id="categories-dashboard" v-if="visiable">
     <el-card class="box-card" style="width: 100%" :style="{ 'maxWidth' : openForm ? '400px' : '300px' }">
       <el-button v-if="!openForm" type="primary" @click="openForm = true" plain>{{lang.addNewCategories}}</el-button>
       <div v-else>
@@ -42,15 +42,16 @@ export default {
       },
       openForm: false,
       isEditRow: false,
-      visiabled: false
+      visiable: false
     }
   },
   components: { ManagerCategories },
   beforeCreate() {
     if(!localStorage.getItem('_u')) return this.$router.push('/admin/login').catch(()=>{});
   },
-  created(){
-    if(this.myAccount.permission >= 2) this.visiabled = true
+  created() {
+    if(this.myAccount.permission <= 2) return this.$router.push('/admin/dashboard')
+    else this.visiable = true;
   },
   methods: {
     ...mapActions({
