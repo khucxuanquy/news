@@ -59,10 +59,10 @@ create table comments (
     id varchar(40) not null primary key,
     post_id varchar(40) not null,
     user_id varchar(40) not null,
-    reaction varchar(15) not null,          -- like
-    reply_id_comment varchar(40) not null,  -- id_comment reply
-    position varchar(10) not null,          -- parent ~ child
-    amount_child_comment Int(5) not null,   -- số lượng comment reply (chỉ áp dụng cho comment paren)
+    reaction INT(5) not null,         
+    reply_id_comment varchar(40) not null, 
+    position INT(1) not null,         
+    amount_child_comment Int(5) not null,  
     content text,
     dateCreated varchar(13)
 );

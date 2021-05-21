@@ -7,17 +7,19 @@ const { ACCESS_TOKEN_SECRET } = process.env
 const SLASH = '/'
 const EMAIL = 'smartnewsqtd@gmail.com',
   PASSWORD = 'A123h456C',
-  FIFTEEN_MINUTES = 15 * 60 * 1000,
+  ONE_MIN = 60 * 1000,
+  FIFTEEN_MINUTES = 15 * ONE_MIN,
   ONE_HOUR = FIFTEEN_MINUTES * 4,
   ONE_DAY = 24 * ONE_HOUR,
   ONE_WEEK = 7 * ONE_DAY,
   ONE_MONTH = 4 * ONE_WEEK,
   ONE_YEAR = 12 * ONE_MONTH;
 
-  const template = {
-    register: '',
-    forgotPassword: ''
-  }
+const _MONTHS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => 'Tháng ' + i)
+const template = {
+  register: '',
+  forgotPassword: ''
+}
 
 module.exports = {
   isImage: /gif|jpg|jpeg|png|tiff|webp|psd|svg+/gi,
@@ -182,8 +184,30 @@ module.exports = {
     return md5(password)
   },
   checkTypeEmail(email) {
-    if(!email) return false;
+    if (!email) return false;
     let regex = /^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/
     return regex.test(email.trim())
-  }
+  },
+  convertDateTimeline(timestamp) {
+    if (!timestamp) return;
+    let now = new Date(),
+      time = Math.floor((+now - (Number(timestamp) || 0)) / 1000)
+    // time = Math.floor((+now - (Number(timestamp) || 0)) / 1000)
+
+    if (time < (ONE_MIN / 1000)) return '1 phút trước'
+    if (time < (ONE_HOUR / 1000)) return Math.floor(time / (ONE_MIN / 1000)) + ' phút trước'
+    if (time < (ONE_DAY / 1000)) return Math.floor(time / (ONE_HOUR / 1000)) + ' giờ trước'
+
+    let d = new Date(timestamp),
+      mins = d.getMinutes(),
+      hour = d.getHours(),
+      date = d.getDate(),
+      month = d.getMonth(),
+      year = d.getFullYear(),
+      m = _MONTHS[month];
+    if (time < (ONE_DAY / 1000) * 2) return 'Hôm qua, ' + hour + ':' + mins
+    let showDateMonth = date + ' ' + m // 11 thang 4
+    if (time >= (ONE_DAY / 1000) * 2 && d.getFullYear() == now.getFullYear()) return showDateMonth
+    else return showDateMonth + ', ' + year
+  },
 }

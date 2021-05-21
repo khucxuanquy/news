@@ -2,12 +2,12 @@
   <div id="homePage">
     <el-main>
         <section class="container new-feed">
-          <el-row type="flex" justify="space-between">
-            <el-col :md="16">
+          <el-row :gutter="24">
+            <el-col :md="16" :sm="24" :style="!responsive.isDesktop ? 'padding: 0 10px' : ''">
               <!-- img 800 x 300 px -->
-              <el-carousel height="300px" direction="vertical" trigger="click" :autoplay="true">
-                <el-carousel-item v-for="item in 4" :key="item">
-                  <div class="banner-event"></div>
+              <el-carousel :height="responsive.isDesktop ? '300px' : '130px'" direction="vertical" trigger="click" :autoplay="true" :interval="5000" style="box-shadow: #00000033 0px 0px 20px; border-radius: 8px;"> 
+                <el-carousel-item v-for="item in [1,2,3,4]" :key="item">
+                  <div class="banner-event" :style="`background-image: url(http://localhost:3000/static/images/qc${item}.jpg)`"></div>
                 </el-carousel-item>
               </el-carousel>
             <!-- LEFT -->
@@ -20,19 +20,18 @@
               </div>
             </div>
             </el-col>
-            <el-col :md="8">
+            <el-col :md="8" :sm="24">
               <!-- RIGHT -->
               <aside>
                 <TextHeading :title="'Chủ đề'" />
                 <BoxCategory :data="category" v-for="category in categories" :key="category.id"/>
- 
                 <!-- <el-carousel :interval="4000" :autoplay="true">
                   <el-carousel-item v-for="item in topNewFeed" :key="item.id + Math.random().toString(36)">
                     <div :style="`background-image: url(${item.image});background-size:contain; background-repeat: no-repeat; height: 100%;`">
                     </div>
                   </el-carousel-item>
                 </el-carousel> -->
-                <div v-if="topPostsOfWeek[0]">
+                <div v-if="topPostsOfWeek[0]" style="margin-top: 2.5em;">
                   <TextHeading :title="'Bản tin hot trong tuần'" color="red"/>
                   <Box :data="topPostsOfWeek[0]" large :style="responsive.isDesktop ? 'padding: 0 0 1rem .5rem' : ''" />
                   <Box :data="posts" mini :height="80" v-for="(posts, index) in topPostsOfWeek.filter((item, index) => index != 0)" :key="index" />

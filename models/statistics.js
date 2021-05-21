@@ -31,10 +31,9 @@ class Statistics extends baseModel {
             arrQuery = [],
             { start, end } = dataInput;
         const RANGE_DATE = end - start;
-        if (RANGE_DATE > ONE_DAY + ONE_HOUR) {
-            start = new Date(Number(start)).setHours(0, 0, 0, 0);
-            end = new Date(Number(end)).setHours(0, 0, 0, 0);
-        }
+        start = new Date(Number(start)).setHours(0, 0, 0, 0);
+        if (RANGE_DATE > ONE_DAY + ONE_HOUR) end = new Date(Number(end)).setHours(0, 0, 0, 0);
+        
         if (end - start < ONE_MONTH * 3) {
             arrDate.push(end)
             while (end - start > 0) {
@@ -129,7 +128,7 @@ class Statistics extends baseModel {
                     for (let i = 0; i < res.length - 1; i++) {
                         if (res[i].length > res[i + 1].length) indexMax = i;
                     }
-                    arrCategory = res[indexMax].map(i => i.category_id)
+                    arrCategory = res[indexMax] ? res[indexMax].map(i => i.category_id) : []
                 }
 
                 let data = {

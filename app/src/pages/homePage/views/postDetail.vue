@@ -9,8 +9,8 @@
       </el-breadcrumb>
     </h2>
 
-    <el-row :gutter="24" type="flex" justify="space-between">
-      <el-col :md="16">
+    <el-row :gutter="24">
+      <el-col :md="16" :sm="24">
         <!-- LEFT -->
         <div class="title-meta">
           <h2>{{ detail.title }}</h2>
@@ -127,7 +127,9 @@
       </el-col>
 
       <!-- RIGHT -->
-      <el-col :md="8">
+      <el-col :md="8" :sm="24">
+        <TextHeading :title="'Chủ đề'" />
+        <BoxCategory :data="category" v-for="category in categories" :key="category.id"/>
         <aside>
           <div v-if="topNewFeed[0]">
             <TextHeading :title="'TOP'" color="red" />

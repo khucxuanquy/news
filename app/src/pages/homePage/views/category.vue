@@ -2,8 +2,8 @@
   <div id="category" v-loading.fullscreen.lock="visible">
     <el-main>
       <section class="container new-feed">
-        <el-row type="flex" justify="space-between">
-          <el-col :md="15">
+        <el-row :gutter="24">
+          <el-col :md="15" :sm="24">
           <!-- LEFT -->
           <div class="top-new">
             <TextHeading :title="getCategoryByUrl($route.params.category_url).name || 'News'" :color="getCategoryByUrl($route.params.category_url).color || '#690aa0'"/>
@@ -20,7 +20,9 @@
             </div>
           </div>
           </el-col>
-          <el-col :md="8">
+          <el-col :md="8" :sm="24">
+            <TextHeading :title="'Chủ đề'" />
+            <BoxCategory :data="category" v-for="category in categories" :key="category.id"/>
             <!-- RIGHT -->
             <aside v-if="topPostsOfWeek[0] && topPostsOfMonth[0]">
               <TextHeading :title="'Bản tin hot trong tuần'" color="red"/>

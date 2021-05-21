@@ -3,8 +3,8 @@
     <!-- top-bar -->
     <div class="top-bar">
       <div class="container">
-        <el-row :gutter="24">
-          <el-col :md="20" :xs="24">
+        <el-row :gutter="24" :style="!responsive.isDesktop ? 'margin: 0; padding: 0;' : ''">
+          <el-col :sm="18" :xs="17" class="row-left" :style="!responsive.isDesktop ? 'margin: 0; padding: 0;' : ''">
             <ul class="top-nav">
               <li>
                 <div class="logo-area">
@@ -22,17 +22,16 @@
                         <path d="M143 394 c-3 -8 -2 -18 2 -22 8 -8 243 -7 252 1 3 3 3 13 -1 22 -8 22 -244 21 -253 -1z"></path>
                         <path d="M433 403 c-7 -2 -13 -11 -13 -19 0 -16 -6 -15 124 -17 74 -2 103 2 114 12 11 11 11 16 1 22 -14 8 -206 10 -226 2z"></path></g>
                     </svg>
-                    <span> Tech News</span>
+                    <span v-if="responsive.isDesktop"> Tech News</span>
                   </router-link>
                 </div>
               </li>
-              <li>
+              <li :style="responsive.isDesktop ? '' : 'width: 200px'">
                 <el-input
                   placeholder="Nhập để tìm kiếm..."
                   v-model="textSearch"
                   @keypress.native.enter="search()"
-                  size="small"
-                  class="A"
+                  :size="!responsive.isDesktop? 'mini': 'medium'"
                 >
                   <el-button
                     slot="append"
@@ -43,20 +42,20 @@
               </li>
             </ul>
           </el-col>
-          <el-col :md="4" :xs="24">
-              <div style="text-align: right;">
-                <el-button v-if="!userInfo.id" type="info" plain round @click="$router.push('/home/login')">Đăng nhập</el-button>
-                <el-dropdown v-else trigger="click" @command="handleClickItem">
-                    <span class="el-dropdown-link">
-                        <span style="padding: 5px"> <i class="el-icon-s-custom"></i> {{userInfo.fullName}}</span>
-                        <i class="el-icon-arrow-down el-icon--right"></i>
-                    </span>
-                    <el-dropdown-menu slot="dropdown">
-                        <!-- <el-dropdown-item command="editInfo">{{lang.editInfo}}</el-dropdown-item> -->
-                        <el-dropdown-item command="logout">{{lang.logout}}</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-              </div>
+          <el-col :sm="6" :xs="7" class="row-right" :style="!responsive.isDesktop ? 'margin: 0; padding: 0;' : ''">
+            <div>
+              <el-button :size="!responsive.isDesktop? 'mini': 'medium'" v-if="!userInfo.id" type="info" plain round @click="$router.push('/home/login')">Đăng nhập</el-button>
+              <el-dropdown v-else trigger="click" @command="handleClickItem">
+                <span class="el-dropdown-link">
+                  <span style="padding: 5px"> <i class="el-icon-s-custom"></i> {{userInfo.fullName}}</span>
+                  <i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <!-- <el-dropdown-item command="editInfo">{{lang.editInfo}}</el-dropdown-item> -->
+                  <el-dropdown-item command="logout">{{lang.logout}}</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </div>
           </el-col>
         </el-row>
       </div>
@@ -100,19 +99,40 @@ export default {
 };
 </script>
 <style lang="scss">
+$height: 60px;
+@mixin flex($align, $justify) {
+  display: flex;
+  align-items: $align;
+  justify-content: $justify;
+}
 /* HEADER */
 header {
+  transition: all .1s;
+  height: 60px;
+  width: 100vw;
+  position: fixed;
+    box-shadow: 0 0 20px #0000004d;
+  z-index: 99;
+  
   // top-bar
   .top-bar {
     background: whitesmoke;
     .el-row {
-      display: flex;
-      align-items: center;
+     height: $height;
+
+     .row-left {
+      height: 100%;
+      @include flex(center, flex-start);
+     }
+
+     .row-right {
+      height: 100%;
+      @include flex(center, flex-end);
+     }
     }
 
     .top-nav {
-      display: inline-block;
-      list-style-type: none;
+      @include flex(center, flex-start);
       padding: 5px 0;
       margin: 0;
 
