@@ -33,7 +33,7 @@ class Statistics extends baseModel {
         const RANGE_DATE = end - start;
         start = new Date(Number(start)).setHours(0, 0, 0, 0);
         if (RANGE_DATE > ONE_DAY + ONE_HOUR) end = new Date(Number(end)).setHours(0, 0, 0, 0);
-        
+
         if (end - start < ONE_MONTH * 3) {
             arrDate.push(end)
             while (end - start > 0) {
@@ -114,6 +114,7 @@ class Statistics extends baseModel {
             // đảo ngược lại dateCreated do push `end` vào arrDate
             arrQuery.push(`SELECT posts.category_id, SUM(statistics.view) as 'totalView' FROM statistics INNER JOIN posts ON posts.id = statistics.post_id WHERE statistics.dateCreated BETWEEN '${arrDate[i]}' AND '${arrDate[i + 1]}' ${queryCategories} GROUP BY posts.category_id`)
         }
+        console.log({ arrDate });
         return Promise.all(arrQuery.map(query => new Promise(resolve => {
             this.sql.query(query, (err, data) => err ? resolve([]) : resolve(data))
         })))
@@ -124,11 +125,15 @@ class Statistics extends baseModel {
                 let arrCategory = []
                 if (categoryIds && categoryIds.length) arrCategory = categoryIds;
                 else {
-                    let indexMax = 0;
-                    for (let i = 0; i < res.length - 1; i++) {
-                        if (res[i].length > res[i + 1].length) indexMax = i;
+                    let temp = {}
+                    for (let i = 0; i < res.length; i++) {
+                        for (let j = 0; j < res[i].length; j++) {
+                            if (!temp[res[i][j].category_id]) {
+                                temp[res[i][j].category_id] = 1;
+                                arrCategory.push(res[i][j].category_id)
+                            }
+                        }
                     }
-                    arrCategory = res[indexMax] ? res[indexMax].map(i => i.category_id) : []
                 }
 
                 let data = {
@@ -150,6 +155,7 @@ class Statistics extends baseModel {
             })
 
     }
+
     async getStatistics() {
         // ONE_HOUR
         let _rangeWeek = rangeWeek(+new Date())

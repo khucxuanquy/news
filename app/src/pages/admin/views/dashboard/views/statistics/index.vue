@@ -112,7 +112,7 @@
         </div>
       </div>
     </div>
-    <BoxChart v-if="viewsByDatePicker" :DATA="viewsByDatePicker" typeChart="line" :title="'Biểu đồ số lượt xem của trang web'"/>
+    <BoxChart v-loading="loadStatisticView" v-if="viewsByDatePicker" :DATA="viewsByDatePicker" typeChart="line" :title="'Biểu đồ số lượt xem của trang web'"/>
     <div class="form-select-date">
       <el-date-picker
         v-model="selectDatePicker"
@@ -145,7 +145,7 @@ export default {
           {
             text: 'Hôm nay',
             onClick(picker) {
-              const end = +new Date().setMinutes(0,0,0);
+              const end = new Date().setMinutes(0,0,0);
               const start = new Date().setHours(0,0,0,0);
               picker.$emit('pick', [start, end]);
             }
@@ -171,6 +171,7 @@ export default {
       selectDateToStatisticCategories: [],
       selectcategories: [],
       loadStatisticCategories: false,
+      loadStatisticView: false,
     };
   },
   created() {
@@ -230,11 +231,16 @@ export default {
       let { selectDatePicker } = this
       if(!selectDatePicker.length) return;
       selectDatePicker[0] = new Date(selectDatePicker[0]).setHours(0,0,0,0)
+      if(+new Date() - selectDatePicker[0] > ONE_DAY) selectDatePicker[1] = new Date(selectDatePicker[1]).setHours(24,0,0,0);
+      if(selectDatePicker[0] === selectDatePicker[1]) return;
+      // loading
+      this.loadStatisticView = true;
       this.getAPI(STATISTICS.GET_BY_DATE_PICKER, {start: selectDatePicker[0], end: selectDatePicker[1]}, (res) => {
         if (!res.ok) return; // error something
         this.CHANGE_VIEWS_BY_DATE_PICKER(null)
         this.$nextTick(() => {
           this.CHANGE_VIEWS_BY_DATE_PICKER(res.data)
+          this.loadStatisticView = false
         })
       });
     },
@@ -246,6 +252,8 @@ export default {
       if(!rangeDate || !rangeDate.length) return;
       this.loadStatisticCategories = true;
       rangeDate[0] = new Date(rangeDate[0]).setHours(0,0,0,0)
+      if(+new Date() - rangeDate[0] > ONE_DAY) rangeDate[1] = new Date(rangeDate[1]).setHours(24,0,0,0);
+      if(rangeDate[0] === rangeDate[1]) return;
       this.getAPI(STATISTICS.STATISTIC_CATEGORY, {start: rangeDate[0], end: rangeDate[1], categoryIds: selectcategories}, res => {
         let { ok , data } = res
         if (!ok) return; // error something
