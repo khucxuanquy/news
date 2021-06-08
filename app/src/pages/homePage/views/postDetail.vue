@@ -103,6 +103,37 @@
             >
           </div>
         </div>
+
+        <!-- THANH CODE HERE-->
+        <!-- COMMENTS -->
+        <div id="comment" style="background: #eee">
+          <div id="app">
+            <CommentInput
+              @changeValue="changeValue"
+              @submitComment="submitComment"
+            />
+            <div v-for="comment in comments" :key="comment.id">
+              <CommentBox :data="comment" @showInput="showInput" />
+              <div v-if="comment.children && comment.children.length">
+                <div
+                  style="padding-left: 1em"
+                  v-for="child in comment.children"
+                  :key="child.id"
+                >
+                  <CommentBox :data="child" @showInput="showInput" />
+                </div>
+              </div>
+              <div>
+                <CommentInput
+                  style="padding-left: 2em"
+                  v-if="comment.id == idComment || comment.id == replyIdComment"
+                  @changeValue="changeValue"
+                  @submitComment="submitComment"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
         <!-- FB -->
         <!-- <div v-if="$route.params.category_url && $route.params.post_url">
           <div class="fb-like" :data-href="'https://news.laptrinhmaytinh.com/post/' + $route.params.category_url + '/' + $route.params.post_url" data-layout="button_count" data-action="like" data-size="small" data-share="true"></div>
@@ -129,7 +160,11 @@
       <!-- RIGHT -->
       <el-col :md="8" :sm="24">
         <TextHeading :title="'Chủ đề'" />
-        <BoxCategory :data="category" v-for="category in categories" :key="category.id"/>
+        <BoxCategory
+          :data="category"
+          v-for="category in categories"
+          :key="category.id"
+        />
         <aside>
           <div v-if="topNewFeed[0]">
             <TextHeading :title="'TOP'" color="red" />
@@ -180,8 +215,10 @@ import BoxCategory from "components/box-category";
 import TextHeading from "components/text-heading";
 import TextAngleSharp from "components/text-angle-sharp";
 import ENUM from "const/api";
-const { POSTS } = ENUM;
-
+import CommentInput from "./components/comment-input";
+import CommentBox from "./components/comment-box.vue";
+const { POSTS, COMMENTS } = ENUM;
+import { mapActions } from "vuex";
 import CONST from "const/const";
 import { mapGetters } from "vuex";
 export default {
@@ -197,6 +234,54 @@ export default {
       isShowFormReport: false,
       topPosts: [],
       isActivedSpeak: false,
+      isMaxParentComment: false,
+      from: 0,
+      limit: 15,
+      idComment: null,
+      replyIdComment: null,
+      valueInput: "",
+      comments: [
+        {
+          id: 1,
+          content: "first comment",
+          avatar: "http://localhost:3000/static/images/avatar-default.jpg",
+          fullName: "Khúc Xuân Quý",
+          dateCreated: "4h trước",
+          reaction: 19,
+          amount_child_comment: 0,
+          children: []
+        },
+        {
+          id: 2,
+          content: "a chas cbksaic asbc has cvaksh c",
+          avatar: "http://localhost:3000/static/images/avatar-default.jpg",
+          fullName: "Khúc Xuân Quý",
+          dateCreated: "4h trước",
+          reaction: 19,
+          amount_child_comment: 1,
+          children: [
+            {
+              id: 3,
+              content: " caicash aiu adhaj ckda cadjkc ac",
+              avatar: "http://localhost:3000/static/images/avatar-default.jpg",
+              fullName: "Văn Thanh",
+              reply_id_comment: 2,
+              dateCreated: "4h trước",
+              reaction: 25
+            }
+          ]
+        },
+        {
+          id: 4,
+          content: "tháicasc comment",
+          avatar: "http://localhost:3000/static/images/avatar-default.jpg",
+          fullName: "Khúc Xuân Quý",
+          dateCreated: "4h trước",
+          reaction: 19,
+          amount_child_comment: 0,
+          children: []
+        }
+      ]
     };
   },
   components: {
@@ -204,8 +289,56 @@ export default {
     TextHeading,
     TextAngleSharp,
     BoxCategory,
+    CommentInput,
+    CommentBox,
   },
   created() {
+    // t sẽ viết cách gọi API ở đây, và yêu cầu những trường gì
+    /*
+    // create 1 comment
+
+      // tạo comment cha
+      this.postAPI(COMMENTS.CREATE_COMMENT, {  post_id: '', content: '' }, response => {
+        console.log(response)
+      })
+
+      // tạo comment con
+      this.postAPI(COMMENTS.CREATE_COMMENT, {  post_id: '', content: '', reply_id_comment: "" }, response => {
+        console.log(response)
+      })
+
+    // edit 1 comment
+
+      this.putAPI(COMMENTS.EDIT_COMMENT, {  reply_id_comment: "" }, response => {
+        console.log(response)
+      })
+
+    // change_reaction 1 comment
+    // 1 : like, -1 dislike
+      this.putAPI(COMMENTS.CHANGE_REACTION, {  comment_id: '', reaction: 1 || -1 }, response => {
+        console.log(response)
+      })
+
+    // DELETE 
+
+      this.deleteAPI(COMMENTS.DELETE, {  comment_id : "" }, response => {
+        console.log(response)
+      })
+
+    // chú ý, cái button sửa, xóa nếu có => thì phải làm cách nào để chỉ hiển thị sửa xóa comment của chính chủ comment đó
+
+
+    // GET comment cha
+    this.getAPI(COMMENTS.GET_COMMENTS, { post_id: 'qwe', from: 0, limit: 15 }, response => {
+      console.log(response)
+    })
+
+    // GET comment con
+    // reply_id_comment: id cua comment cha
+      this.getAPI(COMMENTS.GET_COMMENTS, { post_id: 'qwe', from: 0, limit: 15, reply_id_comment: "" }, response => {
+        console.log(response)
+      })
+    */
     if (localStorage.getItem("isActivedSpeak")) this.isActivedSpeak = true;
 
     let { category_url, post_url } = this.$route.params;
@@ -219,7 +352,6 @@ export default {
       post_url,
       isNewCategory: getTopPosts ? false : true,
     };
-
     this.getAPI(POSTS.GET_CONTENT, d, (r) => {
       const { ok, data, related_post } = r;
       if (!ok || !data) return this.$router.push("/404");
@@ -238,15 +370,22 @@ export default {
           ...i,
           category: this.getCategoryById(data.category_id),
         }));
-      } else this.topPosts = getTopPosts.related_post.map((i) => ({...i, category: this.getCategoryById(getTopPosts.category_id)}));
+      } else
+        this.topPosts = getTopPosts.related_post.map((i) => ({
+          ...i,
+          category: this.getCategoryById(getTopPosts.category_id),
+        }));
       this.visible = true;
 
       // set suggestion to localStorage
-      this.setSuggestion(data.category_id)
+      this.setSuggestion(data.category_id);
       if (this.isActivedSpeak) this.speakPost();
     });
   },
   methods: {
+    ...mapActions({
+      GET_COMMENTS: "_POST_DETAIL/GET_COMMENTS",
+    }),
     activeSpeak() {
       if (this.isActivedSpeak) {
         localStorage.removeItem("isActivedSpeak");
@@ -312,21 +451,77 @@ export default {
     resetForm() {
       this.form = {};
     },
-    setSuggestion(category_id){
+    setSuggestion(category_id) {
       let suggestion = JSON.parse(localStorage.getItem("suggestion"));
       if (!suggestion) suggestion = {};
       if (suggestion[category_id]) suggestion[category_id] += 1;
       else suggestion[category_id] = 1;
       localStorage.setItem("suggestion", JSON.stringify(suggestion));
+    },
+    getCommentParent() {
+      this.getAPI(
+        COMMENTS.GET_COMMENTS,
+        { post_id: this.detail.id, from: this.form, limit: this.limit },
+        (response) => {
+          const { ok, data } = response;
+          this.GET_COMMENTS(data);
+          if (!ok) return;
+          // check max comment
+          if (data.length < this.limit) this.isMaxParentComment = true;
+          this.from += this.limit;
+          // dispath action -> store
+        }
+      );
+    },
+    showInput(data) {
+      console.log(data)
+      if(data.reply_id_comment) return this.idComment = data.reply_id_comment
+      this.idComment = data.id;
+      this.replyIdComment = data.reply_id_comment;
+      // if (data.reply_id_comment) {
+      //   this.replyUser = "@" + data.fullName + "   ";
+      // } else this.replyUser = "";
+    },
+    changeValue(val) {
+      this.valueInput = val
+    },
+    submitComment() {
+      // neu comment mới tinh
+      if(!this.idComment) {
+       return this.comments.push({
+          id: Math.random().toString(36).slice(2),
+          content: this.valueInput,
+          avatar: "http://localhost:3000/static/images/avatar-default.jpg",
+          fullName: "Khúc Xuân Quý",
+          dateCreated: "Vừa xong",
+          reaction: 0,
+          amount_child_comment: 0,
+          children: []
+        })
+      }
+
+      let index = this.comments.findIndex(comment => comment.id == this.idComment)
+      if(index >= 0) {
+        this.comments[index].children.push({
+          id: Math.random().toString(36).slice(2),
+          content: this.valueInput,
+          avatar: "http://localhost:3000/static/images/avatar-default.jpg",
+          fullName: "Khúc Xuân Quý",
+          dateCreated: "Vừa xong",
+          reaction: 0,
+          amount_child_comment: 0,
+          children: []
+        })
+      }
     }
   },
   computed: {
     ...mapGetters({
       home: "_HOMEPAGE/home",
-      cacheContent: "_POST_DETAIL/cacheContent",
       highlightPost: "_POST_DETAIL/highlightPost",
       categories: "_CATEGORIES/categories",
       responsive: "_HOMEPAGE/responsive",
+      comments: "_POST_DETAIL/comments",
     }),
     topNewFeed() {
       return this.home.topNewFeed
@@ -360,6 +555,7 @@ export default {
         post_url,
         isNewCategory: getTopPosts ? false : true,
       };
+
       this.getAPI(POSTS.GET_CONTENT, d, (r) => {
         const { ok, data, related_post } = r;
         if (!ok || !data) return this.$router.push("/404");
@@ -386,11 +582,17 @@ export default {
         this.visible = true;
 
         // set suggestion to localStorage
-        this.setSuggestion(data.category_id)
+        this.setSuggestion(data.category_id);
         if (this.isActivedSpeak) this.speakPost();
       });
     },
     "detail.title": (title) => (document.title = title),
+    "detail.id": function () {
+      this.getCommentParent();
+    },
+    // "comments":function() {
+    //   this.getCommentParent();
+    // }
   },
 };
 </script>

@@ -1,0 +1,86 @@
+@media only screen and (max-width: 500px) {
+  html,
+  body {
+    font-size: 12px;
+    overflow-x: hidden;
+  }
+  header .top-bar .container {
+    padding: 0 10px !important;
+  }
+  header .top-bar .el-row {
+    padding-top: 1rem;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: reverse;
+        -ms-flex-direction: column-reverse;
+            flex-direction: column-reverse;
+  }
+  header .top-bar .el-row div {
+    text-align: left;
+  }
+  header .top-bar .top-nav li {
+    padding: 0 !important;
+  }
+  header .middle-area .el-col-md-15 {
+    display: none;
+  }
+  header .header {
+    min-height: unset !important;
+    padding: 0.8rem 0;
+  }
+  header .header ul {
+    display: none;
+  }
+  header .header .container {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -ms-flex-pack: distribute !important;
+        justify-content: space-around !important;
+  }
+  header .header.show {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    right: 0;
+    bottom: 0;
+  }
+  header .header.show ul {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+  }
+  header .header.show ul li {
+    min-height: 1rem !important;
+    line-height: 1rem !important;
+    padding: 1.5rem 0 !important;
+  }
+  header .header.show .container {
+    -webkit-box-pack: left !important;
+        -ms-flex-pack: left !important;
+            justify-content: left !important;
+  }
+  header .header.show .btn-x {
+    position: absolute;
+    top: 1%;
+    right: 2%;
+  }
+  main {
+    margin-top: 1rem;
+    padding: 0 !important;
+  }
+  main section > .el-row--flex {
+    display: block !important;
+  }
+  footer h4 {
+    font-size: 1.1em !important;
+  }
+}
+/*# sourceMappingURL=responsive.css.map */

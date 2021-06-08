@@ -50,5 +50,12 @@ export default {
         GET: URL + 'statistics/getStatistics',
         GET_BY_DATE_PICKER: URL + 'statistics/getByDatePicker',
         STATISTIC_CATEGORY: URL + 'statistics/statisticCategories'
+    },
+    COMMENTS: {
+        GET_COMMENTS: URL + 'comments/getComments',
+        CREATE_COMMENT: URL + 'comments/create',
+        EDIT_COMMENT: URL + 'comments/edit',
+        CHANGE_REACTION: URL + 'comments/changeReaction',
+        DELETE: URL + 'comments/delete',
     }
 }
