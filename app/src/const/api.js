@@ -1,7 +1,7 @@
 require('dotenv').config()
 const URL = 'http://localhost:3000/API/'
 export default {
-    MEDIA : 'https://cdn.laptrinhmaytinh.com/',
+    MEDIA : 'http://localhost:3000/cdn/upload',
     POSTS: {
         CREATE: URL + 'posts/create',
         EDIT: URL + 'posts/edit',

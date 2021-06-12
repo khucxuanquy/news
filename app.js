@@ -32,6 +32,7 @@ startApp(err => {
   app.use('/API/users', require('./routers/API/users'))
   app.use('/API/statistics', require('./routers/API/statistics'))
   app.use('/API/comments', require('./routers/API/comments'))
+  app.use('/cdn/upload', require('./routers/CDN/upload'))
 
   app.set('view engine', 'ejs');
   // app.get('/', (req, res) => res.render(path.join(__dirname, './views/index.ejs')))

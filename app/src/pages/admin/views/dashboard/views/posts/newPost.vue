@@ -112,6 +112,7 @@ export default {
       window.tinymce.get('xuanquy79xx').setContent('')
     },
     onUploadSuccess(response, file, fileList) {
+      console.log(115, response)
       const { location } = response
       this.form.image = location
       this.isShowImage = true

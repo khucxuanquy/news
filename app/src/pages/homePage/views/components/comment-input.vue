@@ -1,18 +1,18 @@
 <template>
-  <div class="comment__input showInput">
+  <div class="wrap-comment-input">
     <div class="avatar">
-      <img
-        src="https://i.kym-cdn.com/photos/images/masonry/001/832/404/fb6.jpg"
-        alt="image"
-      />
+      <img src="http://localhost:3000/static/images/avatar-default.jpg" />
     </div>
-    <div class="textareaBox__content">
-      <textarea
-        placeholder="Nhập ở đây...."
+      <el-input
+        :class="'inputComment-' + keyId"
+        type="textarea"
+        placeholder="Nhập bình luận ..."
         v-model="val"
-        @keypress.enter="submitComment()"
-      ></textarea>
-    </div>
+        maxlength="1000"
+        style="width: calc(100% - 65px); margin: 0 15px;"
+      >
+      </el-input>
+      <el-button style="max-height: 40px" type="primary" plain @click="submitComment()">Gửi</el-button>
   </div>
 </template>
 
@@ -20,63 +20,56 @@
 export default {
   data() {
     return {
-      val: "",
+      val: ""
     };
   },
-  mounted() {
-    var textarea = document.querySelector("textarea");
-    textarea.addEventListener("keydown", autosize);
-    function autosize() {
-      var el = this;
-      setTimeout(function () {
-        el.style.cssText = "height:auto; padding:0";
-        // for box-sizing other than "content-box" use:
-        // el.style.cssText = '-moz-box-sizing:content-box';
-        el.style.cssText = "height:" + el.scrollHeight + "px";
-      }, 0);
+  props: {
+    clearValue: {
+      type: Boolean,
+      default() {
+        return false;
+      }
+    },
+    keyId: {
+      type: String,
+      require: true
     }
   },
   methods: {
     submitComment() {
       this.$emit("submitComment", true);
-    },
+    }
   },
   watch: {
     val(e) {
       this.$emit("changeValue", e);
     },
+    clearValue() {
+      setTimeout(() => {
+        document.querySelector(`.inputComment-${this.keyId} textarea`).value = ''
+      });
+    }
   },
-  computed: {},
 };
 </script>
 
-<style scoped>
-.comment__input {
+<style lang="scss" scoped>
+.wrap-comment-input {
   display: flex;
   width: 100%;
-  max-width: 100%;
-  padding: 10px;
-  box-sizing: border-box;
+
+  .avatar img {
+    border-radius: 10%;
+    box-shadow: 0 1px 2px #00000033;
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+  }
+
+  textarea {
+    min-width: 50px;
+    max-height: 300px!important;
+  }
 }
-.avatar img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  padding: 10px;
-}
-.textareaBox__content {
-  width: 100%;
-  padding: 10px;
-}
-textarea {
-  width: 100%;
-  resize: none;
-  overflow: hidden;
-  border: none;
-  border-bottom: thin solid gray;
-  outline: none;
-  padding: 3px 0 0 13px;
-  border-radius: 8px;
-  color: #333;
-}
+
 </style>

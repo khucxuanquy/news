@@ -24,9 +24,9 @@
             ></el-button>
             <span
               class="category"
-              :style="`background: ${
-                getCategoryById(detail.category_id).color
-              }`"
+              :style="
+                `background: ${getCategoryById(detail.category_id).color}`
+              "
               >{{ getCategoryById(detail.category_id).name }}</span
             >
             <span class="date-time">
@@ -105,34 +105,8 @@
         </div>
 
         <!-- THANH CODE HERE-->
-        <!-- COMMENTS -->
-        <div id="comment" style="background: #eee">
-          <div id="app">
-            <CommentInput
-              @changeValue="changeValue"
-              @submitComment="submitComment"
-            />
-            <div v-for="comment in comments" :key="comment.id">
-              <CommentBox :data="comment" @showInput="showInput" />
-              <div v-if="comment.children && comment.children.length">
-                <div
-                  style="padding-left: 1em"
-                  v-for="child in comment.children"
-                  :key="child.id"
-                >
-                  <CommentBox :data="child" @showInput="showInput" />
-                </div>
-              </div>
-              <div>
-                <CommentInput
-                  style="padding-left: 2em"
-                  v-if="comment.id == idComment || comment.id == replyIdComment"
-                  @changeValue="changeValue"
-                  @submitComment="submitComment"
-                />
-              </div>
-            </div>
-          </div>
+        <div id="comment">
+          <CmtBox :postId="detail.id" />
         </div>
         <!-- FB -->
         <!-- <div v-if="$route.params.category_url && $route.params.post_url">
@@ -215,12 +189,10 @@ import BoxCategory from "components/box-category";
 import TextHeading from "components/text-heading";
 import TextAngleSharp from "components/text-angle-sharp";
 import ENUM from "const/api";
-import CommentInput from "./components/comment-input";
-import CommentBox from "./components/comment-box.vue";
-const { POSTS, COMMENTS } = ENUM;
-import { mapActions } from "vuex";
 import CONST from "const/const";
-import { mapGetters } from "vuex";
+import CmtBox from "./components/cmt-box.vue";
+const { POSTS } = ENUM;
+import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -229,59 +201,11 @@ export default {
       form: {
         title: "",
         email: "",
-        content: "",
+        content: ""
       },
       isShowFormReport: false,
       topPosts: [],
       isActivedSpeak: false,
-      isMaxParentComment: false,
-      from: 0,
-      limit: 15,
-      idComment: null,
-      replyIdComment: null,
-      valueInput: "",
-      comments: [
-        {
-          id: 1,
-          content: "first comment",
-          avatar: "http://localhost:3000/static/images/avatar-default.jpg",
-          fullName: "Khúc Xuân Quý",
-          dateCreated: "4h trước",
-          reaction: 19,
-          amount_child_comment: 0,
-          children: []
-        },
-        {
-          id: 2,
-          content: "a chas cbksaic asbc has cvaksh c",
-          avatar: "http://localhost:3000/static/images/avatar-default.jpg",
-          fullName: "Khúc Xuân Quý",
-          dateCreated: "4h trước",
-          reaction: 19,
-          amount_child_comment: 1,
-          children: [
-            {
-              id: 3,
-              content: " caicash aiu adhaj ckda cadjkc ac",
-              avatar: "http://localhost:3000/static/images/avatar-default.jpg",
-              fullName: "Văn Thanh",
-              reply_id_comment: 2,
-              dateCreated: "4h trước",
-              reaction: 25
-            }
-          ]
-        },
-        {
-          id: 4,
-          content: "tháicasc comment",
-          avatar: "http://localhost:3000/static/images/avatar-default.jpg",
-          fullName: "Khúc Xuân Quý",
-          dateCreated: "4h trước",
-          reaction: 19,
-          amount_child_comment: 0,
-          children: []
-        }
-      ]
     };
   },
   components: {
@@ -289,8 +213,7 @@ export default {
     TextHeading,
     TextAngleSharp,
     BoxCategory,
-    CommentInput,
-    CommentBox,
+    CmtBox
   },
   created() {
     // t sẽ viết cách gọi API ở đây, và yêu cầu những trường gì
@@ -344,15 +267,15 @@ export default {
     let { category_url, post_url } = this.$route.params;
     // tìm xem trong store có data này chưa
     let getTopPosts = this.highlightPost.find(
-      (i) => i.category_url == category_url
+      i => i.category_url == category_url
     );
     // các trường gọi lên server
     let d = {
       category_url,
       post_url,
-      isNewCategory: getTopPosts ? false : true,
+      isNewCategory: getTopPosts ? false : true
     };
-    this.getAPI(POSTS.GET_CONTENT, d, (r) => {
+    this.getAPI(POSTS.GET_CONTENT, d, r => {
       const { ok, data, related_post } = r;
       if (!ok || !data) return this.$router.push("/404");
       this.detail = data;
@@ -360,20 +283,20 @@ export default {
         let highlight = {
           category_id: data.category_id,
           category_url: category_url,
-          related_post,
+          related_post
         };
         this.storeVue("_POST_DETAIL").dispatch("CHANGE_HIGHLIGHT_POSTS", [
           ...this.highlightPost,
-          highlight,
+          highlight
         ]);
-        this.topPosts = related_post.map((i) => ({
+        this.topPosts = related_post.map(i => ({
           ...i,
-          category: this.getCategoryById(data.category_id),
+          category: this.getCategoryById(data.category_id)
         }));
       } else
-        this.topPosts = getTopPosts.related_post.map((i) => ({
+        this.topPosts = getTopPosts.related_post.map(i => ({
           ...i,
-          category: this.getCategoryById(getTopPosts.category_id),
+          category: this.getCategoryById(getTopPosts.category_id)
         }));
       this.visible = true;
 
@@ -383,9 +306,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions({
-      GET_COMMENTS: "_POST_DETAIL/GET_COMMENTS",
-    }),
+    ...mapActions({}),
     activeSpeak() {
       if (this.isActivedSpeak) {
         localStorage.removeItem("isActivedSpeak");
@@ -408,7 +329,7 @@ export default {
     },
     getCategoryById(id) {
       if (!id) return {};
-      let category = this.categories.find((i) => i.id == id);
+      let category = this.categories.find(i => i.id == id);
       return category || { url: "#", name: "", color: "#da1793" };
     },
     convertDate(timestamp) {
@@ -420,26 +341,26 @@ export default {
       if (!id || !title || !email || !content)
         return this.$message({
           message: "Vui lòng điền đẩy đủ thông tin",
-          type: "Error",
+          type: "Error"
         });
       this.$confirm("Bạn có chắc chắn muốn gửi báo cáo tới admin", "Warning", {
         confirmButtonText: "Đồng ý gửi",
         cancelButtonText: "Hủy",
-        type: "warning",
+        type: "warning"
       })
         .then(() => {
           this.postAPI(
             REPORTS.CREATE,
             { post_id: id, title, email, content },
-            (r) => {
+            r => {
               if (!r.ok)
                 return this.$message({
                   message: "Có lỗi sảy ra",
-                  type: "Error",
+                  type: "Error"
                 });
               this.$message({
                 message: "Cảm ơn bạn đã báo cáo cho chúng tôi",
-                type: "success",
+                type: "success"
               });
               this.isShowFormReport = false;
               this.resetForm();
@@ -458,62 +379,6 @@ export default {
       else suggestion[category_id] = 1;
       localStorage.setItem("suggestion", JSON.stringify(suggestion));
     },
-    getCommentParent() {
-      this.getAPI(
-        COMMENTS.GET_COMMENTS,
-        { post_id: this.detail.id, from: this.form, limit: this.limit },
-        (response) => {
-          const { ok, data } = response;
-          this.GET_COMMENTS(data);
-          if (!ok) return;
-          // check max comment
-          if (data.length < this.limit) this.isMaxParentComment = true;
-          this.from += this.limit;
-          // dispath action -> store
-        }
-      );
-    },
-    showInput(data) {
-      console.log(data)
-      if(data.reply_id_comment) return this.idComment = data.reply_id_comment
-      this.idComment = data.id;
-      this.replyIdComment = data.reply_id_comment;
-      // if (data.reply_id_comment) {
-      //   this.replyUser = "@" + data.fullName + "   ";
-      // } else this.replyUser = "";
-    },
-    changeValue(val) {
-      this.valueInput = val
-    },
-    submitComment() {
-      // neu comment mới tinh
-      if(!this.idComment) {
-       return this.comments.push({
-          id: Math.random().toString(36).slice(2),
-          content: this.valueInput,
-          avatar: "http://localhost:3000/static/images/avatar-default.jpg",
-          fullName: "Khúc Xuân Quý",
-          dateCreated: "Vừa xong",
-          reaction: 0,
-          amount_child_comment: 0,
-          children: []
-        })
-      }
-
-      let index = this.comments.findIndex(comment => comment.id == this.idComment)
-      if(index >= 0) {
-        this.comments[index].children.push({
-          id: Math.random().toString(36).slice(2),
-          content: this.valueInput,
-          avatar: "http://localhost:3000/static/images/avatar-default.jpg",
-          fullName: "Khúc Xuân Quý",
-          dateCreated: "Vừa xong",
-          reaction: 0,
-          amount_child_comment: 0,
-          children: []
-        })
-      }
-    }
   },
   computed: {
     ...mapGetters({
@@ -521,42 +386,42 @@ export default {
       highlightPost: "_POST_DETAIL/highlightPost",
       categories: "_CATEGORIES/categories",
       responsive: "_HOMEPAGE/responsive",
-      comments: "_POST_DETAIL/comments",
+      userInfo: "_HOMEPAGE/userInfo",
     }),
     topNewFeed() {
       return this.home.topNewFeed
-        .map((i) => ({
+        .map(i => ({
           ...i,
           category: this.getCategoryById(i.category_id),
-          dateCreated: this.convertDate(i.dateCreated),
+          dateCreated: this.convertDate(i.dateCreated)
         }))
         .filter((i, index) => index < 3);
     },
     topPostsOfWeek() {
-      return this.home.topPostsOfWeek.map((i) => ({
+      return this.home.topPostsOfWeek.map(i => ({
         ...i,
         category: this.getCategoryById(i.category_id),
-        dateCreated: this.convertDate(i.dateCreated),
+        dateCreated: this.convertDate(i.dateCreated)
       }));
-    },
+    }
   },
   watch: {
-    "$route.params": function (currentParams) {
+    "$route.params": function(currentParams) {
       this.stopSpeak();
       this.visible = false;
       const { category_url, post_url } = currentParams;
       // tìm xem trong store có data này chưa
       let getTopPosts = this.highlightPost.find(
-        (i) => i.category_url == category_url
+        i => i.category_url == category_url
       );
       // các trường gọi lên server
       let d = {
         category_url,
         post_url,
-        isNewCategory: getTopPosts ? false : true,
+        isNewCategory: getTopPosts ? false : true
       };
 
-      this.getAPI(POSTS.GET_CONTENT, d, (r) => {
+      this.getAPI(POSTS.GET_CONTENT, d, r => {
         const { ok, data, related_post } = r;
         if (!ok || !data) return this.$router.push("/404");
         this.detail = data;
@@ -564,20 +429,20 @@ export default {
           let highlight = {
             category_id: data.category_id,
             category_url: category_url,
-            related_post,
+            related_post
           };
           this.storeVue("_POST_DETAIL").dispatch("CHANGE_HIGHLIGHT_POSTS", [
             ...this.highlightPost,
-            highlight,
+            highlight
           ]);
-          this.topPosts = related_post.map((i) => ({
+          this.topPosts = related_post.map(i => ({
             ...i,
-            category: this.getCategoryById(data.category_id),
+            category: this.getCategoryById(data.category_id)
           }));
         } else
-          this.topPosts = getTopPosts.related_post.map((i) => ({
+          this.topPosts = getTopPosts.related_post.map(i => ({
             ...i,
-            category: this.getCategoryById(getTopPosts.category_id),
+            category: this.getCategoryById(getTopPosts.category_id)
           }));
         this.visible = true;
 
@@ -586,14 +451,8 @@ export default {
         if (this.isActivedSpeak) this.speakPost();
       });
     },
-    "detail.title": (title) => (document.title = title),
-    "detail.id": function () {
-      this.getCommentParent();
-    },
-    // "comments":function() {
-    //   this.getCommentParent();
-    // }
-  },
+    "detail.title": title => (document.title = title),
+  }
 };
 </script>
 

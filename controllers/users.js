@@ -49,7 +49,8 @@ module.exports = {
     async getInfoUser(req, res) {
         const { id, iat } = req.token
         const { location } = req.query
-        let { error, data } = await user.get({ fields: ['id', 'fullName', 'permission', 'position', 'manager_id'], conditions: { id } })
+        let { error, data } = await user.get({ conditions: { id } })
+        delete data[0].password
         if (error) return res.send(resFail({ error }))
         if (!data.length) return res.send(resFail({ message: 'logout now' })) // note: logout
         if (location && data[0].position == 'reader') return res.send(resFail())

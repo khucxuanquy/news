@@ -24,7 +24,9 @@ module.exports = {
         }
 
         let { error, data } = await comment.create(dataInput)
-
+        delete data.user_id
+        delete data.position
+        data.dateCreated = convertDateTimeline(Number(data.dateCreated))
         if (error) return res.send(resFail({ error }))
         res.send(resSuccess({ data }))
 
