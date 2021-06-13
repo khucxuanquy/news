@@ -28,23 +28,32 @@
               </li>
               <li :style="responsive.isDesktop ? '' : 'width: 200px'">
                 <el-input
-                  placeholder="Nhập để tìm kiếm..."
+                  style="padding-left: 30px"
+                  :placeholder="hold ? 'Đang lắng nghe...' : 'Nhập để tìm kiếm...'"
                   v-model="textSearch"
                   @keypress.native.enter="search()"
-                  :size="!responsive.isDesktop? 'mini': 'medium'"
+                  :size="!responsive.isDesktop ? 'mini': 'medium'"
                 >
-                  <el-button
-                    slot="append"
-                    icon="el-icon-search"
-                    @click="search()"
-                  ></el-button>
+                <el-button
+                  :icon="hold ? 'el-icon-mic' : 'el-icon-microphone'"
+                  slot="prepend"
+                  circle
+                  @click="hold = !hold"
+                />
+                <el-button
+                  slot="append"
+                  icon="el-icon-search"
+                  :circle="!responsive.isDesktop"
+                  @click="search()"
+                />
+                
                 </el-input>
               </li>
             </ul>
           </el-col>
           <el-col :sm="6" :xs="7" class="row-right" :style="!responsive.isDesktop ? 'margin: 0; padding: 0;' : ''">
             <div>
-              <el-button :size="!responsive.isDesktop? 'mini': 'medium'" v-if="!userInfo.id" type="info" plain round @click="$router.push('/home/login')">Đăng nhập</el-button>
+              <el-button :size="!responsive.isDesktop ? 'mini': 'medium'" v-if="!userInfo.id" type="info" plain round @click="$router.push('/home/login')">Đăng nhập</el-button>
               <el-dropdown v-else trigger="click" @command="handleClickItem">
                 <span class="el-dropdown-link">
                   <span style="padding: 5px"> <i class="el-icon-s-custom"></i> {{userInfo.fullName}}</span>
@@ -69,7 +78,26 @@ export default {
   data() {
     return {
       textSearch: "",
+      // speech to text
+      hold: false,
+      textFromSpeech: '',
+      runtimeTranscription: '', // default component vue-speech
+      transcription: [], // default component vue-speech
     };
+  },
+  watch: {
+    transcription(arrText) {
+      // this.textFromSpeech += arrText[arrText.length - 1]
+      this.textFromSpeech = arrText[arrText.length - 1]
+    },
+    hold(isHold) {
+      isHold ? this.listenVoice() : this.stopListenVoice()
+    },
+    textFromSpeech(text) {
+      this.textSearch = text
+      this.stopListenVoice()
+      this.search()
+    },
   },
   methods: {
     ...mapActions({
@@ -86,9 +114,43 @@ export default {
             this.CHANGE_USER_INFO({})
             localStorage.clear()
         }
-    }
+    },
+    listenVoice() {
+      if (!this.hold) return
+      window.recognition && window.recognition.start()
+    },
+
+    stopListenVoice() {
+      window.recognition && window.recognition.stop()
+      this.hold = false
+    },
   },
-  created() {
+  mounted() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+    if (!SpeechRecognition) {
+      throw new Error(
+        'Speech Recognition does not exist on this browser. Use Chrome or Firefox',
+      )
+    }
+    if (!SpeechRecognition) return
+    const recognition = new SpeechRecognition()
+    recognition.lang = 'vi-VN'
+    recognition.interimResults = true
+
+    recognition.addEventListener('result', event => {
+      const text = Array.from(event.results)
+        .map(result => result[0])
+        .map(result => result.transcript)
+        .join('')
+      this.runtimeTranscription = text
+    })
+
+    recognition.addEventListener('end', () => {
+      if (this.runtimeTranscription !== '') this.transcription.push(this.runtimeTranscription)
+      this.runtimeTranscription = ''
+      this.listenVoice()
+    })
+    window.recognition = recognition
   },
   computed: {
     ...mapGetters({
@@ -140,6 +202,7 @@ header {
         display: inline-block;
         padding: 4px 10px;
         font-size: 14px;
+        position: relative;
         a {
           color: #222;
           line-height: 35px;
