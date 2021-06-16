@@ -8,7 +8,7 @@ class Users extends baseModel {
         this.fullName = ''
         this.password = ''
         this.manager_id = '' // default admin
-        this.avatar = 'http://localhost:3000/static/images/avatar-default.jpg'
+        this.avatar = 'https://doan.khucblog.com/static/images/avatar-default.jpg'
         this.permission = 1
         this.position = '' // admin, manager, staff and reader
         this.dateCreated = ''

@@ -102,7 +102,7 @@ module.exports = {
         }
         const { error, data } = await user.create(obj);
         if (error) return res.send(resFail({ error }));
-        res.send(`Xác Thực thành công, <a href='http://localhost:8080/home/login'>Bấm vào đây để đăng nhập</a>`);
+        res.send(`Xác Thực thành công, <a href='https://doan.khucblog.com/home/login'>Bấm vào đây để đăng nhập</a>`);
         // res.redirect('')
     },
 

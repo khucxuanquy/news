@@ -160,7 +160,7 @@ module.exports = {
       from: EMAIL,
       to: email,
       subject: "Xác thực tài khoản | Tech News", // title
-      html: `<a href='http://localhost:3000/API/users/verify?token=${token}'> bấm vào đây để xác thực tài khoản </a>`, // content = html
+      html: `<a href='https://doan.khucblog.com/API/users/verify?token=${token}'> bấm vào đây để xác thực tài khoản </a>`, // content = html
     })
   },
   async sendToEmailToChangePassword({ email, token }) {
@@ -177,7 +177,7 @@ module.exports = {
       from: EMAIL,
       to: email,
       subject: "Thay đổi mật khẩu | Smart News", // title
-      html: `<a href='http://localhost:8080/home/resetpassword/${token}'> bấm vào đây để đổi mật khẩu </a>`, // content = html
+      html: `<a href='https://doan.khucblog.com/home/resetpassword/${token}'> bấm vào đây để đổi mật khẩu </a>`, // content = html
     })
   },
   hashPassword(password) {

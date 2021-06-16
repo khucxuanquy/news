@@ -33,7 +33,7 @@ router.post('/', verifyToken, (req, res) => {
       const { mimetype, destination, filename } = i
       const date = convertDate(2, destination.replace(/\\|\//g, "").slice(-8))
       const typeFile = (mimetype.includes('image') ? 'images' : mimetype.includes('video') ? 'videos' : 'files') + '/'
-      return 'http://localhost:3000/static/' + typeFile + convertDate(1, date) + '/' + filename;
+      return 'https://doan.khucblog.com/static/' + typeFile + convertDate(1, date) + '/' + filename;
     });
     return res.send({ location: url[0] });
   });
