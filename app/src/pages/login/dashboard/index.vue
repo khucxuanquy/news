@@ -83,7 +83,7 @@ export default {
           this.$message({ message, type: 'success' })
           localStorage.setItem( '_u', token)
           // location.pathname = '/admin/dashboard'
-          location.href = 'http://localhost:8080/admin/dashboard'
+          location.pathname = 'admin/dashboard'
         });
       })
     },

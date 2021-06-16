@@ -212,6 +212,7 @@ class Posts extends baseModel {
             `${SELECT} WHERE activated LIKE 'true' AND dateCreated BETWEEN '${+_month.start}' AND '${+_month.end}'`,
             `SELECT posts.user_id, COUNT(id) as amountPosts, SUM(posts.view) as totalView FROM posts WHERE activated LIKE 'true' AND dateCreated BETWEEN '${+_week.start}' AND '${+_week.end}' GROUP BY posts.user_id`,
             `SELECT posts.user_id, COUNT(id) as amountPosts, SUM(posts.view) as totalView FROM posts WHERE activated LIKE 'true' AND dateCreated BETWEEN '${+_month.start}' AND '${+_month.end}' GROUP BY posts.user_id`,
+            `SELECT SUM(view) as totalView, COUNT(id) as totalPost FROM posts`
         ]
 
         return Promise.all(arrQuery.map(query => new Promise(resolve => {
@@ -222,8 +223,10 @@ class Posts extends baseModel {
                     quantityInWeek = res[1][0].quantity,
                     quantityInMonth = res[2][0].quantity,
                     topEmployeesInWeek = res[3],
-                    topEmployeesInMonth = res[4];
-                return Promise.resolve({ data: { quantityInDate, quantityInWeek, quantityInMonth, topEmployeesInWeek, topEmployeesInMonth } })
+                    topEmployeesInMonth = res[4],
+                    totalView = res[5][0] ? res[5][0].totalView : 0,
+                    totalPost = res[5][0] ? res[5][0].totalPost : 0;
+                return Promise.resolve({ data: { quantityInDate, quantityInWeek, quantityInMonth, topEmployeesInWeek, topEmployeesInMonth, totalView, totalPost } })
             }).catch(error => {
                 console.log('\x1b[31m', error)
                 return Promise.resolve({ error })

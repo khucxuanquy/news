@@ -98,7 +98,7 @@ module.exports = {
         res.send(resSuccess({ data }))
     },
     async overviewStatistic(req, res) {
-        let { error, data } = await post.overviewStatistic({ DEFAULT_FIELDS_HOME })
+        let { error, data } = await post.overviewStatistic()
         if (error) return res.send(resFail({ error }))
         res.send(resSuccess({ data }))
     }

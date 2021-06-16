@@ -1,18 +1,18 @@
 <template>
   <div id="statistics" v-if="visiable">
     <div class="overview-box">
-       <el-divider content-position="left"><h3> Số bài viết được xuất bản</h3></el-divider>
+       <el-divider content-position="left"><h3> Thống kê </h3></el-divider>
       <el-row class="overview-box" type="flex" justify="space-between">
         <el-col :md="8">
           <div class="box-child" style="background: linear-gradient(45deg, #4099ff, #73b4ff)">
-            <span>Hôm nay </span>
-            <strong>{{ overview.quantityInDate || 0 }}</strong>
+            <span>Tổng bài viết</span>
+            <strong>{{ overview.totalPost || 0 }}</strong>
           </div>
         </el-col>
         <el-col :md="8">
           <div class="box-child" style="background: linear-gradient(45deg, #2ed8b6, #59e0c5)">
-            <span> Tuần này </span>
-            <strong>{{ overview.quantityInWeek || 0 }}</strong>
+            <span> Lượt xem </span>
+            <strong>{{ overview.totalView || 0 }}</strong>
           </div>
         </el-col>
         <el-col :md="8">
@@ -356,7 +356,7 @@ $shadow2: #0000001a 0px 0px 20px;
         font-size: 2em;
       }
       strong {
-        color: #333;
+        color: #424242;
         font-size: 5em;
       }
     }

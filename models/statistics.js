@@ -1,5 +1,5 @@
 const baseModel = require('../baseModels/baseModel');
-const { rangeWeek, ONE_HOUR, ONE_DAY, ONE_WEEK, ONE_MONTH, convertDate } = require('../helpers')
+const { rangeWeek, ONE_HOUR, ONE_DAY, ONE_WEEK, ONE_MONTH, convertDate, rangeMonth } = require('../helpers')
 
 class Statistics extends baseModel {
     constructor() {
@@ -158,9 +158,9 @@ class Statistics extends baseModel {
 
     async getStatistics() {
         // ONE_HOUR
-        let _rangeWeek = rangeWeek(+new Date())
+        let _rangeWeek = rangeMonth(+new Date())
         let arrQuery = [
-            `SELECT posts.title, SUM(statistics.view) as 'totalView' FROM statistics INNER JOIN posts ON posts.id = statistics.post_id WHERE statistics.dateCreated BETWEEN '${+_rangeWeek.start}' AND '${+_rangeWeek.end}' GROUP BY posts.title  ORDER BY totalView DESC`,
+            `SELECT posts.title, SUM(statistics.view) as 'totalView' FROM statistics INNER JOIN posts ON posts.id = statistics.post_id WHERE statistics.dateCreated BETWEEN '${+_rangeWeek.start}' AND '${+_rangeWeek.end}' GROUP BY posts.title ORDER BY totalView DESC`,
             `SELECT posts.category_id, SUM(statistics.view) as 'totalView' FROM statistics INNER JOIN posts ON posts.id = statistics.post_id WHERE statistics.dateCreated BETWEEN '${+_rangeWeek.start}' AND '${+_rangeWeek.end}' GROUP BY posts.category_id ORDER BY totalView DESC`,
         ]
 

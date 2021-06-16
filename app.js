@@ -6,7 +6,7 @@ const cors = require('cors')
 // create realtime
 const server = require('http').createServer(app)
 const io = require('socket.io')(server, {
-  cors: { origin: "http://localhost:8080" }
+  cors: { origin: ["http://localhost:3000","http://localhost:8080", "https://doan.khucblog.com/"] }
 });
 
 const { startApp } = require('./baseModels/start');
@@ -19,7 +19,7 @@ startApp(err => {
   // init socketIO
   socketIO(io)
 
-  app.use('/', express.static('public'))
+  app.use('/', express.static('dist'))
   app.use('/static', express.static('static'))
   app.use(cors({ origin: domains, credentials: true }))
 
@@ -33,9 +33,6 @@ startApp(err => {
   app.use('/API/statistics', require('./routers/API/statistics'))
   app.use('/API/comments', require('./routers/API/comments'))
   app.use('/cdn/upload', require('./routers/CDN/upload'))
-
-  app.set('view engine', 'ejs');
-  // app.get('/', (req, res) => res.render(path.join(__dirname, './views/index.ejs')))
-
+  // app.get('/', (req, res) => res.sendFile(path.join(__dirname, './dist/index.html')))
   server.listen(PORT, () => l.cyan(`run at http://localhost:${PORT}`))
 })
