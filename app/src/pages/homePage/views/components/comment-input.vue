@@ -1,8 +1,12 @@
 <template>
   <div class="wrap-comment-input">
-    <div class="avatar">
-      <img src="https://doan.khucblog.com/static/images/avatar-default.jpg" />
+    <div v-if="!userInfo.id" style="margin: 0 auto">
+      <el-button @click="$router.push('/home/login')">Đăng nhập để bình luận</el-button>
     </div>
+    <div v-else>
+      <div class="avatar">
+        <img src="https://doan.khucblog.com/static/images/avatar-default.jpg" />
+      </div>
       <el-input
         :class="'inputComment-' + keyId"
         type="textarea"
@@ -13,10 +17,12 @@
       >
       </el-input>
       <el-button style="max-height: 40px" type="primary" plain @click="submitComment()">Gửi</el-button>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -49,6 +55,11 @@ export default {
         document.querySelector(`.inputComment-${this.keyId} textarea`).value = ''
       });
     }
+  },
+  computed: {
+    ...mapGetters({
+      userInfo: "_HOMEPAGE/userInfo"
+    })
   },
 };
 </script>
