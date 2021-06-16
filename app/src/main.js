@@ -30,18 +30,18 @@ registerModule().then(async () => {
   Vue.config.productionTip = false
 
   if (location.pathname.includes('/admin')) {
-    loadScript("http://localhost:3000/static/js/jquery_3.5.1.js");
+    loadScript("https://doan.khucblog.com/static/js/jquery_3.5.1.js");
     loadScript("https://cdn.tiny.cloud/1/pmx69zke0g1nne4ogs14gbeuj5l5w4sw5wzip9j4xxjlzsyl/tinymce/5/tinymce.min.js", true);
 
     let user_info = {}
-    await axios.get('http://localhost:3000/API/users/getInfoUser', { params: { location: 'admin' }, headers: headerGetAuth() }).then(res => {
+    await axios.get('https://doan.khucblog.com/API/users/getInfoUser', { params: { location: 'admin' }, headers: headerGetAuth() }).then(res => {
       const { ok, data } = res.data
       if (!ok) return localStorage.clear()
       user_info = data
       localStorage.setItem('_info', JSON.stringify(data))
     })
 
-    socket = await io('http://localhost:3000');
+    socket = await io('https://doan.khucblog.com');
     socket.on("connect", () => {
       if (user_info && user_info.id) {
         socket.emit("USER_CONNECTED", {
@@ -63,7 +63,7 @@ registerModule().then(async () => {
       }
     }
   } else {
-    await axios.get('http://localhost:3000/API/users/getInfoUser', { headers: headerGetAuth() }).then(res => {
+    await axios.get('https://doan.khucblog.com/API/users/getInfoUser', { headers: headerGetAuth() }).then(res => {
       const { ok, data } = res.data
       if (!ok) return localStorage.clear()
       localStorage.setItem('_user', JSON.stringify(data))

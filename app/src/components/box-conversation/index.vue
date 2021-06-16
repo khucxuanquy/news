@@ -1,7 +1,7 @@
 <template>
   <div class="box-conversation">
     <div class="avatar">
-      <img :src="DATA.avatar || 'http://localhost:3000/static/images/avatar-default.jpg'" alt="avatar" v-once/>
+      <img :src="DATA.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'" alt="avatar" v-once/>
       <span class="dot-status" :style="{'background': `${DATA.status == 'online' ? '#42d340' : 'transparent'}`}"></span>
     </div>
     <div class="meta">

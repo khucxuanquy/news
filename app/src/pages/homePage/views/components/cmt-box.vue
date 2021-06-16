@@ -19,7 +19,7 @@
               <img
                 :src="
                   comment.avatar ||
-                    'http://localhost:3000/static/images/avatar-default.jpg'
+                    'https://doan.khucblog.com/static/images/avatar-default.jpg'
                 "
                 alt=""
               />
@@ -77,7 +77,7 @@
                 <div class="comment-avatar">
                   <img
                     style="width: 44px; height: 44px"
-                    :src="item.avatar || 'http://localhost:3000/static/images/avatar-default.jpg'" />
+                    :src="item.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'" />
                 </div>
                 <div class="comment-box">
                   <div class="comment-head">

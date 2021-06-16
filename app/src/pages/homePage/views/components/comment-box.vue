@@ -2,7 +2,7 @@
   <div class="commentBox">
     <div class="commentBox__avatar">
       <img
-        :src="data.avatar || 'http://localhost:3000/static/images/avatar-default.jpg'"
+        :src="data.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'"
         alt="image"
       />
     </div>

@@ -7,7 +7,7 @@
               <!-- img 800 x 300 px -->
               <el-carousel :height="responsive.isDesktop ? '300px' : '130px'" direction="vertical" trigger="click" :autoplay="true" :interval="5000" style="box-shadow: #00000033 0px 0px 20px; border-radius: 8px;"> 
                 <el-carousel-item v-for="item in [1,2,3,4]" :key="item">
-                  <div class="banner-event" :style="`background-image: url(http://localhost:3000/static/images/qc${item}.jpg)`"></div>
+                  <div class="banner-event" :style="`background-image: url(https://doan.khucblog.com/static/images/qc${item}.jpg)`"></div>
                 </el-carousel-item>
               </el-carousel>
             <!-- LEFT -->
