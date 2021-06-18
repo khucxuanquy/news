@@ -1,7 +1,7 @@
 <template>
   <div class="wrap-comment-input">
     <div class="avatar">
-      <img src="http://localhost:3000/static/images/avatar-default.jpg" />
+      <img src="https://doan.khucblog.com/static/images/avatar-default.jpg" />
     </div>
       <el-input
         :class="'inputComment-' + keyId"

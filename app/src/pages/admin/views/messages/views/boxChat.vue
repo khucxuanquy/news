@@ -2,7 +2,7 @@
   <div class="box-chat" v-loading.fullscreen.lock="isLoading">
     <div class="header">
       <div>
-        <img class="avatar" src="http://localhost:3000/static/images/avatar-default.jpg">
+        <img class="avatar" src="https://doan.khucblog.com/static/images/avatar-default.jpg">
           <strong> {{currentUser.fullName}} </strong>
       </div>
       <div>
@@ -20,7 +20,7 @@
           :class="setClassNameForChatItem(item)"
           class="chat-item"
         >
-          <div class="avatar"><img :src="item.avatar || 'http://localhost:3000/static/images/avatar-default.jpg'" /></div>
+          <div class="avatar"><img :src="item.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'" /></div>
           <div class="chat-content">
             <p class="text" v-for="m in item.messages" :key="m.id">
               <span>{{ m.content }}</span>

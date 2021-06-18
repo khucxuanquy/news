@@ -160,11 +160,6 @@ const ALL_ROUTER = [
             },
         ]
     },
-    {
-        path: '/test',
-        component: () => import('../pages/test/index.vue'),
-        hidden: true,
-    },
     // 404 not found
     {
         path: '*',

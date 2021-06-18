@@ -78,7 +78,7 @@
             <span v-else>{{ index }}</span>
           </div>
           <div class="info">
-            <img :src="user.avatar || 'http://localhost:3000/static/images/avatar-default.jpg'">
+            <img :src="user.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'">
             <div class="info-detail">
             <p class="name">{{user.fullName}}</p>
             <span class="position">{{user.position}}</span>
@@ -99,7 +99,7 @@
             <span v-else>{{ index }}</span>
           </div>
           <div class="info">
-            <img :src="user.avatar || 'http://localhost:3000/static/images/avatar-default.jpg'">
+            <img :src="user.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'">
             <div class="info-detail">
             <p class="name">{{user.fullName}}</p>
             <span class="position">{{user.position}}</span>
