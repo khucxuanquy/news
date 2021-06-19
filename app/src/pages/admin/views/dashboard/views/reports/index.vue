@@ -1,13 +1,28 @@
 <template>
   <div id="reports-dashboard" :visiabled="visiabled" v-loading.fullscreen.lock="isLoading">
     <el-table :data="reports" style="width: 100%" @expand-change="onShowContent">
-      
+      <!--  -->
       <el-table-column type="expand">
         <template slot-scope="props">
-          <p>{{lang.post}}: <strong>{{ props.row.post_title }} </strong> </p>
-          <p>{{lang.reportName}}: <strong>{{ props.row.title }} </strong> </p>
-          <p>{{lang.email}}: <strong>{{ props.row.email }}</strong> </p>
-          <p> {{ props.row.content }} </p>
+          <!-- {{props.row}} -->
+          <p>{{ lang.post }} : <strong class="post-title" @click="idEditPost = props.row.post_id, showPopupEdit = true">{{ props.row.post_title }} </strong> </p>
+          <p>{{ lang.reportName }} : <strong>{{ props.row.title }} </strong> </p>
+          <p>Người Báo cáo: <strong>{{ props.row.fullName }} </strong> </p>
+          <p style="display: flex; align-items: center"><span>Vấn đề</span> : 
+            <strong>
+              <el-rate
+                style="padding-left: 1em; display: inline-block"
+                v-model="props.row.issue"
+                disabled
+                show-score
+                :colors="['#99A9BF', '#F7BA2A', '#FF9900']"
+                show-text
+                :score-template="'('+ ['Rất tệ', 'Tệ', 'Bình thường', 'Khá', 'Rất tốt'][props.row.issue - 1] + ')'"  
+              >
+              </el-rate> 
+            </strong>
+          </p>
+          <p>Nội dung: <strong>{{ props.row.content }} </strong></p>
         </template>
       </el-table-column>
 
@@ -21,7 +36,7 @@
 
       <el-table-column :label="lang.reportName" prop="title"></el-table-column>
 
-      <el-table-column :label="lang.email" prop="email"></el-table-column>
+      <el-table-column :label="lang.fullName || 'Họ và tên'" prop="fullName"></el-table-column>
 
       <el-table-column :label="lang.dateCreated">
         <template slot-scope="{row}">
@@ -36,6 +51,7 @@
       </el-table-column>
 
     </el-table>
+    <PopupEditPost :visiable.sync="showPopupEdit" @handleClose="showPopupEdit = false" :id="idEditPost"/>
   </div>
 </template>
 
@@ -44,14 +60,18 @@ import ENUM from 'const/api'
 const { REPORTS } = ENUM
 
 import CONST from 'const/const'
+import PopupEditPost from '../posts/popupEditPost.vue'
 export default {
   data() {
     return {
       visiabled: false,
-      isLoading: true
+      isLoading: true,
+
+      idEditPost: null,
+      showPopupEdit: false,
     }
   },
-  components: {  },
+  components: { PopupEditPost },
   beforeCreate() {
     if(!localStorage.getItem('_u')) return this.$router.push('/admin/login').catch(()=>{});
   },
@@ -95,7 +115,11 @@ export default {
           })
         })
         .catch(() => '')
-    }
+    },
+    handleEdit(index, { id }){
+      this.idEditPost = id
+      this.showPopupEdit = true
+    },
   },
   mounted() {
   },
@@ -118,6 +142,14 @@ export default {
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     margin: 0;
+  }
+  .post-title {
+    &:hover {
+      color: transparent;
+      background-image: linear-gradient(to left, #76b852, #8DC26F);
+      -webkit-background-clip: text;
+      cursor: pointer;
+    }
   }
 }
 </style>

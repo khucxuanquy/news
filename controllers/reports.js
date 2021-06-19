@@ -5,6 +5,7 @@ const { resFail, resSuccess, randomId } = require('../helpers')
 module.exports = {
     async create(req, res) {
         req.body.id = randomId()
+        req.body.user_id = req.token.id
         let { error } = await report.create(req.body)
         if (error) return res.send(resFail({ error }))
         res.send(resSuccess())

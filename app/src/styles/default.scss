@@ -22,10 +22,15 @@
 
 ::-webkit-scrollbar-thumb {
     background: #1a1a1a;
-    background: linear-gradient(grey, #e6e6e6)
+    background: linear-gradient(grey, #e6e6e6);
+    background: linear-gradient(to right, #76b852a6, #8dc26fa6);
+    &:hover {
+    background: linear-gradient(to left, #76b852, #8DC26F);
+    cursor: pointer;
+    }
 }
 body::-webkit-scrollbar{
-    width: 7px;
+    width: 10px;
 }
 
 html {

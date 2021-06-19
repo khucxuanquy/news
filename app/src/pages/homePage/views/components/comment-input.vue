@@ -1,9 +1,9 @@
 <template>
-  <div class="wrap-comment-input">
+  <div>
     <div v-if="!userInfo.id" style="margin: 0 auto">
       <el-button @click="$router.push('/home/login')">Đăng nhập để bình luận</el-button>
     </div>
-    <div v-else>
+    <div class="wrap-comment-input" v-else>
       <div class="avatar">
         <img src="https://doan.khucblog.com/static/images/avatar-default.jpg" />
       </div>

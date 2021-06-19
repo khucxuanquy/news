@@ -58,27 +58,14 @@
           <div class="container">
           <el-row>
             <el-col :md="18">
-            <!-- CATEGORY 1 -->
-            <div v-if="sectionBottom[0] && sectionBottom[0].data.length">
-              <TextAngleSharp :title="sectionBottom[0].name" :color="sectionBottom[0].color" />
+              <div v-for="(item, index) in sectionBottom" :key="index" >
+              <TextAngleSharp :title="item.name" :color="item.color" />
               <el-row>
                 <el-col :md="12"> 
-                  <Box :data="sectionBottom[0].data[0]" large :height="230" />
+                  <Box :data="item.data[0]" large :height="230" />
                 </el-col>
                 <el-col :md="12">
-                    <Box :data="post" mini :height="78" v-for="post in sectionBottom[0].data.filter((i, index) => index != 0 )" :key="post.id" />
-                </el-col>
-              </el-row>
-            </div>
-            <!-- CATEGORY 2 -->
-            <div v-if="sectionBottom[1] && sectionBottom[1].data.length">
-              <TextAngleSharp :title="sectionBottom[1].name" :color="sectionBottom[1].color" />
-              <el-row>
-                <el-col :md="12">
-                  <Box :data="sectionBottom[1].data[0]" large :height="230" />
-                </el-col>
-                <el-col :md="12">
-                    <Box :data="post" mini :height="78" v-for="post in sectionBottom[1].data.filter((i, index) => index != 0 )" :key="post.id" />
+                    <Box :data="post" mini :height="78" v-for="post in item.data.filter((i, index) => index != 0 )" :key="post.id" />
                 </el-col>
               </el-row>
             </div>
@@ -136,7 +123,9 @@ export default {
     },
     sectionBottom(){
       let { sectionBottom } = this.home
-      return this.categories.filter(i => sectionBottom[i.id]).map(i => {
+      return this.categories.filter((i, ii) => {
+        return sectionBottom[i.id] && sectionBottom[i.id] && sectionBottom[i.id].length
+      }).map(i => {
         let data = sectionBottom[i.id].map(post => ({...post, category: i, dateCreated: this.convertDate(post.dateCreated)}))
         return { color: i.color, name: i.name, url: i.url, data }
       })

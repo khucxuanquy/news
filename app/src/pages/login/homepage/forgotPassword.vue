@@ -27,7 +27,7 @@
       <p class="errorMessage" v-show="errorEmail">Vui lòng nhập đúng email</p>
       <div class="d-grid gap-2 d-md-flex justify-content-md-end">
         <button @click="sendToEmail" class="btn btn-primary" type="button">
-          Send Email
+          Gửi yêu cầu
         </button>
       </div>
     </div>
@@ -42,6 +42,7 @@ export default {
     return {
       email: "",
       errorEmail: false,
+      checkSendEmail: false
     };
   },
   methods: {
@@ -55,10 +56,12 @@ export default {
       }
     },
     sendToEmail() {
+      if(this.checkSendEmail) return this.$message({ message: 'Chúng tôi đã gửi email cho bạn. Vui lòng vào email để xem và làm các bước để lấy lại mật khẩu.', type: 'success' });
       if (this.validateValue()) {
         this.postAPI(USERS.FORGOT_PASSWORD, { email: this.email }, res => {
           let { ok, message } = res
           if(!ok) return this.$message({ message, type: 'warnig' })
+          this.checkSendEmail = true
           this.$message({ message, type: 'success' })
         })
 

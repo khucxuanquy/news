@@ -115,7 +115,7 @@ module.exports = {
 
         // token la id user
         let token = signToken({ id: data[0].id })
-        sendToEmailToChangePassword({ email, token }).then(r => { }).catch(e => { })
+        sendToEmailToChangePassword({ email, token }).then(r => {}).catch(e => { })
         res.send(resSuccess({ message: 'Chúng tôi đã gửi thư xác nhận đến email mà bạn đăng kí, vui lòng đăng nhập vào email để reset lại mật khẩu' }))
     },
 

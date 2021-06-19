@@ -1,7 +1,8 @@
 require('dotenv').config()
-const URL = 'https://doan.khucblog.com/API/'
+let isLocal = false
+const URL = isLocal ? 'http://localhost:3000/API/' : 'https://doan.khucblog.com/API/'
 export default {
-    MEDIA : 'https://doan.khucblog.com/cdn/upload',
+    MEDIA : isLocal ? 'http://localhost:3000/' : 'https://doan.khucblog.com/cdn/upload',
     POSTS: {
         CREATE: URL + 'posts/create',
         EDIT: URL + 'posts/edit',

@@ -33,7 +33,7 @@
         v-model="userGmail"
         type="email"
         class="form-control"
-        placeholder="Gmail"
+        placeholder="Email"
         aria-label="Email"
         aria-describedby="basic-addon1"
       />

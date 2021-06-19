@@ -52,7 +52,7 @@
             type="warning"
             plain
             icon="el-icon-warning-outline"
-            @click="isShowFormReport = true"
+            @click="userInfo.id ? isShowFormReport = true: $message({type: 'warning', message: 'Vui lòng Đăng nhập để báo cáo' })"
             >Báo cáo bài viết này</el-button
           >
           <div v-if="isShowFormReport">
@@ -69,16 +69,25 @@
                   <template slot="prepend">Tiêu đề</template>
                 </el-input>
               </el-col>
-              <el-col :md="12">
-                <el-input
-                  placeholder="Nhập email của bạn"
+              <el-col :md="12" style="display: flex; align-items: center">
+                <!-- <el-input
+                  placeholder="Bình thường, nghiêm trọng"
                   size="large"
-                  v-model="form.email"
+                  v-model="form.issue"
                 >
-                  <template slot="prepend">Email</template>
-                </el-input>
-              </el-col> </el-row
-            ><br />
+                  <template slot="prepend">Vấn đề</template>
+                </el-input> -->
+                <el-tooltip class="item" effect="dark" content="Mức độ vấn đề" placement="top-start">
+                  <el-rate
+                    v-model="form.issue"
+                    :texts="['Rất tệ', 'Tệ', 'Bình thường', 'Khá', 'Rất tốt']"
+                    :colors="['#99A9BF', '#F7BA2A', '#FF9900']"
+                    show-text>
+                  </el-rate> 
+                </el-tooltip>
+              </el-col>
+              </el-row>
+              <br />
             <el-input
               type="textarea"
               :rows="4"
@@ -191,12 +200,13 @@ import TextAngleSharp from "components/text-angle-sharp";
 import ENUM from "const/api";
 import CONST from "const/const";
 import CmtBox from "./components/cmt-box.vue";
-const { POSTS } = ENUM;
+const { POSTS, REPORTS } = ENUM;
 import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
       detail: {},
+      reportRate: null,
       visible: false,
       form: {
         title: "",
@@ -239,7 +249,7 @@ export default {
     // change_reaction 1 comment
     // 1 : like, -1 dislike
       this.putAPI(COMMENTS.CHANGE_REACTION, {  comment_id: '', reaction: 1 || -1 }, response => {
-        console.log(response)
+        3response)
       })
 
     // DELETE 
@@ -337,8 +347,8 @@ export default {
     },
     submitFormReport() {
       const { id } = this.detail;
-      const { title, email, content } = this.form;
-      if (!id || !title || !email || !content)
+      const { title, issue, content } = this.form;
+      if (!id || !title || !content)
         return this.$message({
           message: "Vui lòng điền đẩy đủ thông tin",
           type: "Error"
@@ -351,7 +361,7 @@ export default {
         .then(() => {
           this.postAPI(
             REPORTS.CREATE,
-            { post_id: id, title, email, content },
+            { post_id: id, title, content, issue: Number(issue) > -1 ? Number(issue) || 3 : 3 },
             r => {
               if (!r.ok)
                 return this.$message({
@@ -407,6 +417,7 @@ export default {
   },
   watch: {
     "$route.params": function(currentParams) {
+      this.form = {}
       this.stopSpeak();
       this.visible = false;
       const { category_url, post_url } = currentParams;
@@ -451,8 +462,11 @@ export default {
         if (this.isActivedSpeak) this.speakPost();
       });
     },
-    "detail.title": title => (document.title = title),
-  }
+    "detail.title": title => (document.title = title)
+  },
+  beforeDestroy() {
+    this.stopSpeak()
+  },
 };
 </script>
 
