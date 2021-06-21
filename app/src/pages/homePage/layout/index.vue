@@ -60,13 +60,13 @@ export default {
       });
     }
 
-    if (!this.home.length) {
+    if (!this.home.topNewFeed.length) {
       this.getAPI(POSTS.HOME, {}, (res) => {
         if (!res.ok) return;
         this.CHANGE_DATA_HOME(res.data);
         this.visible = true;
       });
-    }
+    } else this.visible = true
   },
   methods: {
     ...mapActions({

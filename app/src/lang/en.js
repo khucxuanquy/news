@@ -92,7 +92,7 @@ export default {
     // U
     users: 'Users',
     username: 'Username',
-
+    userManual: 'User manual',
 
     // V
     view: 'View',

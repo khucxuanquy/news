@@ -239,6 +239,13 @@ class Posts extends baseModel {
             })
     }
 
+    async statisticUser({ id }) {
+        if(!id) return { error: 'Thiếu trường id' }
+        let query = `SELECT category_id, COUNT(id) as totalPosts, SUM(view) as totalViews FROM posts WHERE user_id = '${id}' GROUP BY category_id`
+        return await new Promise(resolve => {
+            this.sql.query(query, (error, data) => resolve({ error, data }))
+        })
+    }
 
 }
 

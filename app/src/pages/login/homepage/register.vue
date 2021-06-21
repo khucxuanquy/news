@@ -1,89 +1,109 @@
 <template>
-  <div class="register container">
-    <div class="logo">
-      <img
-        src="https://laptrinhmaytinh.com/assets/images/logo_lg.png"
-        class="rounded"
-        alt="logo"
-      />
+  <div>
+    <div v-if="!sentEmail" class="register container">
+      <div class="logo">
+        <img
+          src="https://laptrinhmaytinh.com/assets/images/logo_lg.png"
+          class="rounded"
+          alt="logo"
+          @click="$router.push('/')"
+        />
+      </div>
+      <h3>Đăng ký</h3>
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1"
+          ><i class="far fa-user"></i
+        ></span>
+        <input
+          v-model="userName"
+          required
+          type="text"
+          class="form-control"
+          placeholder="Họ và Tên"
+          aria-label="User name"
+          aria-describedby="basic-addon1"
+        />
+      </div>
+      <p class="errorMessage" v-show="error.isErrName">
+        Vui lòng nhập tên tài khoản
+      </p>
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1"
+          ><i class="far fa-envelope"></i
+        ></span>
+        <input
+          v-model="userGmail"
+          type="email"
+          class="form-control"
+          placeholder="Email"
+          aria-label="Email"
+          aria-describedby="basic-addon1"
+        />
+      </div>
+      <p v-show="error.isErrGmail" class="errorMessage">
+        Vui lòng nhập đúng định dạng gmail
+      </p>
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1"
+          ><i class="fas fa-lock"></i
+        ></span>
+        <input
+          v-model="userPassword"
+          type="password"
+          class="form-control"
+          placeholder="Mật khẩu"
+          aria-label="Password"
+          aria-describedby="basic-addon1"
+        />
+      </div>
+      <p v-show="error.isErrPass" class="errorMessage">
+        Vui lòng nhập mật khẩu từ 8 - 30 kí tự, bao gồm chữ hoa, chữ thường, số
+      </p>
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1"
+          ><i class="fas fa-lock"></i
+        ></span>
+        <input
+          v-model="userRePassword"
+          type="password"
+          class="form-control"
+          placeholder="Nhập lại mật khẩu"
+          aria-label="Re-Password"
+          aria-describedby="basic-addon1"
+        />
+      </div>
+      <p v-if="this.userPassword !== this.userRePassword" class="errorMessage">
+        Mật khẩu không trùng khớp
+      </p>
+      <div>
+        <button
+          type="submit"
+          class="btn w-100 btn-primary btn__login"
+          @click="RegisterToPage"
+        >
+          Đăng ký
+        </button>
+      </div>
+      <div class="d-flex justify-content-center">
+        <router-link to="/home/login">Đã có tài khoản</router-link>
+      </div>
     </div>
-    <h3>Đăng ký</h3>
-    <div class="input-group mb-3">
-      <span class="input-group-text" id="basic-addon1"
-        ><i class="far fa-user"></i
-      ></span>
-      <input
-        v-model="userName"
-        required
-        type="text"
-        class="form-control"
-        placeholder="Họ và Tên"
-        aria-label="User name"
-        aria-describedby="basic-addon1"
-      />
-    </div>
-    <p class="errorMessage" v-show="error.isErrName">
-      Vui lòng nhập tên tài khoản
-    </p>
-    <div class="input-group mb-3">
-      <span class="input-group-text" id="basic-addon1"
-        ><i class="far fa-envelope"></i
-      ></span>
-      <input
-        v-model="userGmail"
-        type="email"
-        class="form-control"
-        placeholder="Email"
-        aria-label="Email"
-        aria-describedby="basic-addon1"
-      />
-    </div>
-    <p v-show="error.isErrGmail" class="errorMessage">
-      Vui lòng nhập đúng định dạng gmail
-    </p>
-    <div class="input-group mb-3">
-      <span class="input-group-text" id="basic-addon1"
-        ><i class="fas fa-lock"></i
-      ></span>
-      <input
-        v-model="userPassword"
-        type="password"
-        class="form-control"
-        placeholder="Mật khẩu"
-        aria-label="Password"
-        aria-describedby="basic-addon1"
-      />
-    </div>
-    <p v-show="error.isErrPass" class="errorMessage">
-      Vui lòng nhập mật khẩu từ 8 - 30 kí tự, bao gồm chữ hoa, chữ thường, số
-    </p>
-    <div class="input-group mb-3">
-      <span class="input-group-text" id="basic-addon1"
-        ><i class="fas fa-lock"></i
-      ></span>
-      <input
-        v-model="userRePassword"
-        type="password"
-        class="form-control"
-        placeholder="Nhập lại mật khẩu"
-        aria-label="Re-Password"
-        aria-describedby="basic-addon1"
-      />
-    </div>
-    <p v-if="this.userPassword !== this.userRePassword" class="errorMessage">
-      Mật khẩu không trùng khớp
-    </p>
-    <div>
-      <button
-        type="submit"
-        class="btn w-100 btn-primary btn__login"
-        @click="RegisterToPage"
-      >
-        Đăng ký
-      </button>
-    </div>
-    <div class="d-flex justify-content-center">
-      <router-link to="/home/login">Đã có tài khoản</router-link>
+    <div v-else class="register container" style="padding-top: 2em; max-width: 850px">
+       <img
+          src="https://doan.khucblog.com/static/images/logo_lg.png"
+          class="rounded"
+          alt="logo"
+          style="width: 90px; margin-left: calc(50% - 45px)"
+          @click="$router.push('/')"
+        />
+      <h4 style="text-align: center; color: #0da881">Cảm ơn bạn đã đăng kí</h4>
+      <h4 style="padding: 1em">
+        Chúng tôi đã gửi thư xác thực vào email mà bạn đã dùng để đăng kí. Thư xác thực có giá trị trong 15 phút kể từ lúc đăng kí tài khoản.
+      </h4>
+      <div style="text-align: center; margin-bottom: 2em">
+        <el-button type="primary" round plain @click="$router.push('/')"> Trang chủ </el-button>
+        <el-button type="success" round plain @click="$router.push('/home/login')"> Đăng nhập </el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -116,6 +136,7 @@ export default {
         isErrPass: false,
         isErrRepass: false,
       },
+      sentEmail: false
     };
   },
   methods: {
@@ -183,8 +204,7 @@ export default {
         this.postAPI(ENUM.USERS.REGISTER, d, (response) => {
           let { ok, message } = response
           if(!ok) return this.$message({ type: 'warning', message })
-          this.$message({ type: 'warning', message, duration: 5000 })
-          this.$route.push('/')
+          this.sentEmail = true
         });
       }
       else {
@@ -196,6 +216,9 @@ export default {
 </script>
 
 <style scoped>
+img.rounded {
+  cursor: pointer
+}
 .register {
   max-width: 400px;
   border-radius: 2%;

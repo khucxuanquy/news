@@ -1,8 +1,9 @@
 require('dotenv').config()
-let isLocal = false
+let isLocal = true
+window.isLocal = isLocal
 const URL = isLocal ? 'http://localhost:3000/API/' : 'https://doan.khucblog.com/API/'
 export default {
-    MEDIA : isLocal ? 'http://localhost:3000/' : 'https://doan.khucblog.com/cdn/upload',
+    MEDIA : false ? 'http://localhost:3000/cdn/upload' : 'https://doan.khucblog.com/cdn/upload',
     POSTS: {
         CREATE: URL + 'posts/create',
         EDIT: URL + 'posts/edit',
@@ -14,7 +15,8 @@ export default {
         GET_POSTS_BY_CATEGORY: URL + 'posts/getPostsByCategory',
         SEARCH: URL + 'posts/search',
         SEARCH_BY_PERMISSION: URL + 'posts/searchByPermission',
-        GET_OVERVIEW_STATISTICS: URL + 'posts/overviewStatistic'
+        GET_OVERVIEW_STATISTICS: URL + 'posts/overviewStatistic',
+        STATISTIC_USER: URL + 'posts/statisticUser'
     },
     CATEGORIES: {
         CREATE: URL + 'categories/create',

@@ -61,7 +61,8 @@
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <!-- <el-dropdown-item command="editInfo">{{lang.editInfo}}</el-dropdown-item> -->
-                  <el-dropdown-item command="logout">{{lang.logout}}</el-dropdown-item>
+                  <el-dropdown-item command="info"> <i class="el-icon-user-solid"></i> Thông tin </el-dropdown-item>
+                  <el-dropdown-item command="logout"> <i class="fas fa-sign-out-alt"></i> {{lang.logout}} </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>

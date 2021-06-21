@@ -26,7 +26,7 @@ const fileFilter = (req, file, cb) => cb(null, true)
 const upload = multer({ storage, fileFilter }).array('file');
 // const upload = multer({ storage, fileFilter }).array('images[]');
 
-router.post('/', verifyToken, (req, res) => {
+router.post('/', (req, res) => {
   upload(req, res, async error => {
     if (error) return res.send(error);
     const url = req.files.map(i => {

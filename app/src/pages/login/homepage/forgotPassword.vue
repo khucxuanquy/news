@@ -5,6 +5,7 @@
         src="https://laptrinhmaytinh.com/assets/images/logo_lg.png"
         class="rounded"
         alt="logo"
+        @click="$router.push('/')"
       />
     </div>
     <div class="forgotPassword__body">

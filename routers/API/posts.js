@@ -9,6 +9,9 @@ router.delete('/delete', verifyToken, post.delete)
 router.get('/getPostsByPermission', verifyToken, post.getPostsByPermission)
 router.get('/searchByPermission', verifyToken, post.searchByPermission)
 router.get('/overviewStatistic', verifyToken, post.overviewStatistic)
+router.get('/statisticUser', verifyToken, post.statisticUser)
+
+
 
 router.get('/search', post.search)
 router.get('/get', post.get)

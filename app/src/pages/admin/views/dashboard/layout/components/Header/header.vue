@@ -26,6 +26,10 @@
             <i class="el-icon-s-data"></i>
             <span slot="title">{{lang.statistic}}</span>
           </el-menu-item>
+          <el-menu-item index="/admin/dashboard/userManual">
+            <i class="el-icon-s-management"></i>
+            <span slot="title">{{lang.userManual}}</span>
+          </el-menu-item>
         </el-menu>  
        </transition>
     </div>

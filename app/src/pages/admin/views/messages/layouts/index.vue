@@ -33,6 +33,7 @@ export default {
     if(!this.friends.length) {
       this.socket.on('CLIENT_FRIENDS', data => {
         this.CHANGE_FRIENDS(data)
+        console.log(36, data.map(i => i.id))
       })
       this.socket.emit('GET_FRIENDS', {
         id: this.myAccount.id,

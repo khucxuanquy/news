@@ -92,6 +92,7 @@ export default {
     // U
     users: 'Người dùng',
     username: 'Tên tài khoản',
+    userManual: 'Hướng dẫn sử dụng',
 
     // V
     view: 'Lượt xem',

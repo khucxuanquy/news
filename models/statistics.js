@@ -114,7 +114,6 @@ class Statistics extends baseModel {
             // đảo ngược lại dateCreated do push `end` vào arrDate
             arrQuery.push(`SELECT posts.category_id, SUM(statistics.view) as 'totalView' FROM statistics INNER JOIN posts ON posts.id = statistics.post_id WHERE statistics.dateCreated BETWEEN '${arrDate[i]}' AND '${arrDate[i + 1]}' ${queryCategories} GROUP BY posts.category_id`)
         }
-        console.log({ arrDate });
         return Promise.all(arrQuery.map(query => new Promise(resolve => {
             this.sql.query(query, (err, data) => err ? resolve([]) : resolve(data))
         })))
@@ -158,7 +157,7 @@ class Statistics extends baseModel {
 
     async getStatistics() {
         // ONE_HOUR
-        let _rangeWeek = rangeMonth(+new Date())
+        let _rangeWeek = rangeWeek(+new Date())
         let arrQuery = [
             `SELECT posts.title, SUM(statistics.view) as 'totalView' FROM statistics INNER JOIN posts ON posts.id = statistics.post_id WHERE statistics.dateCreated BETWEEN '${+_rangeWeek.start}' AND '${+_rangeWeek.end}' GROUP BY posts.title ORDER BY totalView DESC`,
             `SELECT posts.category_id, SUM(statistics.view) as 'totalView' FROM statistics INNER JOIN posts ON posts.id = statistics.post_id WHERE statistics.dateCreated BETWEEN '${+_rangeWeek.start}' AND '${+_rangeWeek.end}' GROUP BY posts.category_id ORDER BY totalView DESC`,

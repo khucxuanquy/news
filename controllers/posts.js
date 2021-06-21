@@ -101,6 +101,10 @@ module.exports = {
         let { error, data } = await post.overviewStatistic()
         if (error) return res.send(resFail({ error }))
         res.send(resSuccess({ data }))
+    },
+    async statisticUser(req, res) {
+        let { error, data } = await post.statisticUser(req.token)
+        if (error) return res.send(resFail({ error }))
+        res.send(resSuccess({ data }))
     }
-
 }

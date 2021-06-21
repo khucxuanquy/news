@@ -5,7 +5,7 @@
     </div>
     <div class="wrap-comment-input" v-else>
       <div class="avatar">
-        <img src="https://doan.khucblog.com/static/images/avatar-default.jpg" />
+        <img :src="userInfo.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'" />
       </div>
       <el-input
         :class="'inputComment-' + keyId"

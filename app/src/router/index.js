@@ -131,6 +131,13 @@ const ALL_ROUTER = [
                             title: 'Thống kê | Tech News'
                         }
                     },
+                    {
+                        path: 'userManual',
+                        component: () => import('../pages/admin/views/dashboard/views/userManual'),
+                        meta: {
+                            title: 'Hướng dẫn sử dụng | Tech News'
+                        }
+                    },
                 ]
             },
             // messenger

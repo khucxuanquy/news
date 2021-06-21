@@ -16,16 +16,21 @@
               </el-dropdown-menu>
           </el-dropdown>
           <el-dropdown trigger="click" @command="handleClickItem">
-            <span class="el-dropdown-link"><span style="padding: 5px">{{myAccount.fullName}}</span><i class="el-icon-arrow-down el-icon--right"></i></span>
+            <span class="el-dropdown-link">
+              <img class="avatar" :src="myAccount.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'">
+              <span style="padding: 5px">{{myAccount.fullName}}</span>
+              <i class="el-icon-arrow-down el-icon--right"></i></span>
               <el-dropdown-menu slot="dropdown">
                 <!-- <el-dropdown-item command="editInfo">{{lang.editInfo}}</el-dropdown-item> -->
-                <el-dropdown-item command="logout">{{lang.logout}}</el-dropdown-item>
+                <el-dropdown-item style="padding-bottom: .2em" command="info"> <i class="el-icon-user-solid"></i> Thông tin </el-dropdown-item>
+                <el-dropdown-item style="padding-bottom: .2em" command="logout"> <i class="fas fa-sign-out-alt"></i> {{lang.logout}}</el-dropdown-item>
               </el-dropdown-menu>
           </el-dropdown>
         </div>
       </div>
       <router-view />
     </div>
+    <DialogInfoUser v-if="showDialog" :dialogVisible="showDialog" @handleClose="showDialog = false" />
   </div>
 </template>
 
@@ -33,17 +38,19 @@
 import Header from "./components/Header/header";
 import {mapGetters, mapActions} from 'vuex'
 import ENUM from "const/api";
+import DialogInfoUser from './dialogInfoUser.vue';
 const { CATEGORIES, USERS } = ENUM
 export default {
   data: function(){
     return {
       isCollapse: false,
       currentLanguage: localStorage.getItem('lang') && localStorage.getItem('lang').toUpperCase() == 'EN' ? 'EN' : 'VI',
-      ga: false
+      showDialog: false
     }
   },
   components: {
     Header,
+    DialogInfoUser,
   },
   methods: {
     ...mapActions({
@@ -54,6 +61,7 @@ export default {
       CHANGE_USERS: '_USERS/CHANGE',
       CHANGE_REPORTS: '_REPORTS/CHANGE',
       CHANGE_MY_ACCOUNT: '_ACCOUNT/CHANGE_MY_ACCOUNT',
+      CHANGE_USER_INFO_DETAIL: '_HOMEPAGE/CHANGE_USER_INFO_DETAIL',
     }),
     handleCollapseNavbar(){
       let collapse = !this.isCollapse
@@ -75,8 +83,9 @@ export default {
         this.CHANGE_MY_ACCOUNT({})
         this.CHANGE_TOTAL_POSTS(0)
         this.$router.push('/admin/login').catch(()=>{})
-      } else if (name == 'editInfo') {
-
+      } else if (name == 'info') {
+        // this.CHANGE_USER_INFO_DETAIL()
+        this.showDialog = true
       }
     }
   },
@@ -122,7 +131,8 @@ export default {
       .dropdown-langs {
         border: 1px solid;
         padding: .1rem .3rem;
-        border-radius: 4px
+        border-radius: 4px;
+        margin-right: 1.5em;
       }
     }
     
@@ -130,6 +140,13 @@ export default {
       height: 100vh;
       width: 100%;
       overflow-y: auto;
+    }
+
+    img.avatar {
+      width: 30px;
+      height: 30px;
+      min-width: 30px;
+      border-radius: 50%;
     }
   }
 </style>

@@ -1,5 +1,5 @@
 const baseModel = require('../baseModels/baseModel')
-
+const { convertDateTimeline } = require('../helpers')
 class Messages extends baseModel {
     constructor() {
         super('messages')
@@ -42,7 +42,7 @@ class Messages extends baseModel {
         let query = `SELECT * FROM messages WHERE (receive_id='${sender_id}' OR receive_id='${receive_id}') AND (sender_id='${sender_id}' OR sender_id='${receive_id}') `
         query += `ORDER BY dateCreated DESC limit ${from},${limit}`
         return await new Promise(resolve => {
-            this.sql.query(query, (error, data) => resolve({ error, data }))
+            this.sql.query(query, (error, data) => resolve({ error, data: data.map(i => ({...i, dateCreated: convertDateTimeline(Number(i.dateCreated))})) }))
         })
     }
 }

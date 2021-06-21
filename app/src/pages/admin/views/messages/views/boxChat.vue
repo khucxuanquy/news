@@ -2,7 +2,7 @@
   <div class="box-chat" v-loading.fullscreen.lock="isLoading">
     <div class="header">
       <div>
-        <img class="avatar" src="https://doan.khucblog.com/static/images/avatar-default.jpg">
+        <img class="avatar" :src="currentUser.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'">
           <strong> {{currentUser.fullName}} </strong>
       </div>
       <div>
@@ -20,9 +20,9 @@
           :class="setClassNameForChatItem(item)"
           class="chat-item"
         >
-          <div class="avatar"><img :src="item.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'" /></div>
+          <div class="avatar"><img :src="currentUser.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'" /></div>
           <div class="chat-content">
-            <p class="text" v-for="m in item.messages" :key="m.id">
+            <p class="text" v-for="m in item.messages" :key="m.id" :data-dateCreated="m.dateCreated">
               <span>{{ m.content }}</span>
             </p>
           </div>
@@ -78,6 +78,7 @@ export default {
     this.socket.on('CLIENT_RECEIVE_MESSAGE', data => {
       this.CHAT_NEW_MESSAGE(data)
       this.$nextTick(()=> this.scrollToBottom())
+      console.log('box-chat -- 81', data)
     })
     this.socket.on('CLIENT_GET_MESSAGES', data => {
       if(data.length < this.limit) this.maxMessages = true;
@@ -87,6 +88,7 @@ export default {
       if(!this.from) this.$nextTick(() => this.scrollToBottom())
       this.$nextTick(() => this.tickToScroll())
       this.isLoading = false
+      console.log('box-chat -- 91', data)
     })
       
     if(this.friends.length) {
@@ -234,6 +236,15 @@ export default {
       this.getMessages()
     },
   },
+  beforeDestroy() {
+    console.log('beforeDestroy')
+    this.socket.removeListener("CLIENT_GET_MESSAGES")
+    this.socket.removeListener("CLIENT_RECEIVE_MESSAGE")
+    // removeAllListeners("news");
+    //  this.socket.removeListener('CLIENT_GET_MESSAGES', (a,b) => {
+    //    console.log(212, a,b)
+    //  })
+  }
 };
 </script>
 
@@ -303,7 +314,11 @@ export default {
         }
         .chat-content {
           width: 100%;
-
+          & > p:last-child {
+            &:before, &:after {
+              opacity: .5!important;
+            }
+          }
           p.text {
             margin: 0;
             padding: 3px 0px;
@@ -313,10 +328,28 @@ export default {
             span {
               display: inline-block;
               position: relative;
+              max-width: 50%;
               padding: 6px 8px;
               border-radius: 6px;
+              transform: rotate(0deg);
               background: whitesmoke;
               box-shadow: #0000001a 0px 0px 20px;
+              transition: all .3s cubic-bezier(0.075, 0.82, 0.165, 1);
+
+            }
+            &:after {
+              content: attr(data-dateCreated);
+              font-size: 16px;
+              opacity: 0;
+              padding-left: .5em;
+            }
+            &:hover {
+              :after {
+                opacity: .5;
+              }
+              span {
+                color: black;
+              }
             }
           }
         }
@@ -330,6 +363,22 @@ export default {
           p.text {
             text-align: right;
             padding-right: 1em;
+
+            &:after {
+              display: none;
+            }
+
+            &:before {
+              content: attr(data-dateCreated);
+              font-size: 16px;
+              opacity: 0;
+              padding-right: .5em;
+            }
+            &:hover:before {
+              opacity: .5;
+            }
+           
+           
           }
         }
       }

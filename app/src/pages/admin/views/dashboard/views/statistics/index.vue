@@ -1,7 +1,7 @@
 <template>
   <div id="statistics" v-if="visiable">
     <div class="overview-box">
-       <!-- <el-divider content-position="left"><h3> Thống kê </h3></el-divider> -->
+       <el-divider content-position="left"><h3> Thống kê </h3></el-divider>
       <el-row class="overview-box" type="flex" justify="space-between">
         <el-col :md="8">
           <div class="box-child" style="background: linear-gradient(45deg, #4099ff, #73b4ff)">
@@ -201,7 +201,7 @@ export default {
           datasets: [
             {
               label: "Chủ đề",
-              data: data.categoryMostInterest.map(i => i.totalView),
+              data: data.categoryMostInterest.map(i => i.totalView || 0),
             },
           ],
         }
@@ -296,6 +296,8 @@ export default {
       let inMonth = overview.topEmployeesInMonth.map(i => ({...i, ...this.getEmployeesById(i.user_id)})) || [];
       inMonth = inMonth.sort((a,b) =>  b.totalView - a.totalView)
       inWeek = inWeek.sort((a,b) =>  b.totalView - a.totalView)
+      if(!inWeek.length) inWeek = this.users.filter((i, index) => index < 6).map(i => ({...i, amountPosts: 0, totalView: 0 }))
+      if(!inMonth.length) inWeek = this.users.filter((i, index) => index < 6).map(i => ({...i, amountPosts: 0, totalView: 0 }))
       return { inWeek, inMonth }
     }
   },
@@ -303,9 +305,6 @@ export default {
 </script>
 
 <style lang="scss">
-.el-divider__text {
-  background: transparent;
-}
 @mixin text-gradient {
   color: transparent;
   background-image: linear-gradient(45deg, #2ed8b6, #59e0c5);
@@ -319,6 +318,9 @@ $shadow2: #0000001a 0px 0px 20px;
   overflow-y: auto;
   background:  #eee;
 
+  .el-divider__text {
+    background: #eee;
+  }
 // 1
   .overview-box {
     padding: 1em .5em 2em;
@@ -394,7 +396,9 @@ $shadow2: #0000001a 0px 0px 20px;
       border-radius: 20px;
       padding: .75em 1em;
       background:whitesmoke;
-      
+      .el-divider__text {
+        background: whitesmoke;
+      }
       .child-box {
         display: flex;
         justify-content: space-between;
