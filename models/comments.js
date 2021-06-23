@@ -62,6 +62,13 @@ class Comments extends baseModel {
         })
     }
 
+    async getCommentsByIdUser({ id, limit, from }) {
+        let query = `SELECT posts.title, posts.image, posts.category_id, comments.id as 'comment_id', comments.reaction, comments.content, comments.dateCreated FROM comments INNER JOIN posts ON posts.id = comments.post_id WHERE comments.user_id = '${id}' AND posts.activated = 'true' ORDER BY dateCreated DESC limit ${from},${limit}`
+         return await new Promise(resolve => {
+            this.sql.query(query, (error, data) => resolve({ error, data }))
+         })
+    }
+
 }
 
 module.exports = Comments

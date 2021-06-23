@@ -14,17 +14,17 @@ export default {
         responsive: {
             isDesktop: true
         },
-        statisticUser: {
-            overview: {},
-            historyComment: []
-        }
+        // statistics
+        statisticOverview: {},
+        statisticHistoryComment: []
     },
     getters: {
         home: state => state.home,
         responsive: state => state.responsive,
         userInfo: state => state.userInfo,
         userInfoDetail: state => state.userInfoDetail,
-        statisticUser: state => state.statisticUser,
+        statisticOverview: state => state.statisticOverview,
+        statisticHistoryComment: state => state.statisticHistoryComment,
     },
     mutations: {
         CHANGE_DATA_HOME(state, home) {
@@ -39,12 +39,11 @@ export default {
         CHANGE_USER_INFO_DETAIL(state, data) {
             state.userInfoDetail = data;
         },
-        CHANGE_STATISTIC_USER_OVERVIEW(state, data) {
-            console.log(43, data)
-            state.statisticUser.overview = data;
+        CHANGE_STATISTIC_OVERVIEW(state, data) {
+            state.statisticOverview = data;
         },
-        CHANGE_STATISTIC_USER_HISTORY_COMMENT(state, data) {
-            state.statisticUser.historyComment = data;
+        CHANGE_STATISTIC_HISTORY_COMMENT(state, data) {
+            state.statisticHistoryComment = data;
         }
     },
     actions: {
@@ -60,11 +59,11 @@ export default {
         CHANGE_USER_INFO_DETAIL({ commit }, data) {
             commit('CHANGE_USER_INFO_DETAIL', data);
         },
-        CHANGE_STATISTIC_USER_OVERVIEW({ commit }, data) {
-            commit('CHANGE_STATISTIC_USER_OVERVIEW', data);
+        CHANGE_STATISTIC_OVERVIEW({ commit }, data) {
+            commit('CHANGE_STATISTIC_OVERVIEW', data);
         },
-        CHANGE_STATISTIC_USER_HISTORY_COMMENT({ commit }, data) {
-            commit('CHANGE_STATISTIC_USER_HISTORY_COMMENT', data);
+        CHANGE_STATISTIC_HISTORY_COMMENT({ commit }, data) {
+            commit('CHANGE_STATISTIC_HISTORY_COMMENT', data);
         },
     }
 }

@@ -4,6 +4,7 @@ const comments = require('../../controllers/comments')
 const { verifyToken } = require('../../helpers')
 
 router.get('/getComments', comments.getComments)
+router.get('/getCommentsByIdUser', verifyToken, comments.getCommentsByIdUser)
 router.post('/create', verifyToken, comments.create)
 router.put('/edit', verifyToken, comments.edit)
 router.put('/changeReaction', verifyToken, comments.changeReaction)

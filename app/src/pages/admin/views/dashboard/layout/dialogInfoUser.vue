@@ -118,42 +118,48 @@
         <div class="wrapper-overview">
           <div class="box-child" style="background: linear-gradient(45deg, rgb(64, 153, 255), rgb(115, 180, 255))">
             <span>Tổng bài viết</span>
-            <strong>
-              {{ statisticUser.overview.byTotalPost.total }}
+            <strong v-if="statisticOverview.byTotalPost">
+              {{ statisticOverview.byTotalPost.total }}
             </strong>
           </div>
           <div class="box-child" style="background: linear-gradient(45deg, rgb(46, 216, 182), rgb(89, 224, 197))">
             <span>Tổng Lượt xem</span>
-            <strong>
-              {{ statisticUser.overview.byTotalViews.total }}
+            <strong  v-if="statisticOverview.byTotalViews">
+              {{ statisticOverview.byTotalViews.total }}
             </strong>
           </div>
         </div>
 
         <div class="chart-statistics">
           <BoxChart
-            v-if="statisticUser.overview.byTotalPost"
-            :DATA="statisticUser.overview.byTotalPost"
+            v-if="statisticOverview.byTotalPost"
+            :DATA="statisticOverview.byTotalPost"
             typeChart="pie"
             :title="'Thống kê số bài viết theo chủ đề trong tuần'"
           />
           <BoxChart
-            v-if="statisticUser.overview.byTotalViews"
-            :DATA="statisticUser.overview.byTotalViews"
+            v-if="statisticOverview.byTotalViews"
+            :DATA="statisticOverview.byTotalViews"
             typeChart="pie"
             :title="'Thống kê số lượt xem theo chủ đề trong tuần'"
           />
         </div>
         <!-- HISTORY_COMMENTS -->
         <el-divider class="title-divider" content-position="left"> Lịch sử hoạt động </el-divider>
-        <h5>
-          SELECT posts.title, posts.image, posts.category_id, comments.id as 'comment_id', comments.reaction, comments.content, comments.dateCreated FROM comments INNER JOIN posts ON posts.id = comments.post_id WHERE comments.user_id = "u0daxxx0t0gimuxgytvlij" AND posts.activated = "true" ORDER BY dateCreated DESC limit 0, 10
-        </h5>
-        <p>
-          totalPosts 2 7 2 7 1 6
-          totalViews 8 159 2 255 7 501
-        </p>
-
+        <div class="history-comments">
+          <div class="item" v-for="item in statisticHistoryComment" :key="item.comment_id">
+            <p> Bài viết: <strong> {{ item.title }} </strong> </p>
+            <p> Chủ đề: <span v-html="getCategoryById(item.category_id)"></span></p>
+            <p> Nội dung: <strong> {{ item.content }} </strong></p>
+            <p style="margin-top: .3em">
+              <i class="el-icon-time"/>
+              <span style="opacity: .7; margin-right: 1em"> {{ item.dateCreated }} </span>
+              <i class="far fa-thumbs-up" /> {{ item.reaction }} <span style="opacity: .6"> Thích </span>
+            </p>
+            <el-divider class="title-divider"/>
+          </div>
+          <el-button v-show="!isMaxComments" type="primary" style="margin-left: calc(50% - 55px)" plain @click="getCommentsByUserId()">Xem Thêm</el-button>
+        </div>
       </div>
     </div>
   </el-dialog>
@@ -164,7 +170,8 @@ import BoxChart from "components/box-chart";
 import ENUM from 'const/api'
 import CONST from 'const/const'
 import { mapActions, mapGetters } from 'vuex';
-const { MEDIA, POSTS } = ENUM
+const { MEDIA, POSTS, COMMENTS } = ENUM
+// GET_COMMENTS_BY_USER_ID
 const { convertDate } = CONST
 export default {
   data() {
@@ -179,6 +186,9 @@ export default {
         hasChangeFormAccount: false
       },
       formAccount: {},
+      from: 0,
+      limit: 5,
+      isMaxComments: false
     };
   },
   components: {
@@ -193,8 +203,7 @@ export default {
     }
   },
   created() {
-    console.log(123, window.isLocal)
-    if(this.statisticUser && this.statisticUser.overview && !this.statisticUser.overview['byTotalPost'])  {
+    if(this.statisticOverview && !this.statisticOverview['byTotalPost'])  {
       this.getAPI(POSTS.STATISTIC_USER, {}, response => {
         let { ok, data } = response
         if(!ok) return;
@@ -221,9 +230,10 @@ export default {
             ]
           },
         }
-        this.CHANGE_STATISTIC_USER_OVERVIEW(dataInput)
+        this.CHANGE_STATISTIC_OVERVIEW(dataInput)
       })
     }
+    if(!this.statisticHistoryComment.length) this.getCommentsByUserId();
   },
   watch:{
     // formAccount(e) {
@@ -241,8 +251,8 @@ export default {
   methods: {
     ...mapActions({
       CHANGE_MY_ACCOUNT: "_ACCOUNT/CHANGE_MY_ACCOUNT",
-      CHANGE_STATISTIC_USER_OVERVIEW: "_HOMEPAGE/CHANGE_STATISTIC_USER_OVERVIEW",
-      CHANGE_STATISTIC_USER_HISTORY_COMMENT: "_HOMEPAGE/CHANGE_STATISTIC_USER_HISTORY_COMMENT",
+      CHANGE_STATISTIC_OVERVIEW: "_HOMEPAGE/CHANGE_STATISTIC_OVERVIEW",
+      CHANGE_STATISTIC_HISTORY_COMMENT: "_HOMEPAGE/CHANGE_STATISTIC_HISTORY_COMMENT",
     }),
     handleAvatarSuccess(res, file) {
       let avatar = !window.isLocal ? res.location : res.location.replace('https://doan.khucblog.com', 'http://localhost:3000')
@@ -287,13 +297,30 @@ export default {
       let category = this.categories.find(i => i.id == id);
       return category && category.name ? category.name : "";
     },
+    getCategoryById(id){
+      if(!id) return ''
+      let category = this.categories.find(i => i.id == id)
+      return category ? `<span class="testing" style="background: ${category.color || '#000000'}">${category.name}</span>` : ''
+    },
+    getCommentsByUserId() {
+      if(this.isMaxComments) return;
+      const { from, limit } = this
+      this.getAPI(COMMENTS.GET_COMMENTS_BY_USER_ID, { limit, from }, response => {
+        let { ok, data } = response
+        if(!ok) return this.isMaxComments = true;
+        if(data.length < limit) this.isMaxComments = true;
+        this.from += this.limit
+        this.CHANGE_STATISTIC_HISTORY_COMMENT([...this.statisticHistoryComment, ...data])
+      })
+    }
   },
   computed: {
     ...mapGetters({
       myAccount: "_ACCOUNT/myAccount",
       categories: "_CATEGORIES/categories",
       userInfoDetail: "_HOMEPAGE/userInfoDetail",
-      statisticUser: "_HOMEPAGE/statisticUser"
+      statisticOverview: "_HOMEPAGE/statisticOverview",
+      statisticHistoryComment: "_HOMEPAGE/statisticHistoryComment",
     })
   }
 };
@@ -415,6 +442,33 @@ export default {
           }
         }
       }
+      .history-comments {
+
+        .item {
+          border-radius: 6px;
+          padding: 1em 0 0 1em;
+          
+          &:hover {
+            cursor: pointer;
+            background: #eee;
+            box-shadow: 0 4px 18px -4px #eeeeeea6;
+          }
+
+          p {
+            margin: 0;
+
+            span.testing {
+              display: inline-block;
+              padding: 3px 5px;
+              margin:.2rem .5rem;
+              border-radius: 4px;
+              color: white
+            }
+          }
+        } 
+          
+      }
+     
     }
   }
   .el-divider__text {

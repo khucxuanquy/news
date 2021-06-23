@@ -78,4 +78,15 @@ module.exports = {
         if (error) return res.send(resFail({ error }))
         res.send(resSuccess({ data }))
     },
+    async getCommentsByIdUser(req, res) {
+        let { limit, from } = req.query
+        let { id } = req.token
+        from = Number(from) || 0
+        if (limit && limit > 50) limit = 50
+        limit = Number(limit) || 15
+        let { error, data } = await comment.getCommentsByIdUser({ id, limit, from })
+        if (error) return res.send(resFail({ error }))
+        data = data.map(i => ({ ...i, dateCreated: convertDateTimeline(Number(i.dateCreated)) }))
+        res.send(resSuccess({data }))
+    }
 }

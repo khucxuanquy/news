@@ -203,17 +203,18 @@ export default {
         if(!ok) return;
         data.fullName = this.userInfo.fullName
         data.children = []
+        data.avatar = this.userInfo.avatar
         this.comments.unshift(data);
       })
       this.clearValueParent = !this.clearValueParent;
     },
     submitCommentChild() {
-      console.log(200, this.clearValueChild)
       if(!this.valueInputChild) return;
       let post_id = this.postId
       let idComment = this.showTextareaChildWithId
       this.postAPI(COMMENTS.CREATE_COMMENT, { post_id, content: this.valueInputChild, reply_id_comment: idComment }, response => {
         let { ok, data } = response
+        data.avatar = this.userInfo.avatar
         if(!ok) return;
         let index = this.comments.findIndex(comment => comment.id === idComment);
         if (index >= 0) {
@@ -221,7 +222,6 @@ export default {
         }
       })
       this.clearValueChild = !this.clearValueChild;
-      console.log(220, this.clearValueChild)
     }
   },
   computed: {

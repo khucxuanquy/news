@@ -23,7 +23,7 @@ export default {
   methods: {},
   computed: {
     ...mapGetters({
-      myAccount: "_HOMEPAGE/myAccount"
+      myAccount: "_ACCOUNT/myAccount"
     })
   }
 };

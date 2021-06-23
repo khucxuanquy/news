@@ -60,5 +60,7 @@ export default {
         EDIT_COMMENT: URL + 'comments/edit',
         CHANGE_REACTION: URL + 'comments/changeReaction',
         DELETE: URL + 'comments/delete',
+        DELETE: URL + 'comments/delete',
+        GET_COMMENTS_BY_USER_ID: URL + 'comments/getCommentsByIdUser',
     }
 }
