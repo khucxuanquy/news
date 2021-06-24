@@ -1,7 +1,12 @@
 <template>
   <div id="manager-users" v-loading.fullscreen.lock="isLoading">
     <el-table :data="filterListUsers" style="width: 100%">
-      <el-table-column :label="lang.username" width="180">
+      <el-table-column :label="'avatar'" width="100">
+        <template slot-scope="{row}">
+          <img class="slot-avatar" :src="row.avatar || imageDefault">
+        </template>
+      </el-table-column>
+      <el-table-column :label="lang.username" width="140">
         <template slot-scope="{row}">{{ row.username }}</template>
       </el-table-column>
 
@@ -33,7 +38,8 @@ export default {
       search: '',
       isLoading: false,
       showPopupEdit: false,
-      idEditPost: ''
+      idEditPost: '',
+      imageDefault: "https://doan.khucblog.com/static/images/avatar-default.jpg",
     }
   },
   components: {  },
@@ -83,6 +89,11 @@ export default {
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     margin: 0;
+  }
+  img.slot-avatar {
+    width: 50px;
+    border-radius: 50%;
+    min-width: 50px;
   }
   
   span.testing {

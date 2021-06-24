@@ -38,7 +38,7 @@ module.exports = {
         // get all user with conditions username, password
         let { error, data } = await user.get({ fields: ['id', 'permission', 'position'], conditions: { username, password: hashPassword(password) } })
         if (error) return res.send(resFail({ error }))
-        if (!data.length) return res.send({ message: 'Tài khoản không tồn tại' }) // note: logout
+        if (!data.length) return res.send({ message: 'Tài khoản hoặc mật khẩu không chính xác' }) // note: logout
         // encode token
         const { id, permission, position } = data[0]
         if (admin && position === 'reader') return res.send(resFail({ message: 'Bạn không có quyền truy cập' }))
@@ -138,6 +138,26 @@ module.exports = {
         let { error } = await user.edit({ password, id: token.id })
         if (error) return res.send(resFail({ message: error }))
         res.send(resSuccess({ message: 'Đổi mật khẩu thành công' }))
+    },
+    async changeUserInfo(req, res) {
+        let { password, fullName, avatar, rePassword, oldPassword } = req.body
+        const { id } = req.token
+        let dataInput = { }
+        // có cả đổi pass
+        if(password || rePassword || oldPassword) {
+            if (password !== rePassword) return res.send(resFail({ message: 'mật khẩu không giống nhau' }))
+            let { error, data } = await user.get({ fields: ['password'], conditions: { id } })
+            if (error || !data.length) return res.send(resFail({ message: 'Không tìm thấy tài khoản' }))
+            if(data[0].password !== hashPassword(oldPassword)) return res.send(resFail({ message: 'Mật khẩu cũ không đúng' }))
+            dataInput.password = hashPassword(password)
+        }
+        if(avatar) dataInput.avatar = avatar
+        if(fullName) dataInput.fullName = fullName
+        dataInput.id = id
+        let { error, data } = await user.edit(dataInput)
+        console.log(156, dataInput, data)
+        if(error) return res.send(resFail({ message: error }))
+        res.send(resSuccess())
     },
 
     // realtime

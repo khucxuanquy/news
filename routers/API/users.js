@@ -8,6 +8,7 @@ router.put('/edit', verifyToken, user.edit)
 router.delete('/delete', verifyToken, user.delete)
 router.get('/getInfoUser', verifyToken, user.getInfoUser)
 router.get('/getUsersByPermission', verifyToken, user.getUsersByPermission)
+router.put('/changeUserInfo', verifyToken, user.changeUserInfo)
 
 router.get('/verify', user.verify)
 router.get('/verifyForgotPassword', user.verifyForgotPassword)

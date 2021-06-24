@@ -24,17 +24,17 @@
         <div>
           <p class="block-item">
             <span> Họ tên </span>:
-            <strong> {{ myAccount.fullName }} </strong>
+            <strong> {{ userInfo.fullName }} </strong>
           </p>
           
           <p class="block-item">
             <span> Chức vụ </span>:
-            <strong> {{ permission(myAccount.permission) }} </strong>
+            <strong> {{ permission(userInfo.permission) }} </strong>
           </p>
 
           <p class="block-item">
             <span> Ngày tham gia </span>:
-            <strong> {{ convertDate(myAccount.dateCreated) }} </strong>
+            <strong> {{ convertDate(userInfo.dateCreated) }} </strong>
           </p>
         </div>
         <!--  -->
@@ -49,14 +49,14 @@
           <transition name="fade">
             <p class="block-item" v-if="isShow.account">
               <!-- USERNAME -->
-              <el-input class="block-item" disabled v-model="formAccount.username" :placeholder="myAccount.username">
+              <el-input class="block-item" disabled v-model="formAccount.username" :placeholder="userInfo.username">
                 <template slot="prepend"> <i class="el-icon-user-solid"></i> Tên đăng nhập</template>
               </el-input>
               <!-- FULLNAME -->
               <el-input
                 v-model="formAccount.fullName"
                 :disabled="!isShow.changeFullName"
-                :placeholder="myAccount.fullName"
+                :placeholder="userInfo.fullName"
                 maxlength="30"
               >
                 <template slot="prepend"> <i class="el-icon-user-solid" /> Tên người dùng</template>
@@ -114,37 +114,6 @@
       </div>
       <!-- RIGHT -->
       <div class="right-layout">
-        <el-divider class="title-divider" content-position="left"> Thống kê cá nhân </el-divider>
-
-        <div class="wrapper-overview">
-          <div class="box-child" style="background: linear-gradient(45deg, rgb(64, 153, 255), rgb(115, 180, 255))">
-            <span>Tổng bài viết</span>
-            <strong v-if="statisticOverview.byTotalPost">
-              {{ statisticOverview.byTotalPost.total }}
-            </strong>
-          </div>
-          <div class="box-child" style="background: linear-gradient(45deg, rgb(46, 216, 182), rgb(89, 224, 197))">
-            <span>Tổng Lượt xem</span>
-            <strong  v-if="statisticOverview.byTotalViews">
-              {{ statisticOverview.byTotalViews.total }}
-            </strong>
-          </div>
-        </div>
-
-        <div class="chart-statistics">
-          <BoxChart
-            v-if="statisticOverview.byTotalPost"
-            :DATA="statisticOverview.byTotalPost"
-            typeChart="pie"
-            :title="'Thống kê số bài viết theo chủ đề trong tuần'"
-          />
-          <BoxChart
-            v-if="statisticOverview.byTotalViews"
-            :DATA="statisticOverview.byTotalViews"
-            typeChart="pie"
-            :title="'Thống kê số lượt xem theo chủ đề trong tuần'"
-          />
-        </div>
         <!-- HISTORY_COMMENTS -->
         <el-divider class="title-divider" content-position="left"> Lịch sử hoạt động </el-divider>
         <div class="history-comments">
@@ -303,7 +272,7 @@ export default {
       this.putAPI(USERS.CHANGE_USER_INFO, dataInput, response => {
         if(!response.ok) return this.$message({ type: 'danger', message: 'đã có lỗi xảy ra' });
         this.$message({ type: 'success', message: 'Cập nhật thành công' });
-        let tempAccount = JSON.parse(JSON.stringify(this.myAccount))
+        let tempAccount = JSON.parse(JSON.stringify(this.userInfo))
         if(avatar) tempAccount.avatar = avatar
         if(fullName) tempAccount.fullName = fullName
         this.CHANGE_MY_ACCOUNT(tempAccount)
@@ -345,14 +314,14 @@ export default {
   },
   computed: {
     ...mapGetters({
-      myAccount: "_ACCOUNT/myAccount",
+      userInfo: "_HOMEPAGE/userInfo",
       categories: "_CATEGORIES/categories",
       userInfoDetail: "_HOMEPAGE/userInfoDetail",
       statisticOverview: "_HOMEPAGE/statisticOverview",
       statisticHistoryComment: "_HOMEPAGE/statisticHistoryComment",
     }),
     imgAvatar() {
-      return this.showTempAvatar || this.myAccount.avatar || this.imageDefault
+      return this.showTempAvatar || this.userInfo.avatar || this.imageDefault
     }
   }
 };

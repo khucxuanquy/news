@@ -1,5 +1,5 @@
 require('dotenv').config()
-let isLocal = true
+let isLocal = false
 window.isLocal = isLocal
 const URL = isLocal ? 'http://localhost:3000/API/' : 'https://doan.khucblog.com/API/'
 export default {
@@ -48,6 +48,7 @@ export default {
         FORGOT_PASSWORD: URL + 'users/forgotPassword',
         VERIFY_FORGOT_PASSWORD: URL + 'users/verifyForgotPassword',
         CHANGE_PASSWORD: URL + 'users/changePassword',
+        CHANGE_USER_INFO:  URL + 'users/changeUserInfo',
     },
     STATISTICS: {
         GET: URL + 'statistics/getStatistics',

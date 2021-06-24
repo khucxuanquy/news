@@ -111,10 +111,14 @@ export default {
       this.textSearch = "";
     },
     handleClickItem(command){
-        if(command === 'logout') {
-            this.CHANGE_USER_INFO({})
-            localStorage.clear()
-        }
+      if(command === 'logout') {
+        this.CHANGE_USER_INFO({})
+        localStorage.clear()
+      } else if(command === 'info') {
+        setTimeout(() => {
+          this.$emit('showDialog', true)
+        });
+      }
     },
     listenVoice() {
       if (!this.hold) return

@@ -5,7 +5,7 @@ const { resFail, resSuccess, convertDateTimeline } = require('../helpers')
 module.exports = {
     async create(req, res) {
         const { id: user_id } = req.token
-        let { post_id, content, reply_id_comment } = req.body
+        const { post_id, content, reply_id_comment } = req.body
         if (!post_id || !content) return res.send(resFail({ message: 'thiếu post_id hoặc content' }))
         // neu comment la reply => position = 1
         let dataInput = {
@@ -17,12 +17,13 @@ module.exports = {
         if (reply_id_comment) {
             dataInput.position = 1; // thay đổi vị trí ==> child
             dataInput.reply_id_comment = reply_id_comment;
-
             let { error: errGet, data: dataGet } = await comment.get({ conditions: { id: reply_id_comment }, fields: ['amount_child_comment'] })
             if (!(dataGet && dataGet.length)) return res.send(resFail({ message: errGet || 'Comment cha không tồn tại' }));
-            comment.edit({ id: reply_id_comment, amount_child_comment: dataGet[0].amount_child_comment += 1 })
+            await comment.edit({ id: reply_id_comment, amount_child_comment: dataGet[0].amount_child_comment += 1 })
+        } else {
+            dataInput.position = 0;
+            dataInput.reply_id_comment = '';
         }
-
         let { error, data } = await comment.create(dataInput)
         delete data.user_id
         delete data.position

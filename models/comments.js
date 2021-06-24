@@ -21,9 +21,9 @@ class Comments extends baseModel {
         if (dataInput.user_id) this.user_id = String(dataInput.user_id)
         if (dataInput.content) this.content = String(dataInput.content)
         if (dataInput.reaction) this.reaction = Number(dataInput.reaction)
-        if (dataInput.position) this.position = Number(dataInput.position)
-        if (dataInput.reply_id_comment) this.reply_id_comment = String(dataInput.reply_id_comment)
-        if (dataInput.amount_child_comment) this.amount_child_comment = Number(dataInput.amount_child_comment)
+        this.position = Number(dataInput.position)
+        this.reply_id_comment = String(dataInput.reply_id_comment) || ''
+        this.amount_child_comment = Number(dataInput.amount_child_comment) || 0
         this.dateCreated = +new Date()
     }
 
@@ -63,7 +63,7 @@ class Comments extends baseModel {
     }
 
     async getCommentsByIdUser({ id, limit, from }) {
-        let query = `SELECT posts.title, posts.image, posts.category_id, comments.id as 'comment_id', comments.reaction, comments.content, comments.dateCreated FROM comments INNER JOIN posts ON posts.id = comments.post_id WHERE comments.user_id = '${id}' AND posts.activated = 'true' ORDER BY dateCreated DESC limit ${from},${limit}`
+        let query = `SELECT posts.title, posts.image,posts.url, posts.category_id, comments.id as 'comment_id', comments.reaction, comments.content, comments.dateCreated FROM comments INNER JOIN posts ON posts.id = comments.post_id WHERE comments.user_id = '${id}' AND posts.activated = 'true' ORDER BY dateCreated DESC limit ${from},${limit}`
          return await new Promise(resolve => {
             this.sql.query(query, (error, data) => resolve({ error, data }))
          })

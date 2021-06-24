@@ -1,7 +1,8 @@
 <template>
   <div class="wrapper" v-loading.fullscreen.lock="!visible">
-    <Header></Header>
+    <Header @showDialog="showDialog = true"></Header>
     <router-view />
+    <DialogInfoUser v-if="showDialog" :dialogVisible="showDialog" @handleClose="showDialog = false" />
     <Footer></Footer>
   </div>
 </template>
@@ -9,6 +10,7 @@
 <script>
 import Header from "components/Header";
 import Footer from "components/Footer";
+import DialogInfoUser from "./dialogInfoUser.vue";
 import ENUM from "const/api";
 import { mapGetters, mapActions } from "vuex";
 const { CATEGORIES, POSTS, USERS } = ENUM;
@@ -17,11 +19,13 @@ export default {
   data: function () {
     return {
       visible: false,
+      showDialog: false
     };
   },
   components: {
     Header,
     Footer,
+    DialogInfoUser
   },
   created() {
     let _user = localStorage.getItem("_user");

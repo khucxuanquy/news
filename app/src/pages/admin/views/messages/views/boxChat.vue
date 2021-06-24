@@ -344,7 +344,7 @@ export default {
               padding-left: .5em;
             }
             &:hover {
-              :after {
+              &:after {
                 opacity: .5;
               }
               span {
