@@ -1,5 +1,5 @@
 const baseModel = require('../baseModels/baseModel')
-
+const { convertDateTimeline } = require('../helpers')
 class Users extends baseModel {
     constructor() {
         super('users')
@@ -58,16 +58,32 @@ class Users extends baseModel {
         if (!id || !permission || !manager_id) return { error: 'Thiếu trường id, permission hoặc manager_id' };
         // thieu manager_id
 
-        let query = `SELECT id, avatar, fullName FROM users WHERE NOT position = 'reader' `
+        let query = `SELECT id, avatar, fullName FROM users WHERE NOT position = 'reader' `;
 
         // *) admin : ORDER BY permission 
         // *) manager : permission =3, manager_id = id,
         // *) staff: permission = 2, id == manager_id, 
         if (permission === 2) query += `AND permission = 3 OR manager_id='${id}' `;
-        if (permission === 1) query += `AND permission = 3 OR id='${manager_id}' `
+        if (permission === 1) query += `AND permission = 3 OR id='${manager_id}' `;
         query += 'ORDER BY permission DESC'
         return await new Promise(resolve => {
-            this.sql.query(query, (error, data) => resolve({ error, data }))
+            this.sql.query(query, (error, dataUsers) => {
+                // build query
+                let buildQuery = idFriend => `SELECT content, dateCreated, sender_id FROM messages WHERE (receive_id = '${idFriend}' AND sender_id = '${id}') OR (receive_id = '${id}' AND sender_id = '${idFriend}') ORDER BY dateCreated DESC LIMIT 0,1`;
+                // loop each latest messages
+                Promise.all(dataUsers.map(user => new Promise(r => {
+                    this.sql.query(buildQuery(user.id), (e, d) => {
+                        if(e) return r({ content: 'có lỗi xảy ra khi lấy tin nhắn' })
+                        if(!d.length) return r({ content: 'Hãy gửi một lời chào đầu tiên của bạn' })
+                        r({ content: d[0].sender_id === id ? ('Bạn: :' + d[0].content) : d[0].content, dateCreated: d[0].dateCreated })
+                    })
+                })))
+                .then(Messages => {
+                    let data = dataUsers.map((user, index) => ({...user, ...Messages[index] }))
+                    resolve({ error, data })
+                })
+                .catch(error => resolve({ error, data: [] }))
+            })
         })
     }
 }

@@ -20,7 +20,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      idsFriendsOnline: "_MESSAGE/idsFriendsOnline",
+      idsUserOnline: "_MESSAGE/idsUserOnline",
     }),
   },
   created() {
@@ -38,8 +38,10 @@ export default {
       });
     }
     let checkUsers = setInterval(() => {
-      if (!this.idsFriendsOnline.length) {
-        this.socket.emit("GET_USERS_ONLINE");
+      console.log(41)
+      if (!this.idsUserOnline.length) {
+        // gọi 1 lần duy nhất
+        this.socket.emit("CLIENT_GET_CONVERSATIONS_ONLINE");
         clearInterval(checkUsers);
       }
     }, 1000);

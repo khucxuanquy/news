@@ -1,9 +1,13 @@
 <template>
   <div class="box-chat" v-loading.fullscreen.lock="isLoading">
     <div class="header">
-      <div>
-        <img class="avatar" :src="currentUser.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'">
+      <div style="display: flex; align-items: center">
+        <img class="avatar" :class="{ online: currentUser.status === 'online' }" :src="currentUser.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'">
+        <div style="padding-left: 10px">
           <strong> {{currentUser.fullName}} </strong>
+          
+          <Bubble v-show="userEntering.includes(this.currentReceiveId)" />
+        </div>
       </div>
       <div>
         <span class="more-info">
@@ -13,7 +17,7 @@
     </div>
     <div class="chat-view">
       <div class="messages-container">
-        <div id="ScrollPositionTop"></div>
+        <div id="ScrollPositionTop" />
         <div
           v-for="item in boxMessages"
           :key="item.id"
@@ -27,7 +31,7 @@
             </p>
           </div>
         </div>
-        <span id="ScrollToThis"></span>
+        <span id="ScrollToThis" />
       </div>
     </div>
     <div class="input-chat">
@@ -37,8 +41,7 @@
       <!-- <span  id="textarea" contenteditable @input="log(i)">Aa</span> -->
       <div class="input-chat__textarea">
         <textarea
-          v-model="content"
-          @input="test"
+          v-model.trim="content"
           @keypress.enter.exact="submit()"
           @keydown.enter.shift.exact="content += `\n`"
           placeholder="Aa"
@@ -55,7 +58,12 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import Bubble from "./components/bubble"
+import CONST from 'const/const.js'
 export default {
+  components: {
+    Bubble,
+  },
   data() {
     return {
       content: "",
@@ -69,18 +77,24 @@ export default {
 
       scrollHeight: null,
       scrollTop: null,
+
+      // entering
+      isEntering: false,
     };
   },
   created() {
     let { id } = this.$route.params
     this.currentReceiveId = id
+    // chú ý đến currentReceiveId: người hiện tại đang nhắn 
     // group messages
-    this.socket.on('CLIENT_RECEIVE_MESSAGE', data => {
-      this.CHAT_NEW_MESSAGE(data)
+    this.socket.on('CLIENT_RECEIVE_NEW_MESSAGE', data => {
+      // nếu đang ở cùng cuộc hội thoại => hiển thị tin nhắn mới trong hội thoại
+      if(this.currentReceiveId === data.sender_id || this.currentReceiveId === data.receive_id) {
+        this.CHAT_NEW_MESSAGE(data)
+      }
       this.$nextTick(()=> this.scrollToBottom())
-      console.log('box-chat -- 81', data)
     })
-    this.socket.on('CLIENT_GET_MESSAGES', data => {
+    this.socket.on('SERVER_SEND_MESSAGES', data => {
       if(data.length < this.limit) this.maxMessages = true;
       data = data.reverse()
       // neu from !== 0 tuc la load New Messages
@@ -88,15 +102,15 @@ export default {
       if(!this.from) this.$nextTick(() => this.scrollToBottom())
       this.$nextTick(() => this.tickToScroll())
       this.isLoading = false
-      console.log('box-chat -- 91', data)
     })
+    this.socket.on('SERVER_SEND_ENTERING', data => this.CHANGE_USER_ENTERING(data))
       
-    if(this.friends.length) {
-      let index = this.friends.findIndex(user => user.id === id)
+    if(this.conversations.length) {
+      let index = this.conversations.findIndex(user => user.id === id)
       if(index > -1) {
         this.isLoading = true
         this.getMessages()
-      } else this.$router.push('/admin/dashboard')
+      } else this.$router.push('/admin/messages/' + this.conversations[0].id)
     }
   },
   methods: {
@@ -104,10 +118,12 @@ export default {
       CHANGE_CONVERSATIONS: "_MESSAGE/CHANGE_CONVERSATIONS",
       CHANGE_MESSAGES: "_MESSAGE/CHANGE_MESSAGES",
       CHAT_NEW_MESSAGE: "_MESSAGE/CHAT_NEW_MESSAGE",
-      PUSH_MESSAGES_AFTER_GET: "_MESSAGE/PUSH_MESSAGES_AFTER_GET"
+      PUSH_MESSAGES_AFTER_GET: "_MESSAGE/PUSH_MESSAGES_AFTER_GET",
+      UPDATE_LAST_MESSAGE_IN_CONVERSATIONS: "_MESSAGE/UPDATE_LAST_MESSAGE_IN_CONVERSATIONS",
+      CHANGE_USER_ENTERING: "_MESSAGE/CHANGE_USER_ENTERING",
     }),
     submit() {
-      if(!this.content) return;
+      if(!this.content.trim()) return;
       let data = {
         sender_id: this.myAccount.id,
         receive_id: this.currentReceiveId,
@@ -115,13 +131,8 @@ export default {
         dateCreated: String(+new Date()),
       }
       // this.CHAT_NEW_MESSAGE(data)
-      this.socket.emit('SEND_MESSAGE', data)
+      this.socket.emit('CLIENT_SEND_NEW_MESSAGE', data)
       setTimeout(() => (this.content = ""), 0);
-    },
-    test(e) {
-      // const { nextElementSibling, style } =  e.target
-      // if(this.currentHeight !== nextElementSibling.offsetHeight) console.log(nextElementSibling.offsetHeight);
-      // style.height = nextElementSibling.offsetHeight + "px";
     },
     groupMessagesBeforeSaveToStore(data) {
       let newData = [];
@@ -133,7 +144,7 @@ export default {
             {
               id: data[i].id,
               content: data[i].content,
-              dateCreated: data[i].dateCreated,
+              dateCreated: CONST.convertDateTimeline(Number(data[i].dateCreated)),
             },
           ],
         });
@@ -142,7 +153,7 @@ export default {
           newData[newData.length - 1].messages.push({
             id: data[i + 1].id,
             content: data[i + 1].content,
-            dateCreated: data[i + 1].dateCreated,
+            dateCreated: CONST.convertDateTimeline(Number(data[i + 1].dateCreated)),
           });
           let temp = i + 1; // fix for loop
           for (let j = i + 1; j < data.length; j++) {
@@ -151,7 +162,7 @@ export default {
               newData[newData.length - 1].messages.push({
                 id: data[j + 1].id,
                 content: data[j + 1].content,
-                dateCreated: data[j + 1].dateCreated,
+                dateCreated: CONST.convertDateTimeline(Number(data[j + 1].dateCreated)),
               });
             } else break;
           }
@@ -177,7 +188,7 @@ export default {
         from: this.from * this.limit,
         limit: this.limit
       }
-      this.socket.emit('GET_MESSAGES', d)
+      this.socket.emit('CLIENT_GET_MESSAGES', d)
     },
     LoadNewData(){
       if(this.maxMessages) return;
@@ -219,31 +230,41 @@ export default {
       conversations: "_MESSAGE/conversations",
       boxMessages: "_MESSAGE/boxMessages",
       myAccount: "_ACCOUNT/myAccount",
-      friends: "_MESSAGE/friends",
+      conversations: "_MESSAGE/conversations",
+      userEntering: "_MESSAGE/userEntering",
     }),
     currentUser(){
-      const { friends, currentReceiveId } = this
-      return friends.find(user => user.id === currentReceiveId) || {}
+      const { conversations, currentReceiveId } = this
+      return conversations.find(user => user.id === currentReceiveId) || {}
     }
   },
   watch: {
     '$route.params': function({ id }) {
+      if(this.content) this.socket.emit('CLIENT_SEND_ENTERING', { receive_id: this.currentReceiveId, sender_id: this.myAccount.id, isEntering: false });
       this.currentReceiveId = id
       this.isLoading = true
       // reset
       this.maxMessages = false
       this.from = 0;
       this.getMessages()
+      this.content = ''
+    },
+    'content': function (text) {
+      // nếu đang nhắn tin
+      if(text) {
+        if(this.isEntering) return;
+        this.isEntering = true;
+        this.socket.emit('CLIENT_SEND_ENTERING', { receive_id: this.currentReceiveId, sender_id: this.myAccount.id, isEntering: true });
+        return;
+      }
+      this.socket.emit('CLIENT_SEND_ENTERING', { receive_id: this.currentReceiveId, sender_id: this.myAccount.id, isEntering: false });
+      this.isEntering = false
     },
   },
   beforeDestroy() {
     console.log('beforeDestroy')
-    this.socket.removeListener("CLIENT_GET_MESSAGES")
-    this.socket.removeListener("CLIENT_RECEIVE_MESSAGE")
-    // removeAllListeners("news");
-    //  this.socket.removeListener('CLIENT_GET_MESSAGES', (a,b) => {
-    //    console.log(212, a,b)
-    //  })
+    this.socket.removeListener("SERVER_SEND_MESSAGES")
+    this.socket.removeListener("CLIENT_RECEIVE_NEW_MESSAGE")
   }
 };
 </script>
@@ -273,6 +294,10 @@ export default {
       object-fit: contain;
       border: thin solid;
       padding: 5px;
+      &.online {
+        border: thin solid green;
+        box-shadow: 0 4px 18px -4px #42d340a6;
+      }
     }
 
     .more-info {
@@ -304,7 +329,7 @@ export default {
 
         .avatar {
           align-self: flex-end;
-          margin-right: 0.5em;
+          margin:0 0.5em 7px 0;
 
           img {
             width: 35px;
@@ -328,6 +353,7 @@ export default {
             span {
               display: inline-block;
               position: relative;
+              word-break: break-word;
               max-width: 50%;
               padding: 6px 8px;
               border-radius: 6px;
@@ -335,7 +361,6 @@ export default {
               background: whitesmoke;
               box-shadow: #0000001a 0px 0px 20px;
               transition: all .3s cubic-bezier(0.075, 0.82, 0.165, 1);
-
             }
             &:after {
               content: attr(data-dateCreated);

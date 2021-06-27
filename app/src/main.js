@@ -46,7 +46,8 @@ registerModule().then(async () => {
       localStorage.setItem('_info', JSON.stringify(data))
     })
 
-    socket = await io('https://doan.khucblog.com');
+    // socket = await io('https://doan.khucblog.com');
+    socket = await io('http://localhost:3000');
     socket.on("connect", () => {
       if (user_info && user_info.id) {
         socket.emit("USER_CONNECTED", {
@@ -64,7 +65,9 @@ registerModule().then(async () => {
           manager_id: user_info.manager_id,
           socketId: socket.id,
         });
-        socket.emit('GET_USERS_ONLINE')
+        socket.emit('CLIENT_GET_CONVERSATIONS_ONLINE')
+        // remove all event listener
+        socket.removeAllListeners()
       }
     }
   } else {

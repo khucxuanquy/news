@@ -1,5 +1,5 @@
 require('dotenv').config()
-let isLocal = false
+let isLocal = true
 window.isLocal = isLocal
 const URL = isLocal ? 'http://localhost:3000/API/' : 'https://doan.khucblog.com/API/'
 export default {

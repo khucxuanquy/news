@@ -1,5 +1,11 @@
 const SLASH = '-'
 const FullDate = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7']
+const _MONTHS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => 'Thg ' + i)
+const ONE_MIN = 60 * 1000,
+  FIFTEEN_MINUTES = 15 * ONE_MIN,
+  ONE_HOUR = FIFTEEN_MINUTES * 4,
+  ONE_DAY = 24 * ONE_HOUR;
+
 export default {
     /**
     * @param {String} type 0, 1, 2
@@ -49,4 +55,26 @@ export default {
         // return day + ' ' + d.toLocaleString()
         return `${day}, ${date}/${month}/${year} ${hours}:${minutes}:${seconds}`
     },
+    convertDateTimeline(timestamp) {
+        if (!timestamp) return;
+        let now = new Date(),
+          time = Math.floor((+now - (Number(timestamp) || 0)) / 1000)
+        // time = Math.floor((+now - (Number(timestamp) || 0)) / 1000)
+    
+        if (time < (ONE_MIN / 1000)) return '1 phút'
+        if (time < (ONE_HOUR / 1000)) return Math.floor(time / (ONE_MIN / 1000)) + ' phút'
+        if (time < (ONE_DAY / 1000)) return Math.floor(time / (ONE_HOUR / 1000)) + ' giờ'
+    
+        let d = new Date(timestamp),
+          mins = d.getMinutes(),
+          hour = d.getHours(),
+          date = d.getDate(),
+          month = d.getMonth(),
+          year = d.getFullYear(),
+          m = _MONTHS[month];
+        if (time < (ONE_DAY / 1000) * 2) return 'Hôm qua, ' + hour + ':' + mins
+        let showDateMonth = date + ' ' + m // 11 Thg 4
+        if (time >= (ONE_DAY / 1000) * 2 && d.getFullYear() == now.getFullYear()) return showDateMonth
+        else return showDateMonth + ', ' + year
+      },
 }

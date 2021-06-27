@@ -3,7 +3,7 @@ const { yellow, green } = require('../../config/log')
  * 
  * @param {*} io 
  */
-module.exports = ({ io, socket, idStore }) => {
+module.exports = ({ io, socket, STORE }) => {
 
 
 

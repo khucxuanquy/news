@@ -6,16 +6,22 @@
     </div>
     <div class="meta">
       <span class="name" v-once>{{DATA.fullName}}</span>
-      <div class="description">
-        <span class="last-text">{{DATA.text}}</span>
-        <span class="date-time">{{DATA.time}}</span>
+      <Bubble v-if="userEntering.includes(DATA.id)" /> 
+      <div v-else class="description">
+        <span class="last-text">{{DATA.content}}</span>
+        <span class="date-time" v-if="DATA.dateCreated"> <i class="el-icon-time"/> {{ DATA.dateCreated }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import Bubble from "../bubble"
 export default {
+  components: {
+    Bubble,
+  },
   props: {
     DATA: {
       type: Object,
@@ -23,11 +29,16 @@ export default {
         avatar: '',
         fullName: '', 
         status: '', // online || offline
-        text: '', // sort text
-        time: '', // thoi gian gan nhat nhan tin
+        content: '', // sort text
+        dateCreated: '', // thoi gian gan nhat nhan tin
       },
-    }
-  }
+    },
+  },
+  computed: {
+    ...mapGetters({
+      userEntering: '_MESSAGE/userEntering'
+    })
+  },
 };
 </script>
 
@@ -81,9 +92,11 @@ $height_box: 80px;
       font-size: 0.95em;
       opacity: 0.6;
       display: flex;
+      flex-wrap: wrap;
       justify-content: flex-start;
 
       .last-text {
+        font-weight: 600;
         overflow: hidden;
         display: -webkit-box;
         -webkit-line-clamp: 1;

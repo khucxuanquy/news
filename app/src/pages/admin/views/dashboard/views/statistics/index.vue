@@ -195,7 +195,6 @@ export default {
       this.getAPI(STATISTICS.GET, {}, res => {
         let { ok, data } = res
         if (!ok) return; // error something
-
         data.categoryMostInterest = {
           labels: data.categoryMostInterest.map(i => this.getNameCategoryById(i.category_id)).filter(i => i),
           datasets: [
@@ -204,6 +203,13 @@ export default {
               data: data.categoryMostInterest.map(i => i.totalView || 0),
             },
           ],
+        }
+        if(!data.categoryMostInterest.labels.length) {
+          data.categoryMostInterest.labels = ['Tin Tức']
+          data.categoryMostInterest.datasets = [{
+            label: "Chủ đề",
+            data: [1]
+          }]
         }
         this.CHANGE_CATEGORY_MOST_INTEREST(data.categoryMostInterest);
       });

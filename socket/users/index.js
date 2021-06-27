@@ -5,55 +5,60 @@ const users = require('../../controllers/users')
  * 
  * @param {*} io 
  */
-module.exports = ({ io, socket, idStore }) => {
+module.exports = ({ io, socket, STORE }) => {
   // trong store myAccount -> luu idUser va idSocketIo
   // socket.on('users_allLive', data => {
   //   socket.emit('get_list_users_online', data)
   //   // io.to(socket.id).emit('message_client', data);
   // });
 
-  socket.on('GET_FRIENDS', async dataInput => {
+  socket.on('CLIENT_GET_CONVERSATIONS', async dataInput => {
     let { error, data } = await users.getUsersInMessenger(dataInput)
     if (error) return;
-    io.to(socket.id).emit('CLIENT_FRIENDS', data)
-    // if(isFirstConnect) io.to(socket.id).emit('LIST_USERS_ONLINE', users_online)
-    // else socket.broadcast.emit('LIST_USERS_ONLINE', users_online)
-    // io.sockets.emit('LIST_USERS_ONLINE', users_online)
-    // else io.to(socket.id).emit('LIST_USERS_ONLINE', users_online)
+    io.to(socket.id).emit('SERVER_SEND_CONVERSATIONS', data)
+    // if(isFirstConnect) io.to(socket.id).emit('_', users_online)
+    // else socket.broadcast.emit('_', users_online)
+    // io.sockets.emit('_', users_online)
+    // else io.to(socket.id).emit('_', users_online)
   })
 
 
   // // special !!
-  socket.on('GET_USERS_ONLINE', () => {
-    let listUsers = idStore.usersOnline.map(i => i.id)
-    io.sockets.emit('LIST_USERS_ONLINE', listUsers)
-    // if(isFirstConnect) io.to(socket.id).emit('LIST_USERS_ONLINE', users_online)
-    // else socket.broadcast.emit('LIST_USERS_ONLINE', users_online)
-    // io.sockets.emit('LIST_USERS_ONLINE', users_online)
-    // else io.to(socket.id).emit('LIST_USERS_ONLINE', users_online)
-  })
-
-  socket.on('USER_CONNECTED', data => {
-    if (data && !data.id) return;
-    // tim dia chi user
-    let index = idStore.usersOnline.findIndex(user => user.id == data.id);
-    if (index > -1) idStore.usersOnline[index].socketIds.push(socket.id);
-    else idStore.usersOnline.push({ id: data.id, socketIds: [socket.id] });
-  })
-
-  socket.on('USER_DISCONNECTED', data => {
-    let { id, socketId } = data
-    let index = idStore.usersOnline.findIndex(user => user.id == id);
-    if (index > -1) {
-      let indexSocketId = idStore.usersOnline[index].socketIds.indexOf(socketId);
-      if (indexSocketId > -1) {
-        idStore.usersOnline[index].socketIds.splice(indexSocketId, 1);
-        // neu socketIds : [] => xoa ca object
-        if (!idStore.usersOnline[index].socketIds.length) {
-          idStore.usersOnline.splice(index, 1)
-        }
-      }
+  socket.on('CLIENT_GET_CONVERSATIONS_ONLINE', () => {
+    let listUsers = []
+    for (const key in STORE.usersOnline) {
+      listUsers.push(key)
     }
+    io.sockets.emit('SERVER_SEND_CONVERSATIONS_ONLINE', listUsers)
+    // if(isFirstConnect) io.to(socket.id).emit('_', users_online)
+    // else socket.broadcast.emit('_', users_online)
+    // io.sockets.emit('_', users_online)
+    // else io.to(socket.id).emit('_', users_online)
+  })
+  
+  // setInterval(() => {
+  //   let listUsers = STORE.usersOnline.map(i => i.id)
+  //   io.sockets.emit('SERVER_SEND_CONVERSATIONS_ONLINE', listUsers)
+  // }, 60000);
+
+  socket.on('USER_CONNECTED', ({ id, socketId }) => {
+    if (!id) return;
+    // if id not exist in STORE
+    if(!STORE.usersOnline[id]) STORE.usersOnline[id] = []
+    if(!STORE.usersOnline[id].includes(socketId)) {
+      STORE.usersOnline[id].push(socketId)
+    }
+  })
+
+  socket.on('USER_DISCONNECTED', ({ id, socketId }) => {
+    // if id invalid or id not exist in STORE => return
+    if(!id || !STORE.usersOnline[id]) return;
+    let index = STORE.usersOnline[id].indexOf(socketId)
+    if(index > -1) {
+     STORE.usersOnline[id].splice(index, 1)
+     if(!STORE.usersOnline[id].length) delete STORE.usersOnline[id]
+    }
+
   })
 
 };

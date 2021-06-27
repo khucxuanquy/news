@@ -15,7 +15,7 @@ const EMAIL = 'smartnewsqtd@gmail.com',
   ONE_MONTH = 4 * ONE_WEEK,
   ONE_YEAR = 12 * ONE_MONTH;
 
-const _MONTHS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => 'Tháng ' + i)
+const _MONTHS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => 'Thg ' + i)
 const template = {
   register: '',
   forgotPassword: ''

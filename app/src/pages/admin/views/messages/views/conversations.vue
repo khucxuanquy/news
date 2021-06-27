@@ -2,7 +2,7 @@
   <div class="conversations">
     <BoxConversation
       :DATA="user"
-      v-for="user in friends.filter((i) => myAccount.id !== i.id)"
+      v-for="user in conversations.filter((i) => myAccount.id !== i.id)"
       :key="user.id"
       @click.native="activeBoxMessage(user.id)"
       :class="user.id === $route.params.id ? 'active' : ''"
@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import BoxConversation from "components/box-conversation";
+import BoxConversation from "./components/box-conversation/index.vue";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
@@ -28,18 +28,24 @@ export default {
     };
   },
   created() {
-    this.socket.on("LIST_USERS_ONLINE", (data) => {
-      this.CHANGE_FRIENDS_ONLINE(data);
+    this.socket.on("SERVER_SEND_CONVERSATIONS_ONLINE", (data) => {
+      let checkUsers = setInterval(() => {
+        if(this.conversations.length) {
+          this.CHANGE_CONVERSATIONS_ONLINE(data);
+          clearInterval(checkUsers)
+        }
+      }, 1000);
     });
-
-    // this.$route.params.id
+  },
+  beforeDestroy() {
+    this.socket.removeListener("SERVER_SEND_CONVERSATIONS_ONLINE")
   },
   components: {
     BoxConversation,
   },
   methods: {
     ...mapActions({
-      CHANGE_FRIENDS_ONLINE: "_MESSAGE/CHANGE_FRIENDS_ONLINE",
+      CHANGE_CONVERSATIONS_ONLINE: "_MESSAGE/CHANGE_CONVERSATIONS_ONLINE",
     }),
     activeBoxMessage(id) {
       if (!id || this.$route.params.id == id) return;
@@ -48,15 +54,15 @@ export default {
   },
   computed: {
     ...mapGetters({
-      friends: "_MESSAGE/friends",
+      conversations: "_MESSAGE/conversations",
       myAccount: "_ACCOUNT/myAccount",
-    }),
+    })
   },
 };
 </script>
 
 <style lang="scss">
-$width_conversations: 400px;
+$width_conversations: 500px;
 
 .conversations {
   width: $width_conversations;

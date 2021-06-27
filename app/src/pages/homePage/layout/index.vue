@@ -65,11 +65,13 @@ export default {
     }
 
     if (!this.home.topNewFeed.length) {
+      // inscease performance
+      // if(/post|category/gi.test(location.pathname)) return this.visible = true;
       this.getAPI(POSTS.HOME, {}, (res) => {
         if (!res.ok) return;
         this.CHANGE_DATA_HOME(res.data);
         this.visible = true;
-      });
+      });        
     } else this.visible = true
   },
   methods: {

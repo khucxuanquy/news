@@ -257,7 +257,7 @@ export default {
       CHANGE_STATISTIC_HISTORY_COMMENT: "_HOMEPAGE/CHANGE_STATISTIC_HISTORY_COMMENT",
     }),
     handleAvatarSuccess(res, file) {
-      let avatar = res.location //!window.isLocal ? res.location : res.location.replace('https://doan.khucblog.com', 'http://localhost:3000')
+      let avatar = res.location 
       // show tạm
       this.showTempAvatar = avatar
       this.formAccount.avatar = avatar

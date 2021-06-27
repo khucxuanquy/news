@@ -1,10 +1,9 @@
 <template>
-  <div id="messenger" v-if="friends.length">
+  <div id="messenger" v-if="conversations.length">
     <div class="header">
       <router-link to="/admin/dashboard">
         <i class="fas fa-angle-double-left"></i> <span>Trở về dashboard</span>
       </router-link>
-      <div><span></span></div>
     </div>
     <div class="main">
       <router-view />
@@ -19,23 +18,24 @@ export default {
     let info = JSON.parse(localStorage.getItem("_info"))
     if(info && (!info.hasOwnProperty('id') || !this.myAccount.hasOwnProperty('id'))) return this.$router.push('/admin/login').catch(()=>{});
 
+    // nếu không vào conversation nào => vào conversation đầu tiên
     if(!this.$route.params.id) {
       let checkUsers = setInterval(() => {
-        if(this.friends.length) {
+        if(this.conversations.length) {
           // new change
-          let id = this.friends.filter(i => this.myAccount.id !== i.id)[0].id
+          let id = this.conversations.filter(i => this.myAccount.id !== i.id)[0].id
           this.$router.push(id)
           clearInterval(checkUsers)
         }
       }, 150);
     }
 
-    if(!this.friends.length) {
-      this.socket.on('CLIENT_FRIENDS', data => {
-        this.CHANGE_FRIENDS(data)
-        console.log(36, data.map(i => i.id))
+    if(!this.conversations.length) {
+      this.socket.on('SERVER_SEND_CONVERSATIONS', data => {
+        this.CHANGE_CONVERSATIONS(data)
       })
-      this.socket.emit('GET_FRIENDS', {
+      // nên để token mới đúng => an toàn hơn
+      this.socket.emit('CLIENT_GET_CONVERSATIONS', {
         id: this.myAccount.id,
         permission: this.myAccount.permission,
         manager_id: this.myAccount.manager_id,
@@ -44,13 +44,13 @@ export default {
   },
   methods: {
     ...mapActions({
-      CHANGE_FRIENDS: '_MESSAGE/CHANGE_FRIENDS',
+      CHANGE_CONVERSATIONS: '_MESSAGE/CHANGE_CONVERSATIONS',
     })
   },
   computed: {
     ...mapGetters({
       myAccount: '_ACCOUNT/myAccount',
-      friends: '_MESSAGE/friends'
+      conversations: '_MESSAGE/conversations'
     })
   },
 };
