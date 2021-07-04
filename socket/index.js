@@ -4,8 +4,8 @@ const USERS = require('./users');
 const l = require('../config/log');
 let count = 0;
 let STORE = {
-  usersOnline: {},  // {id:'', socketIds: ['','']}
-  // '---id---' : [...,...]
+  usersOnline: {}, // '---id---' : [...,...]
+  notification: {}// '---id---' : { ...id... : 4, ...id1...: 5}
 }
 setInterval(() => {
   count++;

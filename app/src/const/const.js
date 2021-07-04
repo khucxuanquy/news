@@ -57,8 +57,9 @@ export default {
     },
     convertDateTimeline(timestamp) {
         if (!timestamp) return;
+        timestamp = Number(timestamp)
         let now = new Date(),
-          time = Math.floor((+now - (Number(timestamp) || 0)) / 1000)
+          time = Math.floor((+now - (timestamp || 0)) / 1000)
         // time = Math.floor((+now - (Number(timestamp) || 0)) / 1000)
     
         if (time < (ONE_MIN / 1000)) return '1 phút'

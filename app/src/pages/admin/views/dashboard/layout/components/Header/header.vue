@@ -3,8 +3,12 @@
       <transition name="el-fade-in-linear">
         <el-menu :default-active="indexMenu" @select="handleChangeLayout" :collapse="isCollapse">
            <el-menu-item index="/admin/messages/">
-            <i class="el-icon-s-comment"></i> 
-            <span slot="title">{{lang.messenger}}</span>
+              <i class="el-icon-s-comment" /> 
+              <el-badge :is-dot="!!totalNotification" v-if="isCollapse" />
+              <span slot="title">{{lang.messenger}}
+                <el-badge v-if="totalNotification" class="mark" :value="totalNotification" style="background: transparent" />
+              </span>
+              
           </el-menu-item>
           <el-menu-item index="/admin/dashboard/posts">
             <i class="el-icon-s-order"></i>
@@ -36,6 +40,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
   export default {
     data() {
       return {
@@ -53,17 +58,20 @@
         this.$router.push(indexMenu)
       }
     },
-    computed:{
-      myAccount(){
-        return this.storeVue('_ACCOUNT').getters.myAccount
-      },
+    computed: {
+      ...mapGetters({
+        myAccount: "_ACCOUNT/myAccount",
+        notification: "_ACCOUNT/notification",
+      }),
+      totalNotification() {
+        return Object.entries(this.notification).reduce((total, currentVal) => total + currentVal[1], 0)
+      }
     },
-    created(){
+    created() {
       const path = location.pathname 
       if(path == '/admin/dashboard/') this.indexMenu = ''
       else this.indexMenu = path
     },
-    watch: { },
   }
 </script>
 

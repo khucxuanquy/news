@@ -1,5 +1,8 @@
 <template>
-  <div class="box-conversation">
+  <div
+    class="box-conversation"
+    :style="notification[DATA.id] ? 'color: #fff; background: linear-gradient(to right, #76b852, #8DC26F)' : ''"
+  >
     <div class="avatar">
       <img :src="DATA.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'" alt="avatar" v-once/>
       <span class="dot-status" :style="{'background': `${DATA.status == 'online' ? '#42d340' : 'transparent'}`}"></span>
@@ -36,7 +39,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      userEntering: '_MESSAGE/userEntering'
+      userEntering: '_MESSAGE/userEntering',
+      notification: '_ACCOUNT/notification',
     })
   },
 };
@@ -55,9 +59,12 @@ $height_box: 80px;
   user-select: none;
   transition: background .2s cubic-bezier(0.075, 0.82, 0.165, 1);
 
-  &.active, &:hover {
+  cursor: pointer;
+  &:hover {
     background: #d5e1e1;
-    cursor: pointer;
+  }
+  &.active {
+    background: #c0d2d6ed;
   }
 
   .avatar {

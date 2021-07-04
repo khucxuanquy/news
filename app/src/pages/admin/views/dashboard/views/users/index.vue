@@ -6,14 +6,14 @@
         <div>
           <el-input v-model="formUser.fullName" :placeholder="lang.fullName" maxlength="50"></el-input>
           <el-input v-model="formUser.username" :placeholder="lang.username" maxlength="40" :disabled="isEditRow"></el-input>
-          <el-input v-model="formUser.password" :placeholder="lang.password" maxlength="40" show-password></el-input>
+          <el-input v-if="!isEditRow" v-model="formUser.password" :placeholder="lang.password" maxlength="40" show-password></el-input>
           <el-select v-model="formUser.permission" :placeholder="lang.position">
             <el-option v-for="i in permission" :key="i.n" :label="i.m" :value="i.n"></el-option>
           </el-select>
           <div style="margin-top: 1rem">
             <el-button v-if="isEditRow" type="primary" @click="submitEdit">{{lang.edit}}</el-button>
-            <el-button v-else type="primary" @click="submit">{{lang.addNew}}</el-button>
-            <el-button type="danger" @click="clear">{{lang.cancel}}</el-button>
+            <el-button v-else type="primary" @click="submit()">{{lang.addNew}}</el-button>
+            <el-button type="danger" @click="clear()">{{lang.cancel}}</el-button>
           </div>
         </div>
       </div>
@@ -77,15 +77,15 @@ export default {
     },
     submitEdit(){
       let { users, formUser } = this
-      const { id, fullName, password, permission, username } = formUser
-      if(!fullName || !password || !permission ||!username ) return this.$message({ message: 'Vui lòng nhập đầy đủ thông tin', type: 'warning' })
+      const { id, fullName, permission, username } = formUser
+      if(!fullName || !permission ||!username ) return this.$message({ message: 'Vui lòng nhập đầy đủ thông tin', type: 'warning' })
 
       if(users.filter(i => i.username == username).length >= 2) return this.$message({ message: 'username đã tồn tại', type: 'warning' })
       this.putAPI(USERS.EDIT, formUser, r => {
         const { ok } = r
         if(!ok) return this.$message({ message: 'Có lỗi sảy ra', type: 'Error' })
         let index = users.findIndex(i => i.id == id)
-        users[index] = formUser
+        users[index] = {...users[index], ...formUser} 
         this.CHANGE_USERS([...users])
         this.$message({ message: 'Sửa thành công', type: 'success' })
         this.clear()

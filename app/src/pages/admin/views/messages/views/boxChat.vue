@@ -53,6 +53,7 @@
         <i class="el-icon-s-promotion"></i>
       </button>
     </div>
+    {{ checkClientReadNotice }}
   </div>
 </template>
 
@@ -230,12 +231,22 @@ export default {
       conversations: "_MESSAGE/conversations",
       boxMessages: "_MESSAGE/boxMessages",
       myAccount: "_ACCOUNT/myAccount",
+      notification: "_ACCOUNT/notification",
       conversations: "_MESSAGE/conversations",
       userEntering: "_MESSAGE/userEntering",
     }),
     currentUser(){
       const { conversations, currentReceiveId } = this
       return conversations.find(user => user.id === currentReceiveId) || {}
+    },
+    checkClientReadNotice() {
+      if(this.notification[this.currentReceiveId]) {
+        this.socket.emit("CLIENT_HAS_READ_THE_NOTICE", {
+          myAccountId: this.myAccount.id,
+          sender_id: this.currentReceiveId
+        })
+      }
+      return;
     }
   },
   watch: {
@@ -418,6 +429,7 @@ export default {
     .input-option {
       display: flex;
       width: 60px;
+      height: 100%;
 
       button {
         padding: 0.5em 1em;

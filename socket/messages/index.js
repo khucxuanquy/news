@@ -7,21 +7,26 @@ const message = require('../../controllers/messages');
  */
 module.exports = ({ io, socket, STORE }) => {
   // trong store myAccount -> luu idUser va idSocketIo
-  socket.on('CLIENT_SEND_NEW_MESSAGE', async dataInput => {
-    if(!dataInput.content) return;
-    let { error, data } = await message.create(dataInput)
+  socket.on('CLIENT_SEND_NEW_MESSAGE', async ({ content, receive_id, sender_id }) => {
+    if(!content) return;
+    let { error, data } = await message.create({ content, receive_id, sender_id })
     if (error) return;
-    // gui cho ban thanh minh
+    // gui cho ban than minh
     io.to(socket.id).emit('CLIENT_RECEIVE_NEW_MESSAGE', data);
     // tim xem receive_id  co dang online k
     // neu co -> gui realtime
-    let checkOnline = STORE.usersOnline[dataInput.receive_id]
+    let checkOnline = STORE.usersOnline[receive_id]
     if (checkOnline) {
+      //Lưu vào notification
+      if(STORE.notification[receive_id] && Number(STORE.notification[receive_id][sender_id])) STORE.notification[receive_id][sender_id] += 1;
+      else STORE.notification[receive_id] = { [sender_id] : 1}
       checkOnline.forEach(id => {
         io.to(id).emit('CLIENT_RECEIVE_NEW_MESSAGE', data);
+        // send notice for partner
+        io.to(id).emit('SERVER_SEND_NOTIFICATION', STORE.notification[receive_id], true);
       });
       // socket.broadcast.emit('message_client', data)
-    }
+    } 
   });
 
   socket.on('CLIENT_GET_MESSAGES', async dataInput => {

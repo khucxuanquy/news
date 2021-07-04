@@ -46,8 +46,8 @@ registerModule().then(async () => {
       localStorage.setItem('_info', JSON.stringify(data))
     })
 
-    // socket = await io('https://doan.khucblog.com');
-    socket = await io('http://localhost:3000');
+    socket = await io('https://doan.khucblog.com');
+    // socket = await io('http://localhost:3000');
     socket.on("connect", () => {
       if (user_info && user_info.id) {
         socket.emit("USER_CONNECTED", {
