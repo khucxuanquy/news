@@ -163,31 +163,33 @@ class Posts extends baseModel {
         })
     }
 
-    async home({ DEFAULT_FIELDS_HOME }) {
+    async home({ DEFAULT_FIELDS_HOME, dataGetting }) {
+        let { topNewFeed, topPostsOfWeek, topPostsOfMonth, sectionBottom } = dataGetting
         let arrCategories = await new Promise(resolve => this.sql.query(`SELECT * FROM top_view_categories`, (err, r) => resolve(r)))
-        // 8 bài mới nhất 
-        // 4 bài hay nhất 7 ngay qua
-        // 4 bài hay nhất 30 ngay qua
-        // 2 chủ đề nhiều người quan tâm nhất ( tổng views ) => lấy 5 bài
         const SELECT = `SELECT ${DEFAULT_FIELDS_HOME} FROM posts`
+        let arrQuery= []
 
-        let arrQuery = [
-            `${SELECT} WHERE posts.activated LIKE 'true' ORDER BY dateCreated DESC limit 0, 8`,
-            `${SELECT} WHERE posts.activated LIKE 'true' AND dateCreated BETWEEN '${+new Date() - ONE_DAY * 7}' AND '${+new Date()}' ORDER BY view DESC limit 0, 4`,
-            `${SELECT} WHERE posts.activated LIKE 'true' AND dateCreated BETWEEN '${+new Date() - ONE_DAY * 30}' AND '${+new Date()}' ORDER BY view DESC limit 0, 4`
-        ]
+        // checking dataGetting
+        if(topNewFeed) arrQuery.push(`${SELECT} WHERE posts.activated LIKE 'true' ORDER BY dateCreated DESC limit 0, 8`)
+        else arrQuery.push(`SELECT id FROM reports WHERE id ='1'`) // []
 
-        for (const i of arrCategories) {
-            arrQuery.push(`SELECT posts.id, title, posts.url as url, image, posts.dateCreated FROM posts INNER JOIN categories ON categories.id = posts.category_id WHERE posts.activated LIKE 'true' AND categories.id = '${i.id}' ORDER BY view DESC limit 0, 4`)
+        if(topPostsOfWeek) arrQuery.push(`${SELECT} WHERE posts.activated LIKE 'true' AND dateCreated BETWEEN '${+new Date() - ONE_DAY * 7}' AND '${+new Date()}' ORDER BY view DESC limit 0, 4`)
+        else arrQuery.push(`SELECT id FROM reports WHERE id ='1'`) // []
+
+        if(topPostsOfMonth) arrQuery.push(`${SELECT} WHERE posts.activated LIKE 'true' AND dateCreated BETWEEN '${+new Date() - ONE_DAY * 30}' AND '${+new Date()}' ORDER BY view DESC limit 0, 4`)
+        else arrQuery.push(`SELECT id FROM reports WHERE id ='1'`) // []
+
+        if(sectionBottom) {
+            for (const i of arrCategories) {
+                arrQuery.push(`SELECT posts.id, title, posts.url as url, image, posts.dateCreated FROM posts INNER JOIN categories ON categories.id = posts.category_id WHERE posts.activated LIKE 'true' AND categories.id = '${i.id}' ORDER BY view DESC limit 0, 4`)
+            }
         }
+
 
         return Promise.all(arrQuery.map(query => new Promise(resolve => {
             this.sql.query(query, (err, data) => err ? resolve([]) : resolve(data))
         })))
             .then(res => {
-                // const topNewFeed = res[0]
-                // const topPostsOfWeek = res[1]
-                // const topPostsOfMonth = res[2]
                 let [topNewFeed, topPostsOfWeek, topPostsOfMonth, ...filterPostByCategories] = res
                 // bài viết nhiều view nhất của chủ đề
                 let sectionBottom = {}
@@ -213,8 +215,6 @@ class Posts extends baseModel {
 
         let SELECT = `SELECT COUNT(id) as quantity FROM posts `
         let arrQuery = [
-            `${SELECT} WHERE activated LIKE 'true' AND dateCreated BETWEEN '${_date.start}' AND '${_date.end}'`,
-            `${SELECT} WHERE activated LIKE 'true' AND dateCreated BETWEEN '${+_week.start}' AND '${+_week.end}'`,
             `${SELECT} WHERE activated LIKE 'true' AND dateCreated BETWEEN '${+_month.start}' AND '${+_month.end}'`,
             `SELECT posts.user_id, COUNT(id) as amountPosts, SUM(posts.view) as totalView FROM posts WHERE activated LIKE 'true' AND dateCreated BETWEEN '${+_week.start}' AND '${+_week.end}' GROUP BY posts.user_id`,
             `SELECT posts.user_id, COUNT(id) as amountPosts, SUM(posts.view) as totalView FROM posts WHERE activated LIKE 'true' AND dateCreated BETWEEN '${+_month.start}' AND '${+_month.end}' GROUP BY posts.user_id`,
@@ -225,14 +225,12 @@ class Posts extends baseModel {
             this.sql.query(query, (err, data) => err ? resolve([]) : resolve(data))
         })))
             .then(res => {
-                let quantityInDate = res[0][0].quantity,
-                    quantityInWeek = res[1][0].quantity,
-                    quantityInMonth = res[2][0].quantity,
-                    topEmployeesInWeek = res[3],
-                    topEmployeesInMonth = res[4],
-                    totalView = res[5][0] ? res[5][0].totalView : 0,
-                    totalPost = res[5][0] ? res[5][0].totalPost : 0;
-                return Promise.resolve({ data: { quantityInDate, quantityInWeek, quantityInMonth, topEmployeesInWeek, topEmployeesInMonth, totalView, totalPost } })
+                let quantityInMonth = res[0][0].quantity,
+                    topEmployeesInWeek = res[1],
+                    topEmployeesInMonth = res[2],
+                    totalView = res[3][0] ? res[3][0].totalView : 0,
+                    totalPost = res[3][0] ? res[3][0].totalPost : 0;
+                return Promise.resolve({ data: { quantityInMonth, topEmployeesInWeek, topEmployeesInMonth, totalView, totalPost } })
             }).catch(error => {
                 console.log('\x1b[31m', error)
                 return Promise.resolve({ error })

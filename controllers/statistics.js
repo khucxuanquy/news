@@ -45,4 +45,9 @@ module.exports = {
         if (error) return res.send(resFail({ error }))
         res.send(resSuccess({ data }))
     },
+    async getTrendingInWeek(req, res) {
+        let { error, data } = await statistic.getTrendingInWeek()
+        if (error) return res.send(resFail({ error }))
+        res.send(resSuccess({ data }))
+    },
 }

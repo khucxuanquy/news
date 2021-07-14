@@ -12,7 +12,7 @@
               <Box v-for="post in postsByCategory.filter((item, index) => index != 0)" :data="post" :key="post.id" medium/>
             </div>
             <h4 v-else>
-              Khong tim thay tu khoa: <strong>{{$route.query.q}}</strong>
+              Không tìm thấy từ khóa: <strong>{{$route.query.q}}</strong>
             </h4>
 
             <div class="view-more" style="text-align: center">

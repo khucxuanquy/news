@@ -113,7 +113,6 @@
           </div>
         </div>
 
-        <!-- THANH CODE HERE-->
         <div id="comment">
           <CmtBox :postId="detail.id" />
         </div>
@@ -141,7 +140,7 @@
       </el-col>
 
       <!-- RIGHT -->
-      <el-col :md="8" :sm="24">
+      <el-col :md="8" :sm="24" style="position: sticky; top: 60px">
         <TextHeading :title="'Chủ đề'" />
         <BoxCategory
           :data="category"
@@ -226,6 +225,17 @@ export default {
     CmtBox
   },
   created() {
+    let params = { }
+    if(!this.home.topNewFeed.length) params.topNewFeed = true
+    if(!this.home.topPostsOfWeek.length) params.topPostsOfWeek = true
+
+    if(Object.entries(params).length) {
+      this.getAPI(POSTS.HOME, params, res => {
+        if (!res.ok) return;
+        this.CHANGE_DATA_HOME(res.data);
+      })
+    }
+
     // t sẽ viết cách gọi API ở đây, và yêu cầu những trường gì
     /*
     // create 1 comment
@@ -316,7 +326,9 @@ export default {
     });
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      CHANGE_DATA_HOME: "_HOMEPAGE/CHANGE_DATA_HOME"
+    }),
     activeSpeak() {
       if (this.isActivedSpeak) {
         localStorage.removeItem("isActivedSpeak");

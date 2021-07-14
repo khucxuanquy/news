@@ -3,16 +3,17 @@ export default {
     namespaced: true,
     state: {
         home: {
-            hotTopics: [],
             topNewFeed: [],
             topPostsOfWeek: [],
             topPostsOfMonth: [],
+            trendingInWeek: [],
             sectionBottom: {},
         },
         userInfo: {},
         userInfoDetail: {},
         responsive: {
-            isDesktop: true
+            isDesktop: true,
+            isTablet: false,
         },
         // statistics
         statisticOverview: {},
@@ -28,7 +29,11 @@ export default {
     },
     mutations: {
         CHANGE_DATA_HOME(state, home) {
-            state.home = home;
+            if(Array.isArray(home.topNewFeed) && home.topNewFeed.length) state.home.topNewFeed = home.topNewFeed
+            if(Array.isArray(home.topPostsOfWeek) && home.topPostsOfWeek.length) state.home.topPostsOfWeek = home.topPostsOfWeek
+            if(Array.isArray(home.topPostsOfMonth) && home.topPostsOfMonth.length) state.home.topPostsOfMonth = home.topPostsOfMonth
+            if(home.sectionBottom && Object.entries(home.sectionBottom).length) state.home.sectionBottom = home.sectionBottom
+            if(Array.isArray(home.trendingInWeek) && home.trendingInWeek.length) state.home.trendingInWeek = home.trendingInWeek
         },
         CHANGE_RESPONSIVE(state, data) {
             state.responsive.isDesktop = data;

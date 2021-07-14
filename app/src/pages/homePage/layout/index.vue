@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper" v-loading.fullscreen.lock="!visible">
+  <div class="wrapper">
     <Header @showDialog="showDialog = true"></Header>
     <router-view />
     <DialogInfoUser v-if="showDialog" :dialogVisible="showDialog" @handleClose="showDialog = false" />
@@ -13,12 +13,11 @@ import Footer from "components/Footer";
 import DialogInfoUser from "./dialogInfoUser.vue";
 import ENUM from "const/api";
 import { mapGetters, mapActions } from "vuex";
-const { CATEGORIES, POSTS, USERS } = ENUM;
+const { CATEGORIES } = ENUM;
 
 export default {
   data: function () {
     return {
-      visible: false,
       showDialog: false
     };
   },
@@ -64,35 +63,22 @@ export default {
       });
     }
 
-    if (!this.home.topNewFeed.length) {
-      // inscease performance
-      // if(/post|category/gi.test(location.pathname)) return this.visible = true;
-      this.getAPI(POSTS.HOME, {}, (res) => {
-        if (!res.ok) return;
-        this.CHANGE_DATA_HOME(res.data);
-        this.visible = true;
-      });        
-    } else this.visible = true
   },
   methods: {
     ...mapActions({
       CHANGE_MY_ACCOUNT: "_ACCOUNT/CHANGE_MY_ACCOUNT",
+      CHANGE_CATEGORIES: "_CATEGORIES/CHANGE",
       CHANGE_USER_INFO: "_HOMEPAGE/CHANGE_USER_INFO",
     }),
-    CHANGE_CATEGORIES(data) {
-      this.storeVue("_CATEGORIES").dispatch("CHANGE", data);
-    },
-    CHANGE_DATA_HOME(data) {
-      this.storeVue("_HOMEPAGE").dispatch("CHANGE_DATA_HOME", data);
-    },
     handleResizeWindow({ currentTarget }) {
       let w = currentTarget.innerWidth;
       // neu la desktop
       if (this.responsive.isDesktop) {
-        if (w < 500)
-          this.storeVue("_HOMEPAGE").dispatch("CHANGE_RESPONSIVE", false);
-      } else if (w >= 500)
-        this.storeVue("_HOMEPAGE").dispatch("CHANGE_RESPONSIVE", true);
+        if (w < 500) this.storeVue("_HOMEPAGE").dispatch("CHANGE_RESPONSIVE", false);
+      } else if (w >= 500) this.storeVue("_HOMEPAGE").dispatch("CHANGE_RESPONSIVE", true);
+
+      // check tablet
+      // if(w < 1200)
     },
   },
   computed: {

@@ -93,7 +93,7 @@ module.exports = {
         res.send(resSuccess({ data }))
     },
     async home(req, res) {
-        let { error, data } = await post.home({ DEFAULT_FIELDS_HOME })
+        let { error, data } = await post.home({ DEFAULT_FIELDS_HOME, dataGetting: req.query })
         if (error) return res.send(resFail({ error }))
         res.send(resSuccess({ data }))
     },

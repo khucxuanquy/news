@@ -53,7 +53,8 @@ export default {
     STATISTICS: {
         GET: URL + 'statistics/getStatistics',
         GET_BY_DATE_PICKER: URL + 'statistics/getByDatePicker',
-        STATISTIC_CATEGORY: URL + 'statistics/statisticCategories'
+        STATISTIC_CATEGORY: URL + 'statistics/statisticCategories',
+        GET_TRENDING_IN_WEEK: URL + 'statistics/getTrendingInWeek',
     },
     COMMENTS: {
         GET_COMMENTS: URL + 'comments/getComments',

@@ -1,5 +1,5 @@
 <template>
-  <div style="background: #eee">
+  <div style="background: #eee; margin-top: 3em">
     <transition name="fade">
       <button v-if="isShowBtn || !responsive.isDesktop" class="gotopbtn" @click="scrollToTop()">
         <i class="fas fa-arrow-up"></i>

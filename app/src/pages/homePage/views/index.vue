@@ -1,11 +1,15 @@
 <template>
-  <div id="homePage">
+  <div id="homePage" v-loading.fullscreen.lock="!visible">
     <el-main>
         <section class="container new-feed">
           <el-row :gutter="24">
-            <el-col :md="16" :sm="24" :style="!responsive.isDesktop ? 'padding: 0 10px' : ''">
+            <el-col :md="7">
+               <TextHeading :title="'Trending'" color="red"/>
+                <Box :data="posts" small :height="230" v-for="(posts, index) in trendingInWeek" :key="index" />
+               </el-col>
+            <el-col :md="11" :sm="24" :style="!responsive.isDesktop ? 'padding: 0 10px' : ''">
               <!-- img 800 x 300 px -->
-              <el-carousel :height="responsive.isDesktop ? '300px' : '130px'" direction="vertical" trigger="click" :autoplay="true" :interval="5000" style="box-shadow: #00000033 0px 0px 20px; border-radius: 8px;"> 
+              <el-carousel :height="responsive.isDesktop ? '300px' : '130px'" direction="vertical" trigger="click" :autoplay="true" :interval="3000" style="box-shadow: #00000033 0px 0px 20px; border-radius: 8px;"> 
                 <el-carousel-item v-for="item in [1,2,3,4]" :key="item">
                   <div class="banner-event" :style="`background-image: url(https://doan.khucblog.com/static/images/qc${item}.jpg)`"></div>
                 </el-carousel-item>
@@ -20,7 +24,7 @@
               </div>
             </div>
             </el-col>
-            <el-col :md="8" :sm="24">
+            <el-col :md="6" :sm="24">
               <!-- RIGHT -->
               <aside>
                 <TextHeading :title="'Chủ đề'" />
@@ -83,11 +87,13 @@
 
 <script>
 import CONST from 'const/const'
+import ENUM from "const/api";
 import Box from "components/box-post";
 import BoxCategory from "components/box-category";
 import TextHeading from "components/text-heading";
 import TextAngleSharp from "components/text-angle-sharp";
-import { mapGetters } from 'vuex';
+const { POSTS, STATISTICS  } = ENUM;
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   components: {
@@ -96,7 +102,37 @@ export default {
     TextAngleSharp,
     BoxCategory
   },
+  data: function () {
+    return {
+      visible: false,
+    };
+  },
+  created() {
+    let params = { }
+    if(!this.home.topNewFeed.length) params.topNewFeed = true
+    if(!this.home.topPostsOfWeek.length) params.topPostsOfWeek = true
+    if(!this.home.topPostsOfMonth.length) params.topPostsOfMonth = true
+    if(!Object.entries(this.home.sectionBottom).length) params.sectionBottom = true
+
+    if(Object.entries(params).length) {
+      this.getAPI(POSTS.HOME, params, res => {
+        if (!res.ok) return;
+        this.CHANGE_DATA_HOME(res.data);
+        this.visible = true;
+      })
+    } else this.visible = true
+    if(!this.home.trendingInWeek.length) {
+      this.getAPI(STATISTICS.GET_TRENDING_IN_WEEK, {}, (res) => {
+        if (!res.ok) return;
+        this.CHANGE_DATA_HOME({ trendingInWeek: res.data });
+        this.visible = true;
+      }); 
+    }
+  },
   methods: {
+    ...mapActions({
+      CHANGE_DATA_HOME: "_HOMEPAGE/CHANGE_DATA_HOME"
+    }),
     getCategoryById(id){
       if(!id) return {}
       let category = this.categories.find(i => i.id == id)
@@ -114,6 +150,9 @@ export default {
     }),
     topNewFeed(){
       return this.home.topNewFeed.map(i => ({...i, category: this.getCategoryById(i.category_id), dateCreated: this.convertDate(i.dateCreated)})) 
+    },
+    trendingInWeek(){
+      return this.home.trendingInWeek.map(i => ({...i, category: this.getCategoryById(i.category_id), dateCreated: this.convertDate(i.dateCreated)})) 
     },
     topPostsOfMonth(){
       return this.home.topPostsOfMonth.map(i => ({...i, category: this.getCategoryById(i.category_id), dateCreated: this.convertDate(i.dateCreated)})) 
@@ -135,6 +174,11 @@ export default {
 </script>
 
 <style lang="scss">
+#homePage {
+  .container {
+    max-width: 1500px;
+  }
+}
 .new-feed {
   .banner-event {
     background: #475669;

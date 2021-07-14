@@ -158,8 +158,8 @@ class Statistics extends baseModel {
     async getStatistics() {
         // ONE_HOUR
         let _rangeWeek = rangeWeek(+new Date())
+        // `SELECT posts.title, SUM(statistics.view) as 'totalView' FROM statistics INNER JOIN posts ON posts.id = statistics.post_id WHERE statistics.dateCreated BETWEEN '${+_rangeWeek.start}' AND '${+_rangeWeek.end}' GROUP BY posts.title ORDER BY totalView DESC`,
         let arrQuery = [
-            `SELECT posts.title, SUM(statistics.view) as 'totalView' FROM statistics INNER JOIN posts ON posts.id = statistics.post_id WHERE statistics.dateCreated BETWEEN '${+_rangeWeek.start}' AND '${+_rangeWeek.end}' GROUP BY posts.title ORDER BY totalView DESC`,
             `SELECT posts.category_id, SUM(statistics.view) as 'totalView' FROM statistics INNER JOIN posts ON posts.id = statistics.post_id WHERE statistics.dateCreated BETWEEN '${+_rangeWeek.start}' AND '${+_rangeWeek.end}' GROUP BY posts.category_id ORDER BY totalView DESC`,
         ]
 
@@ -167,9 +167,26 @@ class Statistics extends baseModel {
             this.sql.query(query, (err, data) => err ? resolve([]) : resolve(data))
         })))
             .then(res => {
-                const groupByPostTitle = res[0], // thong ke views by posts.title
-                    categoryMostInterest = res[1] // thong ke views by category
-                return Promise.resolve({ data: { groupByPostTitle, categoryMostInterest } })
+                // const groupByPostTitle = res[0], // thong ke views by posts.title
+                const categoryMostInterest = res[0] // thong ke views by category
+                return Promise.resolve({ data: { categoryMostInterest } })
+            }).catch(error => {
+                console.log('\x1b[31m', error)
+                return Promise.resolve({ error })
+            })
+    }
+
+    async getTrendingInWeek() {
+        let dateEnd = +new Date();
+        let dateStart = dateEnd - 3600000 * 24 * 30;
+        let arrQuery = [
+            `SELECT posts.title, posts.category_id, posts.url, posts.image, posts.id, posts.dateCreated, SUM(statistics.view) as 'totalView' FROM statistics INNER JOIN posts ON posts.id = statistics.post_id WHERE statistics.dateCreated BETWEEN '${dateStart}' AND '${dateEnd}' GROUP BY posts.title ORDER BY totalView DESC limit 0,10`,
+        ]
+        return Promise.all(arrQuery.map(query => new Promise(resolve => {
+            this.sql.query(query, (err, data) => err ? resolve([]) : resolve(data))
+        })))
+            .then(res => {
+                return Promise.resolve({ data: res[0] })
             }).catch(error => {
                 console.log('\x1b[31m', error)
                 return Promise.resolve({ error })
