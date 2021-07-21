@@ -1,21 +1,21 @@
 <template>
   <div class="wrapper" >
-  <header>
+  <div>
     <!-- middle-area -->
-    <div class="middle-area">
+    <div class="middle-area" style="margin-top: 2em">
         <div class="container">
             <el-row type="flex" align="middle" justify="space-around">
                 <el-col :md="5">
                     <div class="logo-area">
                         <router-link to="/">
-                            <img class="img-fluid" src="https://news.laptrinhmaytinh.com/static/images/logo.png">
+                            <img class="img-fluid" src="https://doan.khucblog.com/static/images/logo.png">
                         </router-link>
                     </div>
                 </el-col>
                 <el-col :md="15">
                     <div class="banner-img text-right">
                         <a href="/" target="_blank">
-                            <img class="img-fluid" src="https://news.laptrinhmaytinh.com/static/images/homepage/header_banner.png">
+                            <img class="img-fluid" src="https://doan.khucblog.com/static/images/header_banner.png">
                         </a>
                     </div>
                 </el-col>
@@ -23,7 +23,7 @@
         </div>
     </div>
     <el-divider></el-divider>
-  </header>
+  </div>
   <div class="container is-fluid" style="height: 80vh">
     <!-- Error Page -->
     <div class="error">

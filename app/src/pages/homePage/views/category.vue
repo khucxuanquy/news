@@ -13,7 +13,7 @@
             <TextHeading :title="getCategoryByUrl($route.params.category_url).name || 'News'" :color="getCategoryByUrl($route.params.category_url).color || '#690aa0'"/>
             <div v-if="postsByCategory[0]">
               <Box :data="postsByCategory[0]" large :height="responsive.isDesktop ? 400 : 200"/>
-              <Box v-for="post in postsByCategory.filter((item, index) => index != 0)" :data="post" :key="post.id" medium :height="!responsive.isDesktop ? 110 : 200"/>
+              <Box v-for="post in postsByCategory.filter((item, index) => index != 0)" :data="post" :key="post.id" medium :height="!responsive.isDesktop ? 130 : 200"/>
             </div>
             <div v-else>
               <h4 style="text-align: center; margin-top: 1rem">Không tìm thấy bài viết của chủ đề này</h4>

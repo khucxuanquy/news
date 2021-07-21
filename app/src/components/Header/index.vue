@@ -178,7 +178,7 @@ header {
   height: 60px;
   width: 100vw;
   position: fixed;
-    box-shadow: 0 0 20px #0000004d;
+  box-shadow: 0 0 20px #0000004d;
   z-index: 99;
   
   // top-bar

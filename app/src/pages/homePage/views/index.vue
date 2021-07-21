@@ -3,11 +3,11 @@
     <el-main>
         <section class="container new-feed">
           <el-row :gutter="24">
-            <el-col :md="7">
+            <!-- <el-col :md="7">
                <TextHeading :title="'Trending'" color="red"/>
                 <Box :data="posts" small :height="230" v-for="(posts, index) in trendingInWeek" :key="index" />
-               </el-col>
-            <el-col :md="11" :sm="24" :style="!responsive.isDesktop ? 'padding: 0 10px' : ''">
+               </el-col> -->
+            <el-col :md="16" :sm="24" :style="!responsive.isDesktop ? 'padding: 0 10px' : ''">
               <!-- img 800 x 300 px -->
               <el-carousel :height="responsive.isDesktop ? '300px' : '130px'" direction="vertical" trigger="click" :autoplay="true" :interval="3000" style="box-shadow: #00000033 0px 0px 20px; border-radius: 8px;"> 
                 <el-carousel-item v-for="item in [1,2,3,4]" :key="item">
@@ -18,13 +18,13 @@
             <div class="top-new">
               <TextHeading :title="'News'" color="#690aa0"/>
               <Box v-if="topNewFeed[0]" :data="topNewFeed[0]" large :height="responsive.isDesktop ? 400: 200"/>
-              <Box  v-for="post in topNewFeed.filter((item, index) => index != 0)" :data="post" :key="post.id" medium :height="!responsive.isDesktop ? 110 : 200"/>
+              <Box  v-for="post in topNewFeed.filter((item, index) => index != 0)" :data="post" :key="post.id" medium :height="!responsive.isDesktop ? 130 : 200"/>
               <div class="view-more" style="text-align: center">
                 <el-button style="margin: 1rem 0" @click="$router.push('/category/news')">Xem Thêm</el-button>
               </div>
             </div>
             </el-col>
-            <el-col :md="6" :sm="24">
+            <el-col :md="8" :sm="24">
               <!-- RIGHT -->
               <aside>
                 <TextHeading :title="'Chủ đề'" />
@@ -76,6 +76,7 @@
             </el-col>
             <el-col :md="6">
               <TextHeading :title="'Gợi ý cho bạn'" />
+              <Box :data="posts" large :height="200" v-for="(posts, index) in trendingInWeek" :key="index" />
               <!-- <BoxCategory :data="category" v-for="category in categories" :key="category.id"/> -->
             </el-col>
           </el-row>
@@ -122,7 +123,36 @@ export default {
       })
     } else this.visible = true
     if(!this.home.trendingInWeek.length) {
-      this.getAPI(STATISTICS.GET_TRENDING_IN_WEEK, {}, (res) => {
+      // let suggestion = JSON.parse(localStorage.getItem('suggestion'))
+      // let data = []
+      // if(suggestion) {
+      //   for (const key in suggestion) {
+      //     data.push({
+      //       label: key,
+      //       value: suggestion[key]
+      //     })
+      //   }
+      //   function swap(arr, i, j) {
+      //     let temp = arr[i]
+      //     arr[i] = arr[j]
+      //     arr[j] = temp
+      //   }
+
+      //   let i = 1;
+      //   while (i < data.length) {
+      //     let currentValue = data[i].value
+      //     let j = i - 1; // indexLeftArray
+      //     // j >=0 -> fix data[-1], 
+      //     while (j >= 0 && currentValue > data[j].value) {
+      //       swap(data, j, j + 1)
+      //       j -= 1;
+      //     }
+      //     i++;
+      //   }
+      //   data = data.filter((i, index) => index < 3)
+      // }
+
+      this.getAPI(STATISTICS.GET_TRENDING_IN_WEEK, { }, (res) => {
         if (!res.ok) return;
         this.CHANGE_DATA_HOME({ trendingInWeek: res.data });
         this.visible = true;
@@ -175,8 +205,11 @@ export default {
 
 <style lang="scss">
 #homePage {
-  .container {
-    max-width: 1500px;
+  .category-highlight,
+  .main-banner--ads {
+    .container {
+      max-width: 1500px;
+    }
   }
 }
 .new-feed {

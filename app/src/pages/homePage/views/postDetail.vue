@@ -163,13 +163,13 @@
               :key="post.id + Math.random().toString(36)"
             />
           </div>
-          <iframe
+          <!-- <iframe
             frameborder="0"
             style="margin-top: 5em"
             width="100%"
             height="400px"
             src="https://webtygia.com/api/xang-dau?bgheader=9c27b0&colorheader=ffffff&padding=5&fontsize=13"
-          ></iframe>
+          ></iframe> -->
           <div v-if="topPostsOfWeek[0]">
             <TextHeading :title="'Top của tuần'" color="red" />
             <Box
@@ -297,7 +297,7 @@ export default {
     };
     this.getAPI(POSTS.GET_CONTENT, d, r => {
       const { ok, data, related_post } = r;
-      if (!ok || !data) return this.$router.push("/404");
+      if (!ok || !Object.entries(data).length) return this.$router.push("/404");
       this.detail = data;
       if (!getTopPosts) {
         let highlight = {
@@ -500,7 +500,8 @@ export default {
     padding-right: 15px;
 
     p {
-      font-size: 1rem;
+      // font-size: 1rem;
+      font-size: 17px;
     }
     img {
       width: 100%;

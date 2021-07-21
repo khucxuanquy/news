@@ -2,7 +2,7 @@
   <div class="wrapper-login-dashboard" v-if="isExist">
     <div id="form-login">
       <div>
-        <img src="https://news.laptrinhmaytinh.com/static/images/logo.png" style="margin-bottom: 2rem">
+        <img src="https://doan.khucblog.com/static/images/logo.png" style="margin-bottom: 2rem">
         <div>
           <el-form
             ref="formLogin"

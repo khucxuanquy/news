@@ -235,7 +235,9 @@ export default {
         this.CHANGE_STATISTIC_OVERVIEW(dataInput)
       })
     }
-    if(!this.statisticHistoryComment.length) this.getCommentsByUserId();
+    // if(!this.statisticHistoryComment.length) this.getCommentsByUserId();
+    this.CHANGE_STATISTIC_HISTORY_COMMENT([])
+    this.getCommentsByUserId();
   },
   watch:{
     // formAccount(e) {

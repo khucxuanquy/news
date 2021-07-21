@@ -2,8 +2,10 @@
   <div class="changePassword__container container">
     <div class="logo">
       <img
-        src="https://laptrinhmaytinh.com/assets/images/logo_lg.png"
+        src="https://doan.khucblog.com/static/images/logo_lg.png"
         class="rounded"
+        style="cursor: pointer"
+        title="homepage"
         alt="logo"
         @click="$router.push('/')"
       />

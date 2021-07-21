@@ -3,8 +3,10 @@
     <div v-if="!sentEmail" class="register container">
       <div class="logo">
         <img
-          src="https://laptrinhmaytinh.com/assets/images/logo_lg.png"
+          src="https://doan.khucblog.com/static/images/logo_lg.png"
           class="rounded"
+          title="homepage"
+          style="cursor: pointer"
           alt="logo"
           @click="$router.push('/')"
         />

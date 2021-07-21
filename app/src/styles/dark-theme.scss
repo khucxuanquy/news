@@ -1,0 +1,180 @@
+$dark-bg-1: #161d31;
+$dark-bg-2: #283046;
+
+$text-1: #d0d2d6;
+$text-2: #4c4993;
+$text-3: #6e6b7b;
+
+body.dark-theme {
+    .top-bar {
+        background: $dark-bg-2;
+        .logo-area {
+            svg {
+                fill: $text-1!important;
+            }
+            span {
+                color: $text-1!important;
+            }
+        }
+
+        .el-input-group__prepend,
+        .el-input__inner,
+        .el-input-group__append {
+            background: transparent;
+            border-color: #4c4993;
+        }
+
+        .row-right {
+            .el-dropdown-link.el-dropdown-selfdefine {
+                color: $text-1;
+            }
+        }
+    }
+    // HEADER DROPDOWN MENU
+    .el-dropdown-menu.el-popper {
+        background-color: $dark-bg-2!important;
+        .el-dropdown-menu__item {
+            color: $text-1!important;
+        }
+    }
+    .wrapper {
+        background: $dark-bg-1!important;
+    }
+
+    // POST
+    .box-post {
+        .post-content {
+            .post-title {
+                a {
+                    color: $text-1;
+                    &:hover {
+                        color: $text-3;
+                    }
+                }
+            }
+            .post-date {
+                color: $text-1;
+            }
+            .summary {
+                color: $text-1;
+            }
+        }
+    }
+    // POST detail
+    #post-detail {
+        .title-meta {
+            color: #d0d2d6;
+        }
+        .content {
+            color: #d0d2d6;
+        }
+        .report-post {
+
+            .el-input-group__prepend,
+            .el-input__inner {
+                background: transparent;
+                border: thin solid;
+            }
+        }
+    }
+    
+    // COMMENT
+    .comment-main-level {
+        .comment-box {
+            background: #283046;
+            .comment-head{
+                border-color: #6e6b7b;
+            }
+           .comment-content {
+                background: transparent;
+                color: $text-1;
+                border-color: transparent;
+            }
+            .comment-open {
+                span {
+                    color: $text-1;
+                    &:hover {
+                        background-color: #161d31;
+                    }
+                }
+            }
+        }
+    }
+    .history-comments {
+        .item {
+            &:hover {
+                background: #283046!important;
+                box-shadow: 0 4px 18px -4px #d0d2d61a!important;
+            }
+            p {
+                strong {
+                    color: $text-3;
+                }
+            }
+        }
+    }
+
+    .wrapper-footer {
+        background-color: $dark-bg-2!important;
+        footer {
+            h4, th, tr, td, table {
+                background-color: transparent;
+                color: $text-1;
+            }
+            td {
+                border-top: thin solid $dark-bg-1;
+            }
+        }
+        .bar {
+            background-color: transparent;
+        }
+        .copyright {
+            color: $text-1;
+        }
+    }
+
+    // GLOBAL \\
+    .el-textarea textarea {
+        background: transparent;
+        border: thin solid;
+    }
+    .el-button {
+        background-color: transparent;
+        // border-color: $text-2;
+    }
+    .el-divider__text {
+        background: #161d31;
+        color: $text-1;
+    }
+  
+    .el-dropdown-menu__item:hover {
+        background-color: $dark-bg-1;
+    }
+    .el-dialog {
+        background-color: $dark-bg-1;
+        .el-dialog__header .el-dialog__title {
+            color: $text-1;
+        }
+        .layout-wrapper {
+            .left-layout {
+                .block-item {
+                    color: $text-1;
+                }
+                input {
+                    background: transparent;
+                    border: thin solid;
+                }
+                .el-input-group__prepend,
+                .el-input-group__append {
+                    background-color: $dark-bg-2;
+                    border: thin solid;
+                }
+
+            }
+            .right-layout {
+
+            }
+        }
+    }
+
+}

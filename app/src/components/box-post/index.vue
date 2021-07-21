@@ -143,7 +143,7 @@ export default {
       display: inline-block;
       padding: 3px 5px;
       margin: 0 0 5px 0;
-      border-radius: 4px;
+      border-radius: 8px;
       color: white;
       &:hover {
         text-shadow: 0px 0px 20px white;
