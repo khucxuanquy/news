@@ -130,7 +130,7 @@ class Posts extends baseModel {
             // get post
             this.sql.query(q, async (error, data) => {
                 if (error) return resolve({ error })
-                if (!data.length) return resolve({ data: [] })
+                if (!data.length) return resolve({ data: {} })
                 // if post exist -> view++
                 let { id, view, category_id } = data[0],
                     related_post = []
@@ -139,6 +139,7 @@ class Posts extends baseModel {
                 // edit view
                 this.edit({ id, view: ++view })
                 cacheRedis.setCache({ key: 'statistics', value: id })
+                // data is scoped
                 if (JSON.parse(isNewCategory)) {
                     let queryGetTopPost = `SELECT title, posts.url as url, image FROM posts INNER JOIN categories ON categories.id = posts.category_id WHERE categories.id = '${category_id}' AND posts.activated LIKE 'true' ORDER BY view DESC limit 0, 6`
                     let { error, data } = await new Promise(resolve => this.sql.query(queryGetTopPost, (error, data) => resolve({ error, data })))
