@@ -1,6 +1,6 @@
 $dark-bg-1: #161d31;
 $dark-bg-2: #283046;
-
+$dark-bg-3: #6e6b7b28;
 $text-1: #d0d2d6;
 $text-2: #4c4993;
 $text-3: #6e6b7b;
@@ -173,6 +173,83 @@ body.dark-theme {
             }
             .right-layout {
 
+            }
+        }
+    }
+
+
+
+    // DASHBOARD
+    #layout-dashboard {
+        // theme elementUI
+        .el-pagination {
+            button {
+                background: transparent!important;
+                color: $text-1!important;
+                &:hover {
+                    color: #409EFF!important;
+                }
+            }
+            ul li {
+                color: $text-1;
+                background: transparent!important;
+                &.active,
+                &:hover {
+                    color: #409EFF!important;
+                }
+            }
+        }
+        .el-icon-more-outline {
+            color: $text-1;
+        }
+        .el-table {
+            tr, td, th {
+                background: $dark-bg-2!important;
+            }
+
+            td,
+            th.is-leaf {
+                border-bottom: 1px solid $dark-bg-3!important;
+            }
+            .el-button {
+                border-color: $dark-bg-1!important;
+            }
+            td {
+                color: $text-1!important;
+            }
+        }
+        .el-input {
+            input {
+                background: transparent!important;
+                border: thin solid $dark-bg-1;
+            }
+        }
+        .el-divider__text {
+            background-color: $dark-bg-2!important;
+        }
+       
+        .el-card.box-card {
+            background: $dark-bg-2;
+            border: thin solid $text-3;
+
+            .el-card__header {
+                color: $text-1!important;
+            }
+        }
+        .el-menu--collapse.el-menu {
+            background-color: transparent!important;
+        }
+    }
+    .el-select-dropdown.el-popper {
+        border: thin solid $text-3!important;
+        .el-scrollbar__view.el-select-dropdown__list {
+            background: #161d31!important;
+            .el-select-dropdown__item {
+                color: $text-1!important;
+                &.hover,
+                &:hover {
+                    background-color: $dark-bg-2!important;
+                }
             }
         }
     }

@@ -1,7 +1,7 @@
 <template>
   <div id="statistics" v-if="visiable">
     <div class="overview-box">
-       <el-divider content-position="left"><h3> Thống kê </h3></el-divider>
+      <el-divider content-position="left"><h3> Thống kê </h3></el-divider>
       <el-row class="overview-box" type="flex" justify="space-between">
         <el-col :md="8">
           <div class="box-child" style="background: linear-gradient(45deg, #4099ff, #73b4ff)">

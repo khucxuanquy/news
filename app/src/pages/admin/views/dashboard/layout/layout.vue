@@ -7,6 +7,13 @@
           <i class="el-icon-more-outline"></i>
         </h5>
         <div style="margin-right: 1rem">
+          <el-switch
+            v-model="darkTheme"
+            @change="changeTheme()"
+            style=" right: 15px; bottom: 2px"
+            active-color="#443355"
+            inactive-color="#d4ecf0">
+          </el-switch>
           <el-dropdown trigger="click" @command="handleCurrentLanguage" class="dropdown-langs">
             <span class="el-dropdown-link">
             <span style="padding: 5px">{{currentLanguage}}</span><i class="el-icon-arrow-down el-icon--right"></i></span>
@@ -45,7 +52,8 @@ export default {
     return {
       isCollapse: false,
       currentLanguage: localStorage.getItem('lang') && localStorage.getItem('lang').toUpperCase() == 'EN' ? 'EN' : 'VI',
-      showDialog: false
+      showDialog: false,
+      darkTheme: false,
     }
   },
   components: {
@@ -87,6 +95,12 @@ export default {
         // this.CHANGE_USER_INFO_DETAIL()
         this.showDialog = true
       }
+    },
+    changeTheme() {
+      let body = document.querySelector('body') 
+      if(this.darkTheme) body.classList.add("dark-theme")
+      else body.classList.remove("dark-theme")
+      localStorage.setItem("dark-theme" , JSON.stringify(this.darkTheme))
     }
   },
   created() {
@@ -101,6 +115,10 @@ export default {
         this.CHANGE_CATEGORIES(res.data)
       })
     }
+
+    let dark_theme = JSON.parse(localStorage.getItem("dark-theme"))
+    this.darkTheme = dark_theme ? true : false
+    this.changeTheme()
   },
   computed:{
     ...mapGetters({
