@@ -17,7 +17,7 @@
       </el-form-item>
       <el-form-item :label="lang.imagePost">
         <el-input v-model="form.image" :placeholder="lang.typeUrlImage"  @keydown.native="typeLinkImage"></el-input>
-        <p v-if="!isShowImage">or</p>
+        <p v-if="!isShowImage"></p>
         <el-upload 
           v-if="!this.isShowImage"
           class="avatar-uploader"

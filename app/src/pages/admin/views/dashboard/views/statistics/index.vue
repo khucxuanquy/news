@@ -75,7 +75,7 @@
         <div class="child-box" v-for="(user, index) in filterTopEmployees.inWeek" :key="user.id">
           <div class="box-index">
             <span v-if="!index"><i class="el-icon-medal-1"></i></span>
-            <span v-else>{{ index }}</span>
+            <span v-else>{{ index + 1 }}</span>
           </div>
           <div class="info">
             <img :src="user.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'">
@@ -96,7 +96,7 @@
         <div class="child-box" v-for="(user, index) in filterTopEmployees.inMonth" :key="user.id">
           <div class="box-index">
             <span class="index" v-if="!index"><i class="el-icon-medal-1"></i></span>
-            <span v-else>{{ index }}</span>
+            <span v-else>{{ index + 1 }}</span>
           </div>
           <div class="info">
             <img :src="user.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'">
@@ -112,19 +112,24 @@
         </div>
       </div>
     </div>
-    <BoxChart v-loading="loadStatisticView" v-if="viewsByDatePicker" :DATA="viewsByDatePicker" typeChart="line" :title="'Biểu đồ số lượt xem của trang web'"/>
-    <div class="form-select-date">
-      <el-date-picker
-        v-model="selectDatePicker"
-        type="daterange"
-        start-placeholder="Từ ngày"
-        end-placeholder="Đến ngày"
-        format="yyyy/MM/dd"
-        value-format="timestamp"
-        :picker-options="pickerOptions"
-        @change="selectDatePiker"
-        >
+    <div class="d-flex p-3 view-web">
+      <div style="padding: .75em 1em;" class="form-select-date">
+        <p>chọn ngày :</p>
+        <el-date-picker
+          v-model="selectDatePicker"
+          type="daterange"
+          start-placeholder="Từ ngày"
+          end-placeholder="Đến ngày"
+          format="yyyy/MM/dd"
+          value-format="timestamp"
+          :picker-options="pickerOptions"
+          @change="selectDatePiker"
+          >
       </el-date-picker>
+    </div>
+    <div style="width: 100%">
+      <BoxChart v-loading="loadStatisticView" v-if="viewsByDatePicker" :DATA="viewsByDatePicker" typeChart="line" :title="'Biểu đồ số lượt xem của trang web'"/>
+    </div>
     </div>
   </div>
 </template>
@@ -175,7 +180,7 @@ export default {
     };
   },
   created() {
-    if(this.myAccount.permission <= 2) return this.$router.push('/admin/dashboard')
+    if(this.myAccount.permission <= 2) return this.$router.push('/admin/dashboard').catch(() => {})
     else this.visiable = true;
 
     const start = new Date().setHours(0, 0, 0, 0) - ONE_DAY * 7;
@@ -303,7 +308,7 @@ export default {
       inMonth = inMonth.sort((a,b) =>  b.totalView - a.totalView)
       inWeek = inWeek.sort((a,b) =>  b.totalView - a.totalView)
       if(!inWeek.length) inWeek = this.users.filter((i, index) => index < 6).map(i => ({...i, amountPosts: 0, totalView: 0 }))
-      if(!inMonth.length) inWeek = this.users.filter((i, index) => index < 6).map(i => ({...i, amountPosts: 0, totalView: 0 }))
+      if(!inMonth.length) inMonth = this.users.filter((i, index) => index < 6).map(i => ({...i, amountPosts: 0, totalView: 0 }))
       return { inWeek, inMonth }
     }
   },
@@ -473,5 +478,15 @@ $shadow2: #0000001a 0px 0px 20px;
       }
     }
   }
+
+// 4
+.view-web {
+  .el-date-editor {
+    background: transparent;
+    input  {
+      background: transparent;
+    }
+  }
+}
 }
 </style>

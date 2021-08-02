@@ -13,6 +13,9 @@ import VueApexCharts from 'vue-apexcharts'
 import './styles/index.scss'; // global css
 import axios from 'axios'
 require('dotenv').config()
+// setting protocol
+const isLocal = window.isLocal = true
+const DOMAIN = window.DOMAIN = isLocal ? 'http://localhost:3000' : 'https://doan.khucblog.com'
 
 Vue.use(ElementUI, { size: 'medium', locale })
 Vue.use(VueApexCharts)
@@ -33,26 +36,27 @@ const loadScript = (src, async = true, type = "text/javascript") => {
 
 let socket;
 if (location.pathname.includes('/admin')) {
-  loadScript("https://doan.khucblog.com/static/js/jquery_3.5.1.js");
-  loadScript("https://cdn.tiny.cloud/1/pmx69zke0g1nne4ogs14gbeuj5l5w4sw5wzip9j4xxjlzsyl/tinymce/5/tinymce.min.js", true);
-  loadScript("https://doan.khucblog.com/static/js/socketIO.js");
+  loadScript(DOMAIN + "/static/js/jquery_3.5.1.js");
+  loadScript(DOMAIN + "/static/js/tinymce/tinymce.min.js", true);
+  loadScript(DOMAIN + "/static/js/socketIO.js");
+  // loadScript("https://cdn.tiny.cloud/1/pmx69zke0g1nne4ogs14gbeuj5l5w4sw5wzip9j4xxjlzsyl/tinymce/5/tinymce.min.js", true);
 }else {
-  loadScript("https://doan.khucblog.com/static/js/respon_voice.js")
+  loadScript(DOMAIN + "/static/js/respon_voice.js")
 }
 registerModule().then(async () => {
   Vue.config.productionTip = false
 
   if (location.pathname.includes('/admin')) {
     let user_info = {}
-    await axios.get('https://doan.khucblog.com/API/users/getInfoUser', { params: { location: 'admin' }, headers: headerGetAuth() }).then(res => {
+    await axios.get(DOMAIN + '/API/users/getInfoUser', { params: { location: 'admin' }, headers: headerGetAuth() }).then(res => {
       const { ok, data } = res.data
       if (!ok) return localStorage.clear()
       user_info = data
       localStorage.setItem('_info', JSON.stringify(data))
     })
 
-    socket = await io('https://doan.khucblog.com');
-    // socket = await io('http://localhost:3000');
+    // socket = await io('https://doan.khucblog.com');
+    socket = await io(DOMAIN);
     socket.on("connect", () => {
       if (user_info && user_info.id) {
         socket.emit("USER_CONNECTED", {
@@ -76,7 +80,7 @@ registerModule().then(async () => {
       }
     }
   } else {
-    await axios.get('https://doan.khucblog.com/API/users/getInfoUser', { headers: headerGetAuth() }).then(res => {
+    await axios.get(DOMAIN + '/API/users/getInfoUser', { headers: headerGetAuth() }).then(res => {
       const { ok, data } = res.data
       if (!ok) return localStorage.clear()
       localStorage.setItem('_user', JSON.stringify(data))

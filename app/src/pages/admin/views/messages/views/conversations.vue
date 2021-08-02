@@ -49,7 +49,7 @@ export default {
     }),
     activeBoxMessage(id) {
       if (!id || this.$route.params.id == id) return;
-      this.$router.push(`${id}`);
+      this.$router.push(`${id}`).catch(() => {});
     },
   },
   computed: {

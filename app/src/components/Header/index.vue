@@ -53,7 +53,7 @@
           </el-col>
           <el-col :sm="6" :xs="7" class="row-right" :style="!responsive.isDesktop ? 'margin: 0; padding: 0;' : ''">
             <div>
-              <el-button :size="!responsive.isDesktop ? 'mini': 'medium'" v-if="!userInfo.id" type="info" plain round @click="$router.push('/home/login')">Đăng nhập</el-button>
+              <el-button :size="!responsive.isDesktop ? 'mini': 'medium'" v-if="!userInfo.id" type="info" plain round @click="$router.push('/home/login').catch(() => {})">Đăng nhập</el-button>
               <el-dropdown v-else trigger="click" @command="handleClickItem">
                 <span class="el-dropdown-link">
                   <span style="padding: 5px"> <i class="el-icon-s-custom"></i> {{userInfo.fullName}}</span>
@@ -107,7 +107,7 @@ export default {
     search() {
       if (!this.textSearch || this.$route.query.q == this.textSearch)
         return (this.textSearch = "");
-      this.$router.push(`/search/?q=${this.textSearch}`);
+      this.$router.push(`/search/?q=${this.textSearch}`).catch(() => {});
       this.textSearch = "";
     },
     handleClickItem(command){

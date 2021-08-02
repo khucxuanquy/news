@@ -55,7 +55,7 @@ import { mapGetters } from 'vuex';
       handleChangeLayout(indexMenu) {
         const path = location.pathname
         if(path == indexMenu) return;
-        this.$router.push(indexMenu)
+        this.$router.push(indexMenu).catch(() => {})
       }
     },
     computed: {

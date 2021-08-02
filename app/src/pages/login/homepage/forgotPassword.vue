@@ -7,7 +7,7 @@
         title="homepage"
         style="cursor: pointer"
         alt="logo"
-        @click="$router.push('/')"
+        @click="$router.push('/').catch(() => {})"
       />
     </div>
     <div class="forgotPassword__body">

@@ -55,7 +55,7 @@ export default {
   },
   created(){
     let info = localStorage.getItem('_info')
-    if(info) return this.$router.push('/admin/dashboard')
+    if(info) return this.$router.push('/admin/dashboard').catch(() => {})
     this.isExist = true
     localStorage.clear()
   },

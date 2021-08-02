@@ -8,7 +8,7 @@
           title="homepage"
           style="cursor: pointer"
           alt="logo"
-          @click="$router.push('/')"
+          @click="$router.push('/').catch(() => {})"
         />
       </div>
       <h3>Đăng ký</h3>
@@ -96,15 +96,15 @@
           class="rounded"
           alt="logo"
           style="width: 90px; margin-left: calc(50% - 45px)"
-          @click="$router.push('/')"
+          @click="$router.push('/').catch(() => {})"
         />
       <h4 style="text-align: center; color: #0da881">Cảm ơn bạn đã đăng kí</h4>
       <h4 style="padding: 1em">
         Chúng tôi đã gửi thư xác thực vào email mà bạn đã dùng để đăng kí. Thư xác thực có giá trị trong 15 phút kể từ lúc đăng kí tài khoản.
       </h4>
       <div style="text-align: center; margin-bottom: 2em">
-        <el-button type="primary" round plain @click="$router.push('/')"> Trang chủ </el-button>
-        <el-button type="success" round plain @click="$router.push('/home/login')"> Đăng nhập </el-button>
+        <el-button type="primary" round plain @click="$router.push('/').catch(() => {})"> Trang chủ </el-button>
+        <el-button type="success" round plain @click="$router.push('/home/login').catch(() => {})"> Đăng nhập </el-button>
       </div>
     </div>
   </div>

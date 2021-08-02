@@ -16,7 +16,7 @@ export default {
   },
   beforeCreate() {
     if (location.pathname == "/admin" || location.pathname == "/admin/") {
-      this.$router.push("/admin/dashboard");
+      this.$router.push("/admin/dashboard").catch(() => {});
     }
   },
   methods: {

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="!userInfo.id" style="margin: 0 auto">
-      <el-button @click="$router.push('/home/login')">Đăng nhập để bình luận</el-button>
+      <el-button @click="$router.push('/home/login').catch(() => {})">Đăng nhập để bình luận</el-button>
     </div>
     <div class="wrap-comment-input" v-else>
       <div class="avatar">

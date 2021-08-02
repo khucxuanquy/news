@@ -71,7 +71,7 @@ export default {
     let d = {from, limit, query: q}
     this.getAPI(POSTS.SEARCH, d, r => {
       let { ok , data } = r
-      if(!ok) return this.$router.push('/404')
+      if(!ok) return this.$router.push('/404').catch(() => {})
       if(data.length < limit) this.noMore = true
       else this.from += data.length
       data = data.map(i => ({...i, category: this.getCategoryById(i.category_id), dateCreated: this.convertDate(i.dateCreated)}))
@@ -96,7 +96,7 @@ export default {
        this.getAPI(POSTS.SEARCH, d, r => {
         this.visible = false
         let { ok , data } = r
-        if(!ok) return this.$router.push('/404')
+        if(!ok) return this.$router.push('/404').catch(() => {})
         if(data.length < limit) this.noMore = true
         else this.from += data.length
         data = data.map(i => ({...i, category: this.getCategoryById(i.category_id), dateCreated: this.convertDate(i.dateCreated)}))
@@ -134,7 +134,7 @@ export default {
       let d = { from: 0, limit, query: q }
       this.getAPI(POSTS.SEARCH, d, r => {
         let { ok , data } = r
-        if(!ok) return this.$router.push('/404')
+        if(!ok) return this.$router.push('/404').catch(() => {})
         if(data.length < limit) this.noMore = true
         data = data.map(i => ({...i, category: this.getCategoryById(i.category_id), dateCreated: this.convertDate(i.dateCreated)}))
         this.storeVue('_POST_DETAIL').dispatch('CHANGE_POSTS_BY_CATEGORY', data)

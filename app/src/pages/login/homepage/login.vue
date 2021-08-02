@@ -7,7 +7,7 @@
         title="homepage"
         style="cursor: pointer"
         alt="logo"
-        @click="$router.push('/')"
+        @click="$router.push('/').catch(() => {})"
       />
     </div>
     <h3>Đăng nhập</h3>

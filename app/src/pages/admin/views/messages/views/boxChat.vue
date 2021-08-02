@@ -111,7 +111,7 @@ export default {
       if(index > -1) {
         this.isLoading = true
         this.getMessages()
-      } else this.$router.push('/admin/messages/' + this.conversations[0].id)
+      } else this.$router.push('/admin/messages/' + this.conversations[0].id).catch(() => {})
     }
   },
   methods: {

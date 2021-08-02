@@ -50,7 +50,7 @@ export default {
     if(!localStorage.getItem('_u')) return this.$router.push('/admin/login').catch(()=>{});
   },
   created() {
-    if(this.myAccount.permission <= 2) return this.$router.push('/admin/dashboard')
+    if(this.myAccount.permission <= 2) return this.$router.push('/admin/dashboard').catch(() => {})
     else this.visiable = true;
   },
   methods: {

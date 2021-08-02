@@ -88,7 +88,7 @@ export default {
     this.getAPI(POSTS.GET_POSTS_BY_CATEGORY, d, r => {
       this.visible = false
       let { ok , data } = r
-      if(!ok) return this.$router.push('/404')
+      if(!ok) return this.$router.push('/404').catch(() => {})
       if(data.length < limit) this.noMore = true
       this.from += this.limit
       data = data.map(i => ({...i, category: this.getCategoryById(i.category_id), dateCreated: this.convertDate(i.dateCreated)}))
@@ -120,7 +120,7 @@ export default {
       this.getAPI(POSTS.GET_POSTS_BY_CATEGORY, d, r => {
         this.visible = false
         let { ok , data } = r
-        if(!ok) return this.$router.push('/404')
+        if(!ok) return this.$router.push('/404').catch(() => {})
         if(data.length < limit) this.noMore = true
         this.from += this.limit
         data = data.map(i => ({...i, category: this.getCategoryById(i.category_id), dateCreated: this.convertDate(i.dateCreated)}))
@@ -162,7 +162,7 @@ export default {
       this.getAPI(POSTS.GET_POSTS_BY_CATEGORY, d, r => {
         this.visible = false
         let { ok , data } = r
-        if(!ok) return this.$router.push('/404')
+        if(!ok) return this.$router.push('/404').catch(() => {})
         // nếu lấy bài viết từ server về mà length < limit => không hiển thị button 'Xem thêm'
         if(data.length < limit) this.noMore = true
         data = data.map(i => ({...i, category: this.getCategoryById(i.category_id), dateCreated: this.convertDate(i.dateCreated)}))

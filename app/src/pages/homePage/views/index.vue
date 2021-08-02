@@ -20,7 +20,7 @@
               <Box v-if="topNewFeed[0]" :data="topNewFeed[0]" large :height="responsive.isDesktop ? 400: 200"/>
               <Box  v-for="post in topNewFeed.filter((item, index) => index != 0)" :data="post" :key="post.id" medium :height="!responsive.isDesktop ? 130 : 200"/>
               <div class="view-more" style="text-align: center">
-                <el-button style="margin: 1rem 0" @click="$router.push('/category/news')">Xem Thêm</el-button>
+                <el-button style="margin: 1rem 0" @click="$router.push('/category/news').catch(() => {})">Xem Thêm</el-button>
               </div>
             </div>
             </el-col>
@@ -61,7 +61,7 @@
         <section class="category-highlight">
           <div class="container">
           <el-row>
-            <el-col :md="18">
+            <el-col :md="18" style="padding-right: 1em">
               <div v-for="(item, index) in sectionBottom" :key="index" >
               <TextAngleSharp :title="item.name" :color="item.color" />
               <el-row>

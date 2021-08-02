@@ -6,7 +6,7 @@ const cors = require('cors')
 // create realtime
 const server = require('http').createServer(app)
 const io = require('socket.io')(server, {
-  cors: { origin: ["http://localhost:3000","http://localhost:8080", "https://doan.khucblog.com/"] }
+  cors: { origin: ["http://localhost:7900", "https://doan.khucblog.com/"] }
 });
 
 const { startApp } = require('./baseModels/start');

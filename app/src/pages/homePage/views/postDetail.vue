@@ -297,7 +297,7 @@ export default {
     };
     this.getAPI(POSTS.GET_CONTENT, d, r => {
       const { ok, data, related_post } = r;
-      if (!ok || !Object.entries(data).length) return this.$router.push("/404");
+      if (!ok || !Object.entries(data).length) return this.$router.push("/404").catch(() => {});
       this.detail = data;
       if (!getTopPosts) {
         let highlight = {
@@ -446,7 +446,7 @@ export default {
 
       this.getAPI(POSTS.GET_CONTENT, d, r => {
         const { ok, data, related_post } = r;
-        if (!ok || !data) return this.$router.push("/404");
+        if (!ok || !data) return this.$router.push("/404").catch(() => {});
         this.detail = data;
         if (!getTopPosts) {
           let highlight = {

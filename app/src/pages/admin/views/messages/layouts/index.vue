@@ -24,7 +24,7 @@ export default {
         if(this.conversations.length) {
           // new change
           let id = this.conversations.filter(i => this.myAccount.id !== i.id)[0].id
-          this.$router.push(id)
+          this.$router.push(id).catch(() => {})
           clearInterval(checkUsers)
         }
       }, 150);

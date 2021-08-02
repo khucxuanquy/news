@@ -6,6 +6,9 @@ $text-2: #4c4993;
 $text-3: #6e6b7b;
 
 body.dark-theme {
+    &::-webkit-scrollbar-track {
+        background: $dark-bg-1!important;
+    }
     .top-bar {
         background: $dark-bg-2;
         .logo-area {

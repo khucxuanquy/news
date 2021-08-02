@@ -15,7 +15,7 @@ export default {
   methods: {
     redirect(url){
       if(!url) return;
-      this.$router.push('/category/' + url)
+      this.$router.push('/category/' + url).catch(() => {})
     }
   },
 };

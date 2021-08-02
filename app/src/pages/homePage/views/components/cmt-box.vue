@@ -89,7 +89,7 @@
                     {{ item.content }}
                     <div class="comment-open">
                       <span
-                        @click="changeReaction({ indexParent, indexChild, comment })"
+                        @click="changeReaction({ indexParent, indexChild, comment: item })"
                       ><i class="far fa-thumbs-up" />{{item.reaction}} Thích</span>
                     </div>
                   </div>
@@ -180,6 +180,7 @@ export default {
     changeReaction(dataInput){
       if(!this.userInfo.id) return this.$message({ type: 'warning', message: 'Vui lòng đăng nhập để tương tác' })
       let { indexParent, indexChild, comment } = dataInput
+      console.log({ indexParent, indexChild, comment })
        // 1 : like, -1 dislike
       this.putAPI(COMMENTS.CHANGE_REACTION, {  comment_id: comment.id, reaction: 1 }, response => {
         let { ok } = response
@@ -296,7 +297,7 @@ export default {
   position: absolute;
   background: #c7cacb;
   bottom: 0;
-  left: 27px;
+  left: 29px;
   width: 7px;
   height: 7px;
   border: 3px solid #dee1e3;

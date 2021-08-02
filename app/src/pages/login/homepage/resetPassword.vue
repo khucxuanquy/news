@@ -7,7 +7,7 @@
         style="cursor: pointer"
         title="homepage"
         alt="logo"
-        @click="$router.push('/')"
+        @click="$router.push('/').catch(() => {})"
       />
     </div>
     <div class="changePassword__body">
@@ -75,7 +75,7 @@ export default {
       let { ok, message } = res;
       if (!ok) {
         this.$message({ message, type: "warning" });
-        this.$router.push("/home/login");
+        this.$router.push("/home/login").catch(() => {});
       }
     });
   },
@@ -122,7 +122,7 @@ export default {
           if (!ok) return this.$message({ message, type: "warning" });
           this.$message({ message, type: "success" });
           setTimeout(() => {
-            this.$router.push('/home/login')
+            this.$router.push('/home/login').catch(() => {})
           }, 1000);
         });
       } else {
