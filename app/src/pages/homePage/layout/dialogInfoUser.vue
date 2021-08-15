@@ -335,6 +335,7 @@ export default {
 
   .layout-wrapper {
     display: flex;
+    flex-wrap: wrap;
     // LEFT-LAYOUT
     .left-layout {
       width: 30%;

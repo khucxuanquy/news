@@ -114,7 +114,7 @@
     </div>
     <div class="d-flex p-3 view-web">
       <div style="padding: .75em 1em;" class="form-select-date">
-        <p>chọn ngày :</p>
+        <p>Chọn ngày :</p>
         <el-date-picker
           v-model="selectDatePicker"
           type="daterange"

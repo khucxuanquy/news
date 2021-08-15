@@ -7,13 +7,13 @@
           <i class="el-icon-more-outline"></i>
         </h5>
         <div style="margin-right: 1rem">
-          <el-switch
+          <!-- <el-switch
             v-model="darkTheme"
             @change="changeTheme()"
             style=" right: 15px; bottom: 2px"
             active-color="#443355"
             inactive-color="#d4ecf0">
-          </el-switch>
+          </el-switch> -->
           <el-dropdown trigger="click" @command="handleCurrentLanguage" class="dropdown-langs">
             <span class="el-dropdown-link">
             <span style="padding: 5px">{{currentLanguage}}</span><i class="el-icon-arrow-down el-icon--right"></i></span>
@@ -118,7 +118,10 @@ export default {
 
     let dark_theme = JSON.parse(localStorage.getItem("dark-theme"))
     this.darkTheme = dark_theme ? true : false
-    this.changeTheme()
+    // this.changeTheme()
+    if(this.$route.path == '/admin/dashboard' || this.$route.path == '/admin/dashboard/'){ 
+      this.$router.push('/admin/dashboard/posts').catch(()=>{})
+    }
   },
   computed:{
     ...mapGetters({

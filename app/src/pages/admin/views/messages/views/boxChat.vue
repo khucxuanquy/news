@@ -35,9 +35,9 @@
       </div>
     </div>
     <div class="input-chat">
-      <div class="input-option">
+      <!-- <div class="input-option">
         <button>Ảnh</button>
-      </div>
+      </div> -->
       <!-- <span  id="textarea" contenteditable @input="log(i)">Aa</span> -->
       <div class="input-chat__textarea">
         <textarea
@@ -303,7 +303,7 @@ export default {
       border-radius: 50%;
       height: 50px;
       object-fit: contain;
-      border: thin solid;
+      border: thin solid #eee;
       padding: 5px;
       &.online {
         border: thin solid green;
@@ -444,7 +444,8 @@ export default {
     }
     // textarea
     .input-chat__textarea {
-      width: calc(100% - 60px);
+      // width: calc(100% - 60px);
+      width: 100%;
       max-height: 60px;
       position: relative;
       overflow-y: hidden;

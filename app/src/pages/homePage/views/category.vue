@@ -1,6 +1,6 @@
 <template>
   <div id="category" v-loading.fullscreen.lock="visible">
-    <el-main>
+    <el-main style="overflow: unset;">
       <section class="container new-feed">
         <el-row :gutter="24">
           <!-- <el-col :md="7" :sm="24">
@@ -24,7 +24,7 @@
             </div>
           </div>
           </el-col>
-          <el-col :md="8" :sm="24">
+          <el-col :md="8" :sm="24" style="position: sticky; top: 60px">
             <TextHeading :title="'Chủ đề'" />
             <BoxCategory :data="category" v-for="category in categories" :key="category.id"/>
             <!-- RIGHT -->

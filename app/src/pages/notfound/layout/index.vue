@@ -42,6 +42,7 @@
             <div class="msg">OH!<span class="triangle"></span></div>
           </div>
           <h2 class="h1">Xin lỗi, Không tìm thấy trang</h2>
+          <el-button type="primary" @click="$router.push('/').catch(() => {})">Quay về Trang Chủ</el-button>
         </div>
       </div>
     </div>

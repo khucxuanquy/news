@@ -10,27 +10,29 @@
     text-shadow: 2px 0 10px #67cccf
 }
 
-::-webkit-scrollbar {
-    width: 5px;
-    height: 6px;
-}
-
-::-webkit-scrollbar-track {
-    // background: linear-gradient(180deg, #ada996, #f2f2f2, #dbdbdb, #eaeaea);
-    border-radius: 0
-}
-
-::-webkit-scrollbar-thumb {
-    background: #1a1a1a;
-    background: linear-gradient(grey, #e6e6e6);
-    background: linear-gradient(to right, #76b852a6, #8dc26fa6);
-    &:hover {
-    background: linear-gradient(to left, #76b852, #8DC26F);
-    cursor: pointer;
+@media only screen and (min-width: 500px) {
+    ::-webkit-scrollbar {
+        width: 5px;
+        height: 6px;
     }
-}
-body::-webkit-scrollbar{
-    width: 10px;
+    
+    ::-webkit-scrollbar-track {
+        // background: linear-gradient(180deg, #ada996, #f2f2f2, #dbdbdb, #eaeaea);
+        border-radius: 0
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: #1a1a1a;
+        background: linear-gradient(grey, #e6e6e6);
+        background: linear-gradient(to right, #76b852a6, #8dc26fa6);
+        &:hover {
+        background: linear-gradient(to left, #76b852, #8DC26F);
+        cursor: pointer;
+        }
+    }
+    body::-webkit-scrollbar{
+        width: 10px;
+    }
 }
 
 html {

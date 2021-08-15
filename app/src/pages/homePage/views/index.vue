@@ -1,6 +1,6 @@
 <template>
   <div id="homePage" v-loading.fullscreen.lock="!visible">
-    <el-main>
+    <el-main style="overflow: unset;">
         <section class="container new-feed">
           <el-row :gutter="24">
             <!-- <el-col :md="7">
@@ -24,7 +24,7 @@
               </div>
             </div>
             </el-col>
-            <el-col :md="8" :sm="24">
+            <el-col :md="8" :sm="24" style="position: sticky; top: 60px">
               <!-- RIGHT -->
               <aside>
                 <TextHeading :title="'Chủ đề'" />
@@ -42,7 +42,7 @@
                 </div>
                 <!-- <iframe frameborder="0" width="100%" height="400px" src="https://webtygia.com/api/xang-dau?bgheader=9c27b0&colorheader=ffffff&padding=5&fontsize=13"></iframe> -->
 
-                <img src="https://demo.themewinter.com/wp/digiqoles/wp-content/uploads/2020/07/sidebar_banner.png" style='margin: 1rem 0'>
+                <!-- <img src="https://demo.themewinter.com/wp/digiqoles/wp-content/uploads/2020/07/sidebar_banner.png" style='margin: 1rem 0'> -->
                 <div v-if="topPostsOfMonth[0]">
                   <TextHeading :title="'Bài viết của tháng'" color="red"/>
                   <Box :data="topPostsOfMonth[0]" large :style="responsive.isDesktop ? 'padding: 0 0 1rem .5rem' : ''" />
@@ -54,16 +54,20 @@
           </el-row>
         </section>
         <section class="main-banner--ads">
-            <div class="container">
-                <img style="margin: 1rem 0" src="https://demo.themewinter.com/wp/digiqoles/wp-content/uploads/2020/07/banner_content_5.png">
-            </div>
+          <div class="container">
+            <img style="margin: 1rem 0" src="https://demo.themewinter.com/wp/digiqoles/wp-content/uploads/2020/07/banner_content_5.png">
+          </div>
         </section>
         <section class="category-highlight">
           <div class="container">
           <el-row>
             <el-col :md="18" style="padding-right: 1em">
+            <!-- <TextHeading :title="'Thời Tiết'" />
+            <iframe src="https://khucxuanquy.github.io/weather2/" width="100%" frameborder="0"></iframe> -->
+            <TextAngleSharp :title="'Thống kê Covid-19'" />
+            <iframe src="https://ourworldindata.org/grapher/total-cases-covid-19?tab=map" width="100%" height="600px" frameborder="0"></iframe>
               <div v-for="(item, index) in sectionBottom" :key="index" >
-              <TextAngleSharp :title="item.name" :color="item.color" />
+              <TextAngleSharp :title="item.name" :color="item.color" class="mb-2" />
               <el-row>
                 <el-col :md="12"> 
                   <Box :data="item.data[0]" large :height="230" />
@@ -74,7 +78,7 @@
               </el-row>
             </div>
             </el-col>
-            <el-col :md="6">
+            <el-col :md="6" style="position: sticky; top: 60px">
               <TextHeading :title="'Gợi ý cho bạn'" />
               <Box :data="posts" large :height="200" v-for="(posts, index) in trendingInWeek" :key="index" />
               <!-- <BoxCategory :data="category" v-for="category in categories" :key="category.id"/> -->

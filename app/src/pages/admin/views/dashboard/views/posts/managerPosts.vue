@@ -41,7 +41,7 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column :label="lang.category" >
+      <el-table-column :label="lang.category" min-width="110">
           <template slot-scope="{row}">
             <span v-html="getCategoryById(row.category_id)"></span>
           </template>
@@ -140,7 +140,7 @@ export default {
       const { posts, lang } = this
       const { id } = row
 
-      this.$confirm(lang.warningDeletePost, 'Warning', {
+      this.$confirm(lang.warningDeletePost, 'Cảnh báo', {
           confirmButtonText: lang.ok,
           cancelButtonText: lang.cancel,
           type: 'warning'
@@ -200,7 +200,7 @@ export default {
       if(this.myAccount.permission < 2) return this.$message({ type: 'warning', message: 'Chỉ có admin hoặc Quản lý mới có quyền sửa trạng thái này' });
       const { lang } = this
       let logic_activated = !(String(activated) === 'true')
-      this.$confirm(lang[logic_activated ? 'activateThisPost' : 'deactivateThisPost'] , 'Warning', {
+      this.$confirm(lang[logic_activated ? 'activateThisPost' : 'deactivateThisPost'] , 'Cảnh báo', {
           confirmButtonText: lang.ok,
           cancelButtonText: lang.cancel,
           type: 'warning'
@@ -251,7 +251,8 @@ export default {
     padding: 3px 5px;
     margin:.2rem .5rem;
     border-radius: 4px;
-    color: white
+    color: white;
+    word-break: break-word;
   }
   .el-table__row {
     height: 100px

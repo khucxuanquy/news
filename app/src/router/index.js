@@ -13,7 +13,7 @@ const ALL_ROUTER = [
                 path: '/',
                 component: () => import('../pages/homePage/views/index.vue'),
                 meta: {
-                    title: 'Trang Chủ'
+                    title: 'Trang Chủ | Tech News'
                 }
             },
             {
@@ -27,21 +27,21 @@ const ALL_ROUTER = [
                 path: 'category/',
                 component: () => import('../pages/homePage/views/category.vue'),
                 meta: {
-                    title: 'Chủ đề'
+                    title: 'Chủ đề | Tech News'
                 }
             },
             {
                 path: 'category/:category_url/',
                 component: () => import('../pages/homePage/views/category.vue'),
                 meta: {
-                    title: 'Chủ đề'
+                    title: 'Chủ đề | Tech News'
                 }
             },
             {
                 path: 'search',
                 component: () => import('../pages/homePage/views/search.vue'),
                 meta: {
-                    title: 'Tìm kiếm'
+                    title: 'Tìm kiếm | Tech News'
                 }
             }
         ]
@@ -56,28 +56,28 @@ const ALL_ROUTER = [
                 path: 'login',
                 component: () => import('../pages/login/homepage/login.vue'),
                 meta: {
-                    title: 'Đăng nhập'
+                    title: 'Đăng nhập | Tech News'
                 }
             },
             {
                 path: 'register',
                 component: () => import('../pages/login/homepage/register.vue'),
                 meta: {
-                    title: 'Đăng kí'
+                    title: 'Đăng kí | Tech News'
                 }
             },
             {
                 path: 'forgotPassword',
                 component: () => import('../pages/login/homepage/forgotPassword.vue'),
                 meta: {
-                    title: 'Lấy lại mật khẩu'
+                    title: 'Lấy lại mật khẩu | Tech News'
                 }
             },
             {
                 path: 'resetPassword/:token',
                 component: () => import('../pages/login/homepage/resetPassword.vue'),
                 meta: {
-                    title: 'Tạo mật khẩu mới'
+                    title: 'Tạo mật khẩu mới | Tech News'
                 }
             },
         ]
@@ -93,7 +93,7 @@ const ALL_ROUTER = [
                 path: 'dashboard',
                 component: () => import('../pages/admin/views/dashboard/layout/layout.vue'),
                 meta: {
-                    title: 'Quản lí Tech News'
+                    title: 'Quản lí | Tech News'
                 },
                 children: [
                     {
@@ -145,7 +145,7 @@ const ALL_ROUTER = [
                 path: 'messages',
                 component: () => import('../pages/admin/views/messages/layouts'),
                 meta: {
-                    title: 'Messenger | News'
+                    title: 'Messenger | Tech News'
                 },
                 children: [
                     {
@@ -162,7 +162,7 @@ const ALL_ROUTER = [
                 path: 'login',
                 component: () => import('../pages/login/dashboard/index.vue'),
                 meta: {
-                    title: 'Đăng nhập vào trang quản lí'
+                    title: 'Đăng nhập vào trang quản lí | Tech News'
                 }
             },
         ]
@@ -172,6 +172,9 @@ const ALL_ROUTER = [
         path: '*',
         component: () => import('../pages/notfound/layout/index.vue'),
         hidden: true,
+        meta: {
+            title: 'Page Not Found | Tech News'
+        }
     },
 ];
 var router = new Router({
