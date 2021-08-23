@@ -4,15 +4,14 @@
       <h5>Hướng dẫn sử dụng</h5>
       <img class="userManual-banner" src="https://doan.khucblog.com/static/images/userManual/banner-huong-dan-su-dung.png" />
     </div>
-
     <!-- <el-divider content-position="left"><h5>Hướng dẫn sử dụng</h5></el-divider> -->
     <el-collapse v-model="activeNames" @change="handleChange">
       <!--  -->
-      <el-collapse-item name="1" title="Tin nhắn">
+      <!-- <el-collapse-item name="1" title="Tin nhắn">
         <div>
           hi
         </div>
-      </el-collapse-item>
+      </el-collapse-item> -->
       <!--  -->
       <el-collapse-item name="2" title="Quản lí Bài viết">
         <el-collapse style="margin-left: 2em" v-model="activeNames2" @change="handleChange">
@@ -39,7 +38,7 @@
         </el-collapse>
       </el-collapse-item>
       <!--  -->
-      <el-collapse-item name="3" title="Quản lí chủ đề">
+      <el-collapse-item v-if="myAccount.permission >= 3" name="3" title="Quản lí chủ đề">
         <el-collapse style="margin-left: 2em" v-model="activeNames2" @change="handleChange">
           <el-collapse-item name="3.1" title="Làm thế nào để tôi có thể thêm một chủ đề mới ?">
             <div>
@@ -61,7 +60,7 @@
         </el-collapse>
       </el-collapse-item>
       <!--  -->
-      <el-collapse-item name="4" title="Người dùng">
+      <el-collapse-item v-if="myAccount.permission >= 2" name="4" title="Người dùng">
         <el-collapse style="margin-left: 2em" v-model="activeNames2" @change="handleChange">
           <el-collapse-item name="4.1" title="Thêm tài khoản nhân viên mới mà mình quản lý ?">
             <div>
@@ -71,7 +70,7 @@
         </el-collapse>
       </el-collapse-item>
       <!--  -->
-      <el-collapse-item name="5" title="Báo cáo">
+      <el-collapse-item v-if="myAccount.permission >= 2" name="5" title="Báo cáo">
         <div>
           <p>
             Dữ liệu trong báo cáo đều từ phía người dùng phản ánh lại về các vấn đề mà trong bài viết xảy ra như ngôn từ sai, lỗi đánh máy, tin giả, ...
@@ -87,7 +86,7 @@
         </div>
       </el-collapse-item>
       <!--  -->
-      <el-collapse-item name="6" title="Thống kê">
+      <el-collapse-item v-if="myAccount.permission >= 3" name="6" title="Thống kê">
         <div>
           <p>Ở đây bạn có thể xem thống kê lượt xem với các chủ đề cụ thể. Nếu không chọn chủ đề nào để xem thì mặc định sẽ thống kê tất cả chủ đề</p>
           <img src="https://doan.khucblog.com/static/images/userManual/statistics/thong-ke-1.png" >
@@ -95,9 +94,24 @@
       </el-collapse-item>
       <!--  -->
       <el-collapse-item name="7" title="Thông tin tài khoản">
-        <div>
-          hi
-        </div>
+        <el-collapse style="margin-left: 2em" v-model="activeNames2" @change="handleChange">
+          <el-collapse-item name="7.1" title="Làm thế nào để thay đổi thông tin cá nhân ?">
+            <div>
+              <p> Đầu tiên vào phần thông tin </p>
+              <img :src="require('./assets/images/thong-tin-tai-khoan-1.png')">
+              <p> Ở đây bạn có thể đổi avatar bằng cách bấm vào avatar để nó hiện cửa sổ cho bạn chọn ảnh để thay thế (Nên chọn ảnh hình vuông) </p>
+              <img :src="require('./assets/images/thong-tin-tai-khoan-2.png')">
+              <p> Bạn không thể đổi tên đăng nhập nhưng tên người dùng của bạn thì có thể </p>
+              <p> Bạn click vào chứ "Tài khoản" để nó sổ ra sau đó click chuột vào biểu tượng sửa để có thể sửa tên người dùng mà mình mong muốn </p>
+              <img :src="require('./assets/images/thong-tin-tai-khoan-3.1.png')">
+              <img :src="require('./assets/images/thong-tin-tai-khoan-3.png')">
+              <p>Bạn cũng có thể đổi mật khẩu ở đây</p>
+              <img :src="require('./assets/images/thong-tin-tai-khoan-4.png')">
+              <p>Sau khi đổi hết thông tin thì bấm lưu để nó thay đổi thông tin của bạn</p>
+              <img :src="require('./assets/images/thong-tin-tai-khoan-5.png')">
+            </div>            
+          </el-collapse-item> 
+        </el-collapse>
       </el-collapse-item>
     </el-collapse>
   </div>
@@ -138,10 +152,14 @@ export default {
   padding: 1em;
   img:not(.userManual-banner) {
     width: 70%;
-    box-shadow: 0 4px 18px -4px #00000021;
+    box-shadow: 0 4px 18px -4px #0000005b;
     border-radius: 12px;
     margin: auto;
     display: block;
+  }
+  p {
+    margin-top: 1em;
+    font-size: 16px;
   }
   .banner-top {
     position: relative;

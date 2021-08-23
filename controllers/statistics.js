@@ -47,10 +47,10 @@ module.exports = {
         res.send(resSuccess({ data }))
     },
     async getTrendingInWeek(req, res) {
-        let { data: dataCache } = cacheRedis.getCache({ key: 'getTrendingInWeek' })
-        if(dataCache) return resSuccess({ data: dataCache })
+        // let { data: dataCache } = cacheRedis.getCache({ key: 'getTrendingInWeek' })
+        // if(dataCache) return resSuccess({ data: dataCache })
         let { error, data } = await statistic.getTrendingInWeek()
-        cacheRedis.setCacheDefault({key: 'getTrendingInWeek', value: data })
+        // cacheRedis.setCacheDefault({key: 'getTrendingInWeek', value: data })
         if (error) return res.send(resFail({ error }))
         res.send(resSuccess({ data }))
     },

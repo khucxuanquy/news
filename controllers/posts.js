@@ -97,15 +97,15 @@ module.exports = {
         res.send(resSuccess({ data }))
     },
     async home(req, res) {
-        // tìm trong redis có data không
-        let { data: sectionBottom } = await cacheRedis.getCache({ key: 'sectionBottom' });
-        // nếu có thì không cần phải query
-        if(sectionBottom) req.query.sectionBottom = false;
+        // // tìm trong redis có data không
+        // let { data: sectionBottom } = await cacheRedis.getCache({ key: 'sectionBottom' });
+        // // nếu có thì không cần phải query
+        // if(sectionBottom) req.query.sectionBottom = false;
         let { error, data } = await post.home({ DEFAULT_FIELDS_HOME, dataGetting: req.query })
         if (error) return res.send(resFail({ error }))
         // nếu có thì trả về data trong redis không thì lưu nó vào redis
-        if(sectionBottom) data.sectionBottom = sectionBottom;
-        else cacheRedis.setCacheDefault({ key: 'sectionBottom', value: data.sectionBottom });
+        // if(sectionBottom) data.sectionBottom = sectionBottom;
+        // else cacheRedis.setCacheDefault({ key: 'sectionBottom', value: data.sectionBottom });
         res.send(resSuccess({ data }))
     },
     async overviewStatistic(req, res) {
