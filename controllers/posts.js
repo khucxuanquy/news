@@ -1,4 +1,5 @@
 const Posts = require('../models/posts')
+const cacheRedis = require('../models/cacheRedis')
 const post = new Posts()
 const DEFAULT_FIELDS = ['id', 'category_id', 'activated', 'description', 'title', 'url', 'image', 'view', 'user_id', 'dateCreated'].join()
 const DEFAULT_FIELDS_HOME = ['id', 'category_id', 'description', 'title', 'url', 'image', 'dateCreated'].join()
@@ -13,22 +14,25 @@ module.exports = {
         req.body.url = accentedLetters(req.body.title)
         let { error, data } = await post.create(req.body)
         if (error) return res.send(resFail({ error }))
+        // xóa sectionBottom trong redis
+        cacheRedis.deleteCache({ key: 'sectionBottom' });
         res.send(resSuccess({ data }))
     },
     async edit(req, res) {
         if (req.body.title) req.body.url = accentedLetters(req.body.title)
         let { error } = await post.edit(req.body)
         if (error) return res.send(resFail({ error }))
+        // xóa sectionBottom trong redis
+        cacheRedis.deleteCache({ key: 'sectionBottom' });
         res.send(resSuccess())
-
     },
     async delete(req, res) {
         const { id } = req.query
         let { error } = await post.delete(id)
         if (error) return res.send(resFail({ error }))
+        // xóa sectionBottom trong redis
+        cacheRedis.deleteCache({ key: 'sectionBottom' });
         res.send(resSuccess())
-
-
     },
     async getPostsByPermission(req, res) {
         const { id, permission } = req.token
@@ -93,8 +97,15 @@ module.exports = {
         res.send(resSuccess({ data }))
     },
     async home(req, res) {
+        // tìm trong redis có data không
+        let { data: sectionBottom } = await cacheRedis.getCache({ key: 'sectionBottom' });
+        // nếu có thì không cần phải query
+        if(sectionBottom) req.query.sectionBottom = false;
         let { error, data } = await post.home({ DEFAULT_FIELDS_HOME, dataGetting: req.query })
         if (error) return res.send(resFail({ error }))
+        // nếu có thì trả về data trong redis không thì lưu nó vào redis
+        if(sectionBottom) data.sectionBottom = sectionBottom;
+        else cacheRedis.setCacheDefault({ key: 'sectionBottom', value: data.sectionBottom });
         res.send(resSuccess({ data }))
     },
     async overviewStatistic(req, res) {

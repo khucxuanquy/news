@@ -73,5 +73,8 @@ module.exports = {
     } else STORE_CACHE_REDIS[key] = [{ post_id, view: 1, dateCreated }]
 
     return;
+  },
+  setCacheDefault({ key, value }) {
+    STORE_CACHE_REDIS[key] = value
   }
 }

@@ -17,9 +17,10 @@ new cron.CronJob({
 
         // for Not install cacheRedis
         data = data || []
-
         data.forEach(item => statistic.create(item));
-        await cacheRedis.deleteCache({ key: 'statistics' })
+
+        cacheRedis.deleteCache({ key: 'statistics' })
+        cacheRedis.deleteCache({ key: 'getTrendingInWeek' })
     },
 }).start();
 
@@ -46,7 +47,10 @@ module.exports = {
         res.send(resSuccess({ data }))
     },
     async getTrendingInWeek(req, res) {
+        let { data: dataCache } = cacheRedis.getCache({ key: 'getTrendingInWeek' })
+        if(dataCache) return resSuccess({ data: dataCache })
         let { error, data } = await statistic.getTrendingInWeek()
+        cacheRedis.setCacheDefault({key: 'getTrendingInWeek', value: data })
         if (error) return res.send(resFail({ error }))
         res.send(resSuccess({ data }))
     },
