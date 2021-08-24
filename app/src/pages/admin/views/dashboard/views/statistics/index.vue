@@ -125,11 +125,11 @@
           :picker-options="pickerOptions"
           @change="selectDatePiker"
           >
-      </el-date-picker>
-    </div>
-    <div style="width: 100%">
-      <BoxChart v-loading="loadStatisticView" v-if="viewsByDatePicker" :DATA="viewsByDatePicker" typeChart="line" :title="'Biểu đồ số lượt xem của trang web'"/>
-    </div>
+        </el-date-picker>
+      </div>
+      <div style="width: 100%">
+        <BoxChart v-loading="loadStatisticView" v-if="viewsByDatePicker" :DATA="viewsByDatePicker" typeChart="line" :title="'Biểu đồ số lượt xem của trang web'"/>
+      </div>
     </div>
   </div>
 </template>
@@ -248,11 +248,9 @@ export default {
       this.loadStatisticView = true;
       this.getAPI(STATISTICS.GET_BY_DATE_PICKER, {start: selectDatePicker[0], end: selectDatePicker[1]}, (res) => {
         if (!res.ok) return; // error something
-        this.CHANGE_VIEWS_BY_DATE_PICKER(null)
-        this.$nextTick(() => {
-          this.CHANGE_VIEWS_BY_DATE_PICKER(res.data)
-          this.loadStatisticView = false
-        })
+        // this.CHANGE_VIEWS_BY_DATE_PICKER(null)
+        this.CHANGE_VIEWS_BY_DATE_PICKER(res.data)
+        this.loadStatisticView = false
       });
     },
     /**
@@ -288,7 +286,7 @@ export default {
       if(id === this.myAccount.id) return { avatar: this.myAccount.avatar, fullName: this.myAccount.fullName, position: this.getPositionName(this.myAccount.permission) }
       let user = this.users.find(user => user.id === id)
       return user ? { avatar: user.avatar, fullName: user.fullName, position: this.getPositionName(user.permission) } : { }
-    }
+    },
   },
   computed: {
     ...mapGetters({
