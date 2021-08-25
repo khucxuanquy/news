@@ -144,6 +144,13 @@ export default {
       this.clear()
       this.$emit('handleClose', false)
     },
+    async resetDialog() {
+      await this.$nextTick()
+      let wrapper = document.querySelector('#form-post .el-dialog__wrapper')
+      let backgroundModal = document.querySelector('body > .v-modal')
+      wrapper.style.zIndex = 11
+      backgroundModal.style.zIndex = 10
+    },
   },
   computed: {
     categories(){
@@ -166,9 +173,11 @@ export default {
           this.form = r.data
           window.tinymce.get('xuanquy79xx_edit').setContent(r.data.content)
           this.isFinishLoad = true
+
+          this.resetDialog()
         })
       }
-    }
+    },
   }
 };
 </script>
