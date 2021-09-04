@@ -27,10 +27,10 @@
             <strong> {{ userInfo.fullName }} </strong>
           </p>
           
-          <p class="block-item">
+          <!-- <p class="block-item">
             <span> Chức vụ </span>:
             <strong> {{ permission(userInfo.permission) }} </strong>
-          </p>
+          </p> -->
 
           <p class="block-item">
             <span> Ngày tham gia </span>:

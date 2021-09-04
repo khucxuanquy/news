@@ -1,6 +1,6 @@
 const Categories = require('../models/categories')
 const category = new Categories()
-const { resFail, resSuccess, accentedLetters, randomId } = require('../helpers')
+const { resFail, resSuccess, accentedLetters, randomId, sendMessageToBotTelegram } = require('../helpers')
 let youAreNotAdmin = () => ({ message: 'Tài khoản của bạn không phải là admin' })
 
 module.exports = {
@@ -29,6 +29,11 @@ module.exports = {
         const { permission } = req.token
         const { id } = req.query
         if (permission < 3) return res.send(youAreNotAdmin())
+
+        // đoạn dưới đây để lấy dữ liệu lần cuối trước khi xóa
+        const result = await category.get({ conditions: { id } })
+        sendMessageToBotTelegram(`[CATEGORIES][delete] ${result}`)
+
         let { error } = await category.delete(id)
         if (error) return res.send(resFail({ error }))
         res.send(resSuccess())

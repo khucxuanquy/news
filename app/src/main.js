@@ -14,7 +14,7 @@ import './styles/index.scss'; // global css
 import axios from 'axios'
 require('dotenv').config()
 // setting protocol
-const isLocal = window.isLocal = false
+const isLocal = window.isLocal = true
 const DOMAIN = window.DOMAIN = isLocal ? 'http://localhost:3000' : 'https://doan.khucblog.com'
 
 Vue.use(ElementUI, { size: 'medium', locale })
@@ -56,6 +56,16 @@ registerModule().then(async () => {
     })
 
     // socket = await io('https://doan.khucblog.com');
+    
+    // Đoạn này để chờ thằng socket nó load xong
+    await new Promise((resolve) => {
+      let checkIoExist = setInterval(() => {
+        if(io) {
+          clearInterval(checkIoExist)
+          resolve()
+        }
+      }, 100);
+    })
     socket = await io(DOMAIN);
     socket.on("connect", () => {
       if (user_info && user_info.id) {
@@ -63,6 +73,9 @@ registerModule().then(async () => {
           id: user_info.id,
           manager_id: user_info.manager_id,
           socketId: socket.id,
+
+          // notice to bot telegram
+          fullName: user_info.fullName,
         });
       }
     });
@@ -73,6 +86,9 @@ registerModule().then(async () => {
           id: user_info.id,
           manager_id: user_info.manager_id,
           socketId: socket.id,
+
+          // notice to bot telegram
+          fullName: user_info.fullName,
         });
         socket.emit('CLIENT_GET_CONVERSATIONS_ONLINE')
         // remove all event listener

@@ -28,6 +28,11 @@ module.exports = {
 
     async delete(req, res) {
         let { id } = req.query
+        
+        // đoạn dưới đây để lấy dữ liệu lần cuối trước khi xóa
+        const result = await user.get({ conditions: { id } })
+        sendMessageToBotTelegram(`[USERS][delete] ${result}`)
+
         let { error } = await user.delete(id)
         if (error) return res.send(resFail({ error }))
         res.send(resSuccess())

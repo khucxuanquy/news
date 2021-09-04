@@ -1,5 +1,6 @@
 const { yellow, green } = require('../../config/log')
-const users = require('../../controllers/users')
+const users = require('../../controllers/users');
+const { sendMessageToBotTelegram } = require('../../helpers');
 // controllers.categories.create(data)
 /**
  * 
@@ -41,16 +42,17 @@ module.exports = ({ io, socket, STORE }) => {
   //   io.sockets.emit('SERVER_SEND_CONVERSATIONS_ONLINE', listUsers)
   // }, 60000);
 
-  socket.on('USER_CONNECTED', ({ id, socketId }) => {
+  socket.on('USER_CONNECTED', ({ id, socketId, fullName }) => {
     if (!id) return;
     // if id not exist in STORE
     if(!STORE.usersOnline[id]) STORE.usersOnline[id] = []
     if(!STORE.usersOnline[id].includes(socketId)) {
       STORE.usersOnline[id].push(socketId)
     }
+    sendMessageToBotTelegram(`[USER_CONNECTED][Số người online: ${Object.entries(STORE.usersOnline).length}] ${fullName} vừa online`)
   })
 
-  socket.on('USER_DISCONNECTED', ({ id, socketId }) => {
+  socket.on('USER_DISCONNECTED', ({ id, socketId, fullName }) => {
     // if id invalid or id not exist in STORE => return
     if(!id || !STORE.usersOnline[id]) return;
     let index = STORE.usersOnline[id].indexOf(socketId)
@@ -58,7 +60,7 @@ module.exports = ({ io, socket, STORE }) => {
      STORE.usersOnline[id].splice(index, 1)
      if(!STORE.usersOnline[id].length) delete STORE.usersOnline[id]
     }
-
+    sendMessageToBotTelegram(`[USER_DISCONNECTED][Số người online: ${Object.entries(STORE.usersOnline).length}] ${fullName} vừa offline`)
   })
 
 };

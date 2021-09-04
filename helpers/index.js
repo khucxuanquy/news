@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
 const md5 = require('md5')
 const { l } = require('../config')
+const { default: axios } = require('axios')
 
 const { ACCESS_TOKEN_SECRET } = process.env
 const SLASH = '/'
@@ -209,5 +210,16 @@ module.exports = {
     let showDateMonth = date + ' ' + m // 11 thang 4
     if (time >= (ONE_DAY / 1000) * 2 && d.getFullYear() == now.getFullYear()) return showDateMonth
     else return showDateMonth + ', ' + year
+  },
+  // send Message to bot telegram
+  sendMessageToBotTelegram(msg) {
+    if(!process.env.API_BOT_TELEGRAM) return
+    msg += ` --- ${new Date().toLocaleString()}`
+    axios.get(process.env.API_BOT_TELEGRAM + `sendMessage`, {
+      params: {
+        chat_id: '1331803118',
+        text: msg,
+      }
+    })
   },
 }

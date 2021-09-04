@@ -4,7 +4,7 @@ const post = new Posts()
 const DEFAULT_FIELDS = ['id', 'category_id', 'activated', 'description', 'title', 'url', 'image', 'view', 'user_id', 'dateCreated'].join()
 const DEFAULT_FIELDS_HOME = ['id', 'category_id', 'description', 'title', 'url', 'image', 'dateCreated'].join()
 const FIELDS_GET_TO_EDIT = ['category_id', 'content', 'description', 'title', 'image']
-const { resFail, resSuccess, accentedLetters } = require('../helpers')
+const { resFail, resSuccess, accentedLetters, sendMessageToBotTelegram } = require('../helpers')
 
 module.exports = {
     async create(req, res) {
@@ -28,6 +28,11 @@ module.exports = {
     },
     async delete(req, res) {
         const { id } = req.query
+
+        // đoạn dưới đây để lấy dữ liệu lần cuối trước khi xóa
+        const result = await post.get({ conditions: { id } })
+        sendMessageToBotTelegram(`[POSTS][delete] ${result}`)
+
         let { error } = await post.delete(id)
         if (error) return res.send(resFail({ error }))
         // xóa sectionBottom trong redis

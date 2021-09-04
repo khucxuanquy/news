@@ -22,8 +22,11 @@
       <div slot="header" class="clearfix" style="text-align: center">
         <span>{{lang.listUsers}}</span>
       </div>
-      <ManagerUser @editRow="editRow" @deleteRow="submitDelete"  />
+      <ManagerUser @editRow="editRow" @deleteRow="submitDelete" @rowClicked="rowClicked" />
     </el-card>
+
+    <!-- component show detail info -->
+    <DialogShowDetail v-if="showDialog" :dialogVisible="showDialog" @handleClose="showDialog = false" />
   </div>
 </template>
 
@@ -32,6 +35,7 @@ import ENUM from 'const/api'
 const { USERS } = ENUM
 
 import ManagerUser from './managerUser'
+import DialogShowDetail from './dialogShowDetail.vue'
 import { mapActions, mapGetters } from 'vuex';
 export default {
   data() {
@@ -43,10 +47,11 @@ export default {
         permission: null,
       },
       openForm: false,
-      isEditRow: false
+      isEditRow: false,
+      showDialog: false,
     }
   },
-  components: { ManagerUser },
+  components: { ManagerUser, DialogShowDetail },
   beforeCreate() {
     if(!localStorage.getItem('_u')) return this.$router.push('/admin/login').catch(()=>{});
   },
@@ -95,7 +100,7 @@ export default {
       const { users } = this
       const { id } = data
 
-      this.$confirm('Ban muon xoa nguoi dung nay', 'Warning', {
+      this.$confirm('Bạn có muốn xóa người dùng này', 'Warning', {
           confirmButtonText: 'OK',
           cancelButtonText: 'Cancel',
           type: 'warning'
@@ -127,6 +132,10 @@ export default {
       }
       this.openForm = false
       this.isEditRow = false
+    },
+    async rowClicked(info) {
+      await this.$nextTick()
+      if(!this.isEditRow) this.showDialog = true
     }
   },
   mounted() {

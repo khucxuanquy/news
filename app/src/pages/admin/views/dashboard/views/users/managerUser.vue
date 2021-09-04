@@ -1,6 +1,6 @@
 <template>
   <div id="manager-users" v-loading.fullscreen.lock="isLoading">
-    <el-table :data="filterListUsers" style="width: 100%">
+    <el-table :data="filterListUsers" style="width: 100%" @row-click="rowClicked">
       <el-table-column :label="'avatar'" width="100">
         <template slot-scope="{row}">
           <img class="slot-avatar" :src="row.avatar || imageDefault">
@@ -47,6 +47,9 @@ export default {
    
   },
   methods: {
+    rowClicked(info){
+      this.$emit('rowClicked', info)
+    },
     handleEdit(index, row){
       this.$emit("editRow", row)
     },
