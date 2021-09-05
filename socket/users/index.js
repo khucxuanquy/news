@@ -7,6 +7,13 @@ const { sendMessageToBotTelegram } = require('../../helpers');
  * @param {*} io 
  */
 module.exports = ({ io, socket, STORE }) => {
+  let listUsersOnline = () => {
+    let listUsers = []
+    for (const key in STORE.usersOnline) {
+      listUsers.push(key)
+    }
+    return listUsers
+  }
   // trong store myAccount -> luu idUser va idSocketIo
   // socket.on('users_allLive', data => {
   //   socket.emit('get_list_users_online', data)
@@ -26,16 +33,14 @@ module.exports = ({ io, socket, STORE }) => {
 
   // // special !!
   socket.on('CLIENT_GET_CONVERSATIONS_ONLINE', () => {
-    let listUsers = []
-    for (const key in STORE.usersOnline) {
-      listUsers.push(key)
-    }
-    io.sockets.emit('SERVER_SEND_CONVERSATIONS_ONLINE', listUsers)
+    io.sockets.emit('SERVER_SEND_CONVERSATIONS_ONLINE', listUsersOnline())
     // if(isFirstConnect) io.to(socket.id).emit('_', users_online)
     // else socket.broadcast.emit('_', users_online)
     // io.sockets.emit('_', users_online)
     // else io.to(socket.id).emit('_', users_online)
   })
+
+  setInterval(() => io.sockets.emit('SERVER_SEND_CONVERSATIONS_ONLINE', listUsersOnline()), 5000);
   
   // setInterval(() => {
   //   let listUsers = STORE.usersOnline.map(i => i.id)
