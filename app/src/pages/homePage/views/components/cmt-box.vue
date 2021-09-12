@@ -6,107 +6,129 @@
       :clearValue="clearValueParent"
       :keyId="'0'"
     />
-      <el-divider></el-divider>
-    <div
-      v-if="Array.isArray(comments) && comments.length"
-      class="comments-container"
-    >
-      <ul class="comments-list">
-        <li v-for="(comment, indexParent) in comments" :key="comment.id">
-          <div class="comment-main-level">
-            <!-- Avatar -->
-            <div class="comment-avatar">
-              <img
-                :src="
-                  comment.avatar ||
-                    'https://doan.khucblog.com/static/images/avatar-default.jpg'
-                "
-                alt=""
-              />
-            </div>
-            <div class="comment-box">
-              <div class="comment-head">
-                <!-- display: flex -->
-                <h6 class="comment-name by-author">
-                  <i class="el-icon-user-solid" />
-                  {{ comment.fullName }}</h6>
-                <span class="posted-time">
-                  <i class="el-icon-time"/>
-                  {{ comment.dateCreated }}</span>
-              </div>
-              <div class="comment-content">
-                {{ comment.content }}
-                <div class="comment-open">
-                  <span @click="changeReaction({ indexParent, comment })">
-                    <i class="far fa-thumbs-up" /> {{comment.reaction}} Thích </span>
-                  <span
-                    class="total-reply"
-                    @click="showTextareaChildWithId = comment.id"
-                  ><i class="el-icon-chat-dot-square"/>Trả lời</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- form comment -->
-          <!-- <transition name="fade"> -->
-            <div class="areaInputComment" v-if="showTextareaChildWithId === comment.id">
-              <CommentInput
-                @changeValue="valueInputChild = $event"
-                @submitComment="submitCommentChild"
-                :clearValue="clearValueChild"
-                :keyId="comment.id"
-              />
-            </div>
-          <!-- </transition> -->
-
-          <div
-            class="quantity-reply"
-            v-if="!comment.children.length && comment.amount_child_comment"
-            @click="getCommentChild(comment)"
-          >
-            <i class="fas fa-reply" /> {{ comment.amount_child_comment }} Trả lời
-          </div>
-          <!-- list children -->
-          <ul
-            v-if="comment.children && comment.children.length"
-            class="comments-list reply-list"
-          >
-            <li v-for="(item, indexChild) in comment.children" :key="item.id">
+    <el-divider></el-divider>
+      <div
+        v-if="Array.isArray(comments) && comments.length"
+        class="comments-container"
+      >
+        <ul class="comments-list">
+          <!-- add transitions-group of vue -->
+          <transition-group name="list" tag="p">
+            <li v-for="(comment, indexParent) in comments" :key="comment.id">
               <div class="comment-main-level">
                 <!-- Avatar -->
                 <div class="comment-avatar">
                   <img
-                    style="width: 44px; height: 44px"
-                    :src="item.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'" />
+                    :src="
+                      comment.avatar ||
+                        'https://doan.khucblog.com/static/images/avatar-default.jpg'
+                    "
+                    alt=""
+                  />
                 </div>
                 <div class="comment-box">
                   <div class="comment-head">
                     <!-- display: flex -->
-                    <h6 class="comment-name by-author">{{ item.fullName }}</h6>
-                    <span class="posted-time">{{ item.dateCreated }}</span>
+                    <h6 class="comment-name by-author">
+                      <i class="el-icon-user-solid" />
+                      {{ comment.fullName }}</h6>
+                    <span class="posted-time">
+                      <i class="el-icon-time"/>
+                      {{ comment.dateCreated }}</span>
                   </div>
                   <div class="comment-content">
-                    {{ item.content }}
+                    {{ comment.content }}
                     <div class="comment-open">
+                      <span class="fw-600" @click="changeReaction({ indexParent, comment })">
+                        <i class="far fa-thumbs-up" /> {{comment.reaction}} Thích </span>
                       <span
-                        @click="changeReaction({ indexParent, indexChild, comment: item })"
-                      ><i class="far fa-thumbs-up" />{{item.reaction}} Thích</span>
+                        class="total-reply"
+                        @click="showTextareaChildWithId = comment.id"
+                      ><i class="el-icon-chat-dot-square"/>Trả lời</span>
+                      <!-- btn-delete-comment -->
+                      <span
+                        v-if="userInfo.id === comment.user_id"
+                        @click="deleteComment(comment.id)"
+                        class="fw-600 btn-delete"
+                      >
+                        <i class="el-icon-delete" /> Xóa
+                      </span>
+                      <!--  -->
                     </div>
                   </div>
                 </div>
               </div>
+              <!-- form comment -->
+                <div class="areaInputComment" v-if="showTextareaChildWithId === comment.id">
+                  <CommentInput
+                    @changeValue="valueInputChild = $event"
+                    @submitComment="submitCommentChild"
+                    :clearValue="clearValueChild"
+                    :keyId="comment.id"
+                  />
+                </div>
+              <!-- notice amount child comment -->
+              <div
+                class="quantity-reply"
+                v-if="!comment.children.length && comment.amount_child_comment"
+                @click="getCommentChild(comment)"
+              >
+                <i class="fas fa-reply" /> {{ comment.amount_child_comment }} Trả lời
+              </div>
+              <!-- list children -->
+              <ul
+                v-if="comment.children && comment.children.length"
+                class="comments-list reply-list"
+              >
+                <transition-group name="list" tag="p">
+                  <li v-for="(item, indexChild) in comment.children" :key="item.id">
+                    <div class="comment-main-level">
+                      <!-- Avatar -->
+                      <div class="comment-avatar">
+                        <img
+                          style="width: 44px; height: 44px"
+                          :src="item.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'" />
+                      </div>
+                      <div class="comment-box">
+                        <div class="comment-head">
+                          <!-- display: flex -->
+                          <h6 class="comment-name by-author">{{ item.fullName }}</h6>
+                          <span class="posted-time">{{ item.dateCreated }}</span>
+                        </div>
+                        <div class="comment-content">
+                          {{ item.content }}
+                          <div class="comment-open">
+                            <span
+                              @click="changeReaction({ indexParent, indexChild, comment: item })"
+                            ><i class="far fa-thumbs-up" />{{item.reaction}} Thích</span>
+                            <!-- btn-delete-comment -->
+                            <span
+                              v-if="userInfo.id === item.user_id"
+                              @click="deleteComment(item.id, indexParent)"
+                              class="fw-600 btn-delete"
+                            >
+                              <i class="el-icon-delete" /> Xóa
+                            </span>
+                            <!--  -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </transition-group>
+              </ul>
+              <!-- view more -->
+              <div v-if="comment.children && comment.children.length && comment.children.length < comment.amount_child_comment" style="text-align: center">
+                <el-button type="primary" plain @click="getCommentChild(comment)">Xem thêm</el-button>
+              </div>
             </li>
-          </ul>
-          <!-- view more -->
-          <div v-if="comment.children && comment.children.length && comment.children.length < comment.amount_child_comment" style="text-align: center">
-            <el-button type="primary" plain @click="getCommentChild(comment)">Xem thêm</el-button>
-          </div>
-        </li>
-      </ul>
-      <div v-if="!isMaxParentComment" style="text-align: center">
-        <el-button type="primary" plain @click="getCommentParent()">Xem thêm</el-button>
+          </transition-group>
+        </ul>
+        <div v-if="!isMaxParentComment" style="text-align: center">
+          <el-button type="primary" plain @click="getCommentParent()">Xem thêm</el-button>
+        </div>
       </div>
-    </div>
+
   </div>
 </template>
 <script>
@@ -180,7 +202,7 @@ export default {
     changeReaction(dataInput){
       if(!this.userInfo.id) return this.$message({ type: 'warning', message: 'Vui lòng đăng nhập để tương tác' })
       let { indexParent, indexChild, comment } = dataInput
-      console.log({ indexParent, indexChild, comment })
+      // console.log({ indexParent, indexChild, comment })
        // 1 : like, -1 dislike
       this.putAPI(COMMENTS.CHANGE_REACTION, {  comment_id: comment.id, reaction: 1 }, response => {
         let { ok } = response
@@ -205,6 +227,7 @@ export default {
         data.fullName = this.userInfo.fullName
         data.children = []
         data.avatar = this.userInfo.avatar
+        data.user_id = this.userInfo.id
         this.comments.unshift(data);
       })
       this.clearValueParent = !this.clearValueParent;
@@ -216,6 +239,7 @@ export default {
       this.postAPI(COMMENTS.CREATE_COMMENT, { post_id, content: this.valueInputChild, reply_id_comment: idComment }, response => {
         let { ok, data } = response
         data.avatar = this.userInfo.avatar
+        data.user_id = this.userInfo.id
         if(!ok) return;
         let index = this.comments.findIndex(comment => comment.id === idComment);
         if (index >= 0) {
@@ -223,6 +247,52 @@ export default {
         }
       })
       this.clearValueChild = !this.clearValueChild;
+    },
+    clearComment(){
+      this.comments = [];
+      this.from = 0;
+      this.clearValueParent= false;
+      this.clearValueChild= false;
+      this.isMaxParentComment= false;
+    },
+    deleteComment(comment_id, indexParent) {
+      if(!comment_id) return
+      this.$confirm("Bạn có chắc chắn muốn xóa bình luận này", "Warning", {
+        confirmButtonText: "Xác nhận",
+        cancelButtonText: "Hủy",
+        type: "warning"
+      }).then(() => {
+        this.deleteAPI(COMMENTS.DELETE, { comment_id }, response => {
+          const { ok } = response
+          if(!ok) return
+          //  child comment
+          if(typeof indexParent === 'number') {
+            const index = this.comments[indexParent].children.findIndex(i => i.id === comment_id)
+            if(index > -1) {
+              const TMP_COMMENTS = this.comments[indexParent]
+              TMP_COMMENTS.children.splice(index, 1)
+              if(TMP_COMMENTS.amount_child_comment > 0) TMP_COMMENTS.amount_child_comment -= 1;
+
+              // nếu số lượng get child comment hiện tại nhỏ hơn amount_child => get thêm 1 comment
+              if(TMP_COMMENTS.children.length < TMP_COMMENTS.amount_child_comment) {
+                this.getAPI(COMMENTS.GET_COMMENTS, { post_id: this.postId, from: TMP_COMMENTS.children.length + 1, limit: 1, reply_id_comment: TMP_COMMENTS.id }, response => {
+                  let { ok, data } = response
+                  if(!ok) return;
+                  TMP_COMMENTS.children.push(...data)
+                })
+              }
+
+            }
+          } else {
+            // parent comment
+            const index = this.comments.findIndex(i => i.id === comment_id)
+            if(index > -1) {
+              this.comments.splice(index, 1)
+              this.getCommentParent()
+            }
+          }
+        })
+      }).catch(() => '')
     }
   },
   computed: {
@@ -232,7 +302,8 @@ export default {
   },
    watch: {
    "postId": function(e) {
-     console.log(e)
+      console.log(e)
+      this.clearComment()
       this.getCommentParent();
     }
   }
@@ -512,5 +583,29 @@ export default {
   .reply-list .comment-box {
     width: 320px;
   }
+}
+
+
+.fw-600 {
+  font-weight: 600;
+}
+span.btn-delete {
+  &:hover {
+    color: #f56c6c;
+    // background-color: #f56c6c;
+    // border: 1px solid #f56c6c;
+  }
+}
+
+.list-item {
+  display: inline-block;
+  margin-right: 10px;
+}
+.list-enter-active, .list-leave-active {
+  transition: all .3s;
+}
+.list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateY(30px);
 }
 </style>

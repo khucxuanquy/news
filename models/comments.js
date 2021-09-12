@@ -1,6 +1,6 @@
 const baseModel = require('../baseModels/baseModel')
-const PARENT = ['comments.id', 'reaction', 'content', 'amount_child_comment', 'comments.dateCreated', 'fullName', 'avatar'].join()
-const CHILDREN = ['comments.id', 'reaction', 'content', 'reply_id_comment', 'comments.dateCreated', 'fullName', 'avatar'].join()
+const PARENT = ['comments.id', 'comments.user_id', 'reaction', 'content', 'amount_child_comment', 'comments.dateCreated', 'fullName', 'avatar'].join()
+const CHILDREN = ['comments.id', 'comments.user_id', 'reaction', 'content', 'reply_id_comment', 'comments.dateCreated', 'fullName', 'avatar'].join()
 class Comments extends baseModel {
     constructor() {
         super('comments')

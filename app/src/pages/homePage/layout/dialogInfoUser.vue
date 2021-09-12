@@ -309,7 +309,9 @@ export default {
       })
     },
     openNewWindow(item) {
-      window.open(`${location.origin}/post/${item.category_url}/${item.url}`, '_blank')
+      // window.open(`${location.origin}/post/${item.category_url}/${item.url}`, '_blank')
+      this.$router.push({ path: `/post/${item.category_url}/${item.url}` }).catch(() => {})
+      this.handleClose()
     }
   },
   computed: {

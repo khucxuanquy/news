@@ -41,15 +41,16 @@ module.exports = {
     },
     async delete(req, res) {
         const { id: user_id } = req.token
-        const { comment_id } = req.body
-        let { error: errGet, data: dataGet } = await comment.get({ conditions: { id: comment_id }, fields: ['reply_id_comment'] })
+        const { comment_id } = req.query
+        let { error: errGet, data: dataGet } = await comment.get({ conditions: { id: comment_id }, fields: ['reply_id_comment', 'amount_child_comment'] })
 
         // if hơi thừa
         if (!(dataGet && dataGet.length)) return res.send(resFail({ message: errGet || 'Comment không tồn tại' }));
 
         // nếu là child
         if (dataGet[0].reply_id_comment) {
-            comment.edit({ id: dataGet[0].reply_id_comment, amount_child_comment: dataGet[0].amount_child_comment -= 1 })
+            let { data: commentParent } = await comment.get({ conditions: { id: dataGet[0].reply_id_comment }, fields: ['amount_child_comment'] })
+            comment.edit({ id: dataGet[0].reply_id_comment, amount_child_comment: commentParent[0].amount_child_comment -= 1 })
         }
         let { error } = await comment.deleteCommentOwner({ id: comment_id, user_id })
         if (error) return res.send(resFail({ error }))
