@@ -6,7 +6,7 @@
         <div>
           <el-input v-model="formUser.fullName" :placeholder="lang.fullName" maxlength="50"></el-input>
           <el-input v-model="formUser.username" :placeholder="lang.username" maxlength="40" :disabled="isEditRow"></el-input>
-          <el-input v-if="!isEditRow" v-model="formUser.password" :placeholder="lang.password" maxlength="40" show-password></el-input>
+          <el-input v-model="formUser.password" :placeholder="lang.password" maxlength="40" show-password></el-input>
           <el-select v-model="formUser.permission" :placeholder="lang.position">
             <el-option v-for="i in permission" :key="i.n" :label="i.m" :value="i.n"></el-option>
           </el-select>

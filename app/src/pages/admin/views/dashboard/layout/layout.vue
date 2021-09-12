@@ -83,7 +83,16 @@ export default {
     },
     handleClickItem(name){
       if(name == 'logout') {
-        localStorage.clear()
+        let user_info = JSON.parse(localStorage.getItem('_info')) || {}
+        this.socket.emit("USER_DISCONNECTED", {
+          id: user_info.id,
+          manager_id: user_info.manager_id,
+          socketId: this.socket.id,
+
+          // notice to bot telegram
+          fullName: user_info.fullName,
+        });
+
         this.postAPI(USERS.LOGOUT, {}, _ => { } )
         this.CHANGE_POSTS([])
         this.CHANGE_USERS([])
@@ -91,6 +100,7 @@ export default {
         this.CHANGE_MY_ACCOUNT({})
         this.CHANGE_TOTAL_POSTS(0)
         this.$router.push('/admin/login').catch(()=>{})
+        localStorage.clear()
       } else if (name == 'info') {
         // this.CHANGE_USER_INFO_DETAIL()
         this.showDialog = true

@@ -92,7 +92,7 @@ export default {
         };
         this.postAPI(ENUM.USERS.LOGIN, d, response => {
           let { ok, message, token } = response
-          if(!ok)return this.$message({ message: 'Đăng nhập không thành công', type: 'warning' })
+          if(!ok)return this.$message({ message: message || 'Đăng nhập không thành công', type: 'warning' })
           this.$message({ message, type: 'success' })
           localStorage.setItem("_u", token);
           location.pathname = ''

@@ -14,7 +14,7 @@ import './styles/index.scss'; // global css
 import axios from 'axios'
 require('dotenv').config()
 // setting protocol
-const isLocal = window.isLocal = true
+const isLocal = window.isLocal = false
 const DOMAIN = window.DOMAIN = isLocal ? 'http://localhost:3000' : 'https://doan.khucblog.com'
 
 Vue.use(ElementUI, { size: 'medium', locale })
