@@ -6,7 +6,7 @@ const ALL_ROUTER = [
     // home
     {
         path: '/',
-        component: () => import('../pages/homePage/layout'),
+        component: () => import(/* webpackChunkName: "routes/layout" */ '../pages/homePage/layout'),
         hidden: true,
         children: [
             {
@@ -18,7 +18,7 @@ const ALL_ROUTER = [
             },
             {
                 path: 'post/:category_url/:post_url',
-                component: () => import('../pages/homePage/views/postDetail.vue'),
+                component: () => import( /* webpackChunkName: "postDetail" */ '../pages/homePage/views/postDetail.vue'),
                 meta: {
                     title: ''
                 }
@@ -166,6 +166,10 @@ const ALL_ROUTER = [
                 }
             },
         ]
+    },
+    {
+        path: '/test',
+        component: () => import(/* webpackChunkName: "test" */ '../pages/test/index.vue'),
     },
     // 404 not found
     {

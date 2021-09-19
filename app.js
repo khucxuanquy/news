@@ -33,6 +33,8 @@ startApp(err => {
   app.use('/API/statistics', require('./routers/API/statistics'))
   app.use('/API/comments', require('./routers/API/comments'))
   app.use('/cdn/upload', require('./routers/CDN/upload'))
+
+  app.use('/webhook', require('./routers/webhook/telegram'))
   app.get('*', (req, res) => res.sendFile(path.join(__dirname, './dist/index.html')))
   server.listen(PORT, () => l.cyan(`run at http://localhost:${PORT}`))
 })
