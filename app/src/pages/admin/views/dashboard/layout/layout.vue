@@ -35,7 +35,9 @@
           </el-dropdown>
         </div>
       </div>
-      <router-view />
+      <transition name="zoom-fade" mode="out-in">
+        <router-view />
+      </transition>
     </div>
     <DialogInfoUser v-if="showDialog" :dialogVisible="showDialog" @handleClose="showDialog = false" />
   </div>
