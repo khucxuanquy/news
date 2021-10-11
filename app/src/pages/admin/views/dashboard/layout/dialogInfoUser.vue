@@ -136,13 +136,13 @@
             v-if="statisticOverview.byTotalPost"
             :DATA="statisticOverview.byTotalPost"
             typeChart="pie"
-            :title="'Thống kê số bài viết theo chủ đề trong tuần'"
+            :title="'Thống kê số bài viết theo chủ đề'"
           />
           <BoxChart
             v-if="statisticOverview.byTotalViews"
             :DATA="statisticOverview.byTotalViews"
             typeChart="pie"
-            :title="'Thống kê số lượt xem theo chủ đề trong tuần'"
+            :title="'Thống kê số lượt xem theo chủ đề'"
           />
         </div>
         <!-- HISTORY_COMMENTS -->

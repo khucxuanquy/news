@@ -10,7 +10,7 @@ let STORE = {
 setInterval(() => {
   count++;
   console.log(count, 'socket/ ', STORE.usersOnline);
-}, 60000);
+}, 60000 * 5);
 module.exports = io => {
   io.on("connection", socket => {
     MESSAGES({ io, socket, STORE });

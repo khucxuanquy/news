@@ -3,28 +3,75 @@
     title="Thông tin người dùng"
     class="show-detail-info"
     :visible.sync="dialogVisible"
-    width="30%"
+    width="90%"
     :before-close="() => $emit('handleClose')"
   >
-    <!-- LAYOUT-WRAPPER -->
+  <!-- LAYOUT-WRAPPER -->
     <div class="layout-wrapper">
-      <!-- AVATAR -->
-      <img :src="imgAvatar" class="avatar">
-      <div>
-        <p class="block-item">
-          <span> Họ tên </span>:
-          <strong> {{ myAccount.fullName }} </strong>
-        </p>
-        
-        <p class="block-item">
-          <span> Chức vụ </span>:
-          <strong> {{ permission(myAccount.permission) }} </strong>
-        </p>
+      <!-- LEFT -->
+      <div class="left-layout">
+        <!-- AVATAR -->
+        <img :src="imgAvatar" class="avatar">
+        <div>
+          <p class="block-item">
+            <span> Họ tên </span>:
+            <strong> {{ dataRender.fullName }} </strong>
+          </p>
+          
+          <p class="block-item">
+            <span> Chức vụ </span>:
+            <strong> {{ permission(dataRender.permission) }} </strong>
+          </p>
 
-        <p class="block-item">
-          <span> Ngày tham gia </span>:
-          <strong> {{ convertDate(myAccount.dateCreated) }} </strong>
-        </p>
+          <p class="block-item">
+            <span> Ngày tham gia </span>:
+            <strong> {{ convertDate(dataRender.dateCreated) }} </strong>
+          </p>
+        </div>
+        <div style="width: 100%">
+          <div class="listStaff" v-if="Array.isArray(dataRender.listUsers)">
+            <el-tooltip v-for="user in dataRender.listUsers" :key="user.id" :content="user.fullName" placement="top-start" effect="dark">
+              <div class="staff">
+                <img :src="user.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'">
+                <span v-text="user.username" />
+              </div>
+            </el-tooltip>
+          </div>
+        </div>
+      </div>
+      <!-- RIGHT -->
+      <div class="right-layout">
+        <el-divider class="title-divider" content-position="left"> Thống kê cá nhân </el-divider>
+
+        <div class="wrapper-overview">
+          <div class="box-child" style="background: linear-gradient(45deg, rgb(64, 153, 255), rgb(115, 180, 255))">
+            <span>Tổng bài viết</span>
+            <strong v-if="dataRender.byTotalPost">
+              {{ dataRender.byTotalPost.total || 0 }}
+            </strong>
+          </div>
+          <div class="box-child" style="background: linear-gradient(45deg, rgb(46, 216, 182), rgb(89, 224, 197))">
+            <span>Tổng Lượt xem</span>
+            <strong  v-if="dataRender.byTotalViews">
+              {{ dataRender.byTotalViews.total || 0 }}
+            </strong>
+          </div>
+        </div>
+
+        <div class="chart-statistics">
+          <BoxChart
+            v-if="dataRender.byTotalPost"
+            :DATA="dataRender.byTotalPost"
+            typeChart="pie"
+            :title="'Thống kê số bài viết theo chủ đề'"
+          />
+          <BoxChart
+            v-if="dataRender.byTotalViews"
+            :DATA="dataRender.byTotalViews"
+            typeChart="pie"
+            :title="'Thống kê số lượt xem theo chủ đề'"
+          />
+        </div>
       </div>
     </div>
   </el-dialog>
@@ -32,18 +79,10 @@
 
 <script>
 import BoxChart from "components/box-chart";
-import ENUM from 'const/api'
 import CONST from 'const/const'
-import { mapActions, mapGetters } from 'vuex';
-const { POSTS, COMMENTS, USERS } = ENUM
 // GET_COMMENTS_BY_USER_ID
 const { convertDate } = CONST
 export default {
-  data() {
-    return {
-      imageDefault: "https://doan.khucblog.com/static/images/avatar-default.jpg",
-    };
-  },
   components: {
     BoxChart,
   },
@@ -53,14 +92,15 @@ export default {
       default() {
         return false;
       }
+    },
+    dataRender: {
+      type: Object,
+      default() {
+        return {};
+      }
     }
   },
-  created() {
-  },
   methods: {
-    ...mapActions({
-      CHANGE_MY_ACCOUNT: "_ACCOUNT/CHANGE_MY_ACCOUNT",
-    }),
     permission(number) {
       if(!number) return '- Error -'
       if(number == 3) return 'Admin'
@@ -72,13 +112,9 @@ export default {
     },
   },
   computed: {
-    ...mapGetters({
-      myAccount: "_ACCOUNT/myAccount",
-      userInfoDetail: "_HOMEPAGE/userInfoDetail",
-    }),
     imgAvatar() {
-      return this.myAccount.avatar || this.imageDefault
-    }
+      return this.dataRender.avatar || 'https://doan.khucblog.com/static/images/avatar-default.jpg'
+    },
   }
 };
 </script>
@@ -87,72 +123,139 @@ export default {
   $shadow2: #0000001a 0px 0px 20px;
 
   .layout-wrapper {
-    .avatar-uploader {
-      max-width: 100px;
-      position: relative;
-      border: thin solid #05050523;
-      border-radius: 8px;
-      align-self: flex-start;
-      & > div {
-        &:before {
-          content: '';
-          position: absolute;
-          top: 0%;
-          left: 0%;
-          width: 100%;
-          height: 100%;
-          background: transparent;
-          transition: all .2s;
-        }
-        &:hover {
-          &:before {
-            background: #050505a6;
-            box-shadow: 0 4px 18px -4px #050505a6;
-          }
-          .avatar-uploader-icon {
-            display: unset;
-            color: whitesmoke;
-          }  
-        }
-        img {
-          padding: .7em;
-          border-radius: 8px;
-        }
-        .avatar-uploader-icon {
-          display: none;
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%) scale(1.5);
-          font-weight: bold;
-        }
+    display: flex;
+    // LEFT-LAYOUT
+    .left-layout {
+      width: 30%;
+      padding-right: 1em;
+      border-right: 1px solid #05050523;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1em;
+      height: 100%;
+
+      img.avatar {
+        object-fit: contain;
+        max-width: 100px;
+        border-radius: 8px;
       }
 
-      
-    }
+      .block-item {
+        margin-bottom: 1em;
+      }
 
-    .block-item {
-      margin-bottom: 1em;
-    }
+      .title-divider > div:hover {
+        user-select: none;
+        cursor: pointer;
+        color: #76b852; // #8DC26F;
+      }
 
-    .title-divider > div:hover {
-      user-select: none;
-      cursor: pointer;
-      color: #76b852; // #8DC26F;
+      .listStaff {
+        display: flex;
+        flex-wrap: wrap;
+
+        .staff {
+          width: 25%;
+          padding: 10px;
+          text-align: center;
+          img {
+            padding: 3px;
+            border-radius: 50%;
+            border: thin solid;
+            object-fit: cover;
+            aspect-ratio: 1 / 1;
+            box-shadow: 0px 5px 20px 0px #42424230;
+          }
+        }
+      }
+    }
+    // RIGHT-LAYOUT
+    .right-layout {
+      width: 70%;
+      padding-left: 1em;
+
+      .chart-statistics {
+        display: flex;
+        & > * {
+          flex-grow: 1;
+        }
+      }
+      .wrapper-overview {
+        display: flex;
+        margin-bottom: 3em;
+        .box-child {
+          flex-grow: 1;
+          text-align: center;
+          color: #333;
+          min-height: 100px;
+          margin: 0 1em;
+          padding: 0 1em;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          border-radius: 8px;
+          user-select: none;
+          transition: all 0.2s linear;
+          box-shadow: $shadow2;
+
+          strong {
+            transition: all 0.2s;
+          }
+          &:hover {
+            strong {
+              color: white;
+            }
+          }
+          span {
+            color: #333;
+            font-size: 2em;
+          }
+          strong {
+            color: #424242;
+            font-size: 5em;
+          }
+        }
+      }
+      .history-comments {
+
+        .item {
+          border-radius: 6px;
+          padding: 1em 0 0 1em;
+          
+          .item-title {
+            cursor: pointer;
+            &:hover {
+              color: transparent;
+              background :linear-gradient(to right, #76b852, #8DC26F);
+              -webkit-background-clip: text;
+            }
+          }
+
+          &:hover {
+            cursor: pointer;
+            background: #eee;
+            box-shadow: 0 4px 18px -4px #eeeeeea6;
+          }
+
+          p {
+            margin: 0;
+
+            span.testing {
+              display: inline-block;
+              padding: 3px 5px;
+              margin:.2rem .5rem;
+              border-radius: 4px;
+              color: white
+            }
+          }
+        } 
+          
+      }
+     
     }
   }
   .el-divider__text {
     background: #fff;
   }
 }
-</style>
-
-<style scoped>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .3s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-
 </style>

@@ -1,6 +1,8 @@
 const Posts = require('../models/posts')
+const Users = require('../models/users')
 const cacheRedis = require('../models/cacheRedis')
 const post = new Posts()
+const users = new Users()
 const DEFAULT_FIELDS = ['id', 'category_id', 'activated', 'description', 'title', 'url', 'image', 'view', 'user_id', 'dateCreated'].join()
 const DEFAULT_FIELDS_HOME = ['id', 'category_id', 'description', 'title', 'url', 'image', 'dateCreated'].join()
 const FIELDS_GET_TO_EDIT = ['category_id', 'content', 'description', 'title', 'image']
@@ -119,8 +121,11 @@ module.exports = {
         res.send(resSuccess({ data }))
     },
     async statisticUser(req, res) {
-        let { error, data } = await post.statisticUser(req.token)
+        let id = req.query.idUser || req.token.id
+        let permission = req.query.permission
+        let { data: listUsers } = await users.getListStaff({ id, permission })
+        let { error, data } = await post.statisticUser({ id })
         if (error) return res.send(resFail({ error }))
-        res.send(resSuccess({ data }))
+        res.send(resSuccess({ data, listUsers }))
     }
 }

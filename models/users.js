@@ -86,6 +86,16 @@ class Users extends baseModel {
             })
         })
     }
+
+        
+    async getListStaff({ id, permission }) {
+        if(!permission || permission == 1) return { data: [] }
+        let query = `SELECT id, avatar, fullName, username FROM users WHERE NOT position = 'reader'`
+        if(permission == 2) query += ` AND manager_id = '${id}'`
+        return await new Promise(resolve => {
+            this.sql.query(query, (error, data) => resolve({ error, data }))
+        })
+    }
 }
 
 module.exports = Users

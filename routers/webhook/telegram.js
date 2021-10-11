@@ -4,7 +4,7 @@ const axios = require('axios')
 const { API_BOT_TELEGRAM } = process.env
 const {sendMessageToBotTelegram } = require('../../helpers/index')
 //\\ /webhook/TOKEN
-const TOKEN = API_BOT_TELEGRAM.slice(API_BOT_TELEGRAM.indexOf('bot') + 3, API_BOT_TELEGRAM.length - 1)
+const TOKEN = API_BOT_TELEGRAM?.slice(API_BOT_TELEGRAM.indexOf('bot') + 3, API_BOT_TELEGRAM.length - 1)
 const WEBHOOK_URL =  `https://doan.khucblog.com/webhook/${TOKEN}`
 
 axios.get(`https://api.telegram.org/bot${TOKEN}/setWebhook?url=${WEBHOOK_URL}`)

@@ -1,6 +1,7 @@
 /node_modules
 /public
 /views
+/test
 # /test
 /dist
 .env

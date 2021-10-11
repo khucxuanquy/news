@@ -26,13 +26,13 @@
     </el-card>
 
     <!-- component show detail info -->
-    <DialogShowDetail v-if="showDialog" :dialogVisible="showDialog" @handleClose="showDialog = false" />
+    <DialogShowDetail :dataRender="dataRenderDetail" v-if="showDialog" :dialogVisible="showDialog" @handleClose="showDialog = false" />
   </div>
 </template>
 
 <script>
 import ENUM from 'const/api'
-const { USERS } = ENUM
+const { USERS, POSTS } = ENUM
 
 import ManagerUser from './managerUser'
 import DialogShowDetail from './dialogShowDetail.vue'
@@ -49,6 +49,7 @@ export default {
       openForm: false,
       isEditRow: false,
       showDialog: false,
+      dataRenderDetail: {},
     }
   },
   components: { ManagerUser, DialogShowDetail },
@@ -133,9 +134,45 @@ export default {
       this.openForm = false
       this.isEditRow = false
     },
-    async rowClicked(info) {
+    getBoxCategryById(id) {
+      if (!id) return {};
+      return this.categories.find(i => i.id == id) || {}
+    },
+    rowClicked(info) {
+      this.getAPI(POSTS.STATISTIC_USER, { idUser: info.id, permission: info.permission }, async response => {
+      let { ok, data, listUsers } = response
+      if(!ok) return;
+      let labels = data.map(i => this.getBoxCategryById(i.category_id).name)
+      let dataInput = {
+        byTotalPost: {
+          total: data.reduce((a, b) => a + b.totalPosts, 0),
+          labels,
+          datasets: [
+            {
+              label: 'Tổng bài viết',
+              data: data.map(i => i.totalPosts || 0)
+            }
+          ]
+        },
+        byTotalViews: {
+          total: data.reduce((a, b) => a + b.totalViews, 0),
+          labels,
+          datasets: [
+            {
+              label: 'Tổng lượt xem',
+              data: data.map(i => i.totalViews || 0)
+            }
+          ]
+        },
+      }
+      this.dataRenderDetail = {
+        ...info,
+        ...dataInput,
+        listUsers
+      }
       await this.$nextTick()
       if(!this.isEditRow) this.showDialog = true
+    })
     }
   },
   mounted() {
@@ -144,6 +181,7 @@ export default {
     ...mapGetters({
       myAccount: '_ACCOUNT/myAccount',
       users: '_USERS/users',
+      categories: "_CATEGORIES/categories",
     }),
     permission() {
       const permission = this.myAccount.permission

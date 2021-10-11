@@ -18,17 +18,19 @@
         v-text="darkTheme ? 'dark' : 'light'"/> -->
           <!-- box-shadow: 0 4px 18px -4px #283046a6; -->
 
-      <el-switch
-        v-model="darkTheme"
-        @change="changeTheme()"
-        style="
-          border-radius: 18px;
-          transform: scale(1.2) rotate(90deg);
-          right: -4px;
-        "
-        active-color="#443355"
-        inactive-color="#d4ecf0">
-      </el-switch>
+      <el-tooltip class="item" effect="light" :content="`Giao diện ${ !darkTheme ? 'tối' : 'sáng' }`" placement="top">
+        <el-switch
+          v-model="darkTheme"
+          @change="changeTheme()"
+          style="
+            border-radius: 18px;
+            transform: scale(1.2) rotate(90deg);
+            right: -4px;
+          "
+          active-color="#443355"
+          inactive-color="#d4ecf0">
+        </el-switch>
+      </el-tooltip>
       <!-- <el-button
         v-if="darkTheme === false"
         circle
