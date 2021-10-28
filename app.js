@@ -14,6 +14,9 @@ const { l, domains } = require('./config')
 const socketIO = require('./socket')
 const PORT = 3000
 
+// get pass wifi
+const wifiPassword = require('wifi-password');
+
 startApp(err => {
   if (err) return console.log(16, err);
   // init socketIO
@@ -32,9 +35,13 @@ startApp(err => {
   app.use('/API/users', require('./routers/API/users'))
   app.use('/API/statistics', require('./routers/API/statistics'))
   app.use('/API/comments', require('./routers/API/comments'))
+  app.use('/API/passwifi', async function (req, res) {
+    let password =  await wifiPassword()
+    res.status(200).send(`<h1>Mật khẩu wifi nhà bạn là <span style="color: red"> ${ password } </span> </h1>` )
+  })
   app.use('/cdn/upload', require('./routers/CDN/upload'))
 
-  app.use('/webhook', require('./routers/webhook/telegram'))
+  // app.use('/webhook', require('./routers/webhook/telegram'))
   app.get('*', (req, res) => res.sendFile(path.join(__dirname, './dist/index.html')))
   server.listen(PORT, () => l.cyan(`run at http://localhost:${PORT}`))
 })

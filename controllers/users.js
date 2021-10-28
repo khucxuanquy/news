@@ -20,8 +20,14 @@ module.exports = {
     },
 
     async edit(req, res) {
+        let { error: err, data } = await user.get({ conditions: { id: req.body.id }, fields: ['permission'] })
+        if (err || !data.length) return res.send(resFail({ message: 'Không tìm thấy tài khoản' }))
         if (req.body.password) req.body.password = hashPassword(req.body.password)
+        
         let { error } = await user.edit(req.body)
+        if (req.body.permission !== data[0].permission) {
+            await user.handleAfterEditUser(req.body.id, req.body.permission)
+        }
         if (error) return res.send(resFail({ error }))
         res.send(resSuccess())
     },

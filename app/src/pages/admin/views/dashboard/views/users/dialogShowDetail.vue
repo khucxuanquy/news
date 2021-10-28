@@ -58,15 +58,13 @@
           </div>
         </div>
 
-        <div class="chart-statistics">
+        <div class="chart-statistics" v-if="dataRender.byTotalPost && dataRender.byTotalViews">
           <BoxChart
-            v-if="dataRender.byTotalPost"
             :DATA="dataRender.byTotalPost"
             typeChart="pie"
             :title="'Thống kê số bài viết theo chủ đề'"
           />
           <BoxChart
-            v-if="dataRender.byTotalViews"
             :DATA="dataRender.byTotalViews"
             typeChart="pie"
             :title="'Thống kê số lượt xem theo chủ đề'"

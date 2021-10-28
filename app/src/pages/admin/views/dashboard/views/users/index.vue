@@ -19,10 +19,36 @@
       </div>
     </el-card>
      <el-card class="box-card">
-      <div slot="header" class="clearfix" style="text-align: center">
-        <span>{{lang.listUsers}}</span>
-      </div>
-      <ManagerUser @editRow="editRow" @deleteRow="submitDelete" @rowClicked="rowClicked" />
+        <el-tabs v-model="activeName" @tab-click="handleChangeTab">
+          <el-tab-pane label="Danh sách nhân sự" name="1">
+            <div slot="header" class="clearfix" style="text-align: center">
+              <span>{{lang.listUsers}}</span>
+            </div>
+            <ManagerUser @editRow="editRow" @deleteRow="submitDelete" @rowClicked="rowClicked" />
+          </el-tab-pane>
+          <el-tab-pane label="Chuyển đổi nhân sự" name="2">
+            <!-- SELECT USER -->
+            <el-select v-model="idUserSelected" clearable @change="selectedUser" placeholder="Chọn quản lý" style="margin:0 1em 1.5em; 0">
+              <el-option
+                v-for="(item, index) in users.filter(i => i.permission === 2)"
+                :key="index"
+                :label="item.fullName"
+                :value="item.id">
+              </el-option>
+            </el-select>
+            <el-tooltip class="item" style="margin-bottom: 0.5em" effect="dark" content="Kiểm tra nhân viên chưa có người  quản lý nào" placement="top-start">
+              <el-switch :active-text="`${ checkingUser ? 'Đang k' : 'K'}iểm tra`" v-model="checkingUser" />
+            </el-tooltip>
+            <!-- TRANSFER USERS -->
+            <el-transfer
+              :titles="['DS nhân viên',  '']"
+              v-model="usersTransfered"
+              :data="dataUserTransfer"
+               @change="transferedUsers"
+            />
+          </el-tab-pane>
+        </el-tabs>
+      
     </el-card>
 
     <!-- component show detail info -->
@@ -50,6 +76,11 @@ export default {
       isEditRow: false,
       showDialog: false,
       dataRenderDetail: {},
+    
+      activeName: '1',
+      usersTransfered: [],
+      idUserSelected: '',
+      checkingUser: false,
     }
   },
   components: { ManagerUser, DialogShowDetail },
@@ -81,21 +112,51 @@ export default {
         this.clear()
       })
     },
-    submitEdit(){
+    async submitEdit(){
       let { users, formUser } = this
       const { id, fullName, permission, username } = formUser
       if(!fullName || !permission ||!username ) return this.$message({ message: 'Vui lòng nhập đầy đủ thông tin', type: 'warning' })
-
       if(users.filter(i => i.username == username).length >= 2) return this.$message({ message: 'username đã tồn tại', type: 'warning' })
-      this.putAPI(USERS.EDIT, formUser, r => {
-        const { ok } = r
-        if(!ok) return this.$message({ message: 'Có lỗi sảy ra', type: 'Error' })
-        let index = users.findIndex(i => i.id == id)
-        users[index] = {...users[index], ...formUser} 
-        this.CHANGE_USERS([...users])
-        this.$message({ message: 'Sửa thành công', type: 'success' })
-        this.clear()
-      })  
+      let pass = true
+      // check permission in client
+      let infoUserEditting = users.find(user => user.id === id)
+      if(infoUserEditting) {
+        pass = false
+        let textNotice = ''
+        // 3, 2 => 1  ==> giam
+        // neu cac user khac co manager_id === id nay thi => remove
+        if(permission < infoUserEditting.permission && permission === 1) {
+          textNotice = `Bạn đang hạ chức vụ người dùng này xuống nhân viên, tất cả các nhân viên mà người này đang quản lý sẽ bị thu hồi lại cho admin`
+        }
+        // 1,2 => 2, 3 ==> tang
+        // remove manager_id
+        if(permission > infoUserEditting.permission && infoUserEditting.permission === 1) {
+          textNotice = `Bạn đang thăng chức vụ người dùng này, điều này cố nghĩa sẽ không có ai quản lý người này ngoại trừ admin`
+        }
+        if(!textNotice.length) pass = true
+        else {
+          pass = await new Promise(resolve => {
+            this.$confirm(textNotice, 'Cảnh báo', {
+              confirmButtonText: 'Đồng ý',
+              cancelButtonText: 'Hủy',
+              type: 'warning'
+            })
+            .then(() => resolve(true))
+            .catch(() => resolve(false))
+          }) 
+        }
+      }
+      if(pass) {
+        this.putAPI(USERS.EDIT, formUser, r => {
+          const { ok } = r
+          if(!ok) return this.$message({ message: 'Có lỗi sảy ra', type: 'Error' })
+          let index = users.findIndex(i => i.id == id)
+          users[index] = {...users[index], ...formUser} 
+          this.CHANGE_USERS([...users])
+          this.$message({ message: 'Sửa thành công', type: 'success' })
+          this.clear()
+        })  
+      }
     },
     submitDelete(data){
       const { users } = this
@@ -173,7 +234,22 @@ export default {
       await this.$nextTick()
       if(!this.isEditRow) this.showDialog = true
     })
-    }
+    },
+    handleChangeTab() {
+      this.idUserSelected = ''
+      this.usersTransfered = []
+    },
+    transferedUsers(keysRight) {
+      console.log(keysRight)
+    },
+    /**
+     * Hàm này được gọi khi select 1 user
+     */
+    selectedUser(id) {
+      if (!id) return this.usersTransfered = []
+      this.usersTransfered = this.dataUserTransfer.filter(i => i.manager_id === id).map(i => i.key)
+    },
+    
   },
   mounted() {
   },
@@ -183,6 +259,17 @@ export default {
       users: '_USERS/users',
       categories: "_CATEGORIES/categories",
     }),
+    idsAdmin() {
+      return [...this.users.filter(i  => i.permission === 3).map(i => i.id), '', this.myAccount.id]
+    },
+    dataUserTransfer() {
+      return this.users.filter(i => i.permission === 1).map(i => ({
+        key: i.id,
+        label: i.fullName,
+        manager_id: i.manager_id,
+        disabled: this.checkingUser ? !this.idsAdmin.includes(i.manager_id) : false
+      }))
+    },
     permission() {
       const permission = this.myAccount.permission
       let arr = [{ n:3, m: 'Admin'}, {n:2, m: this.lang.manage}, {n:1, m: this.lang.staff }] 
