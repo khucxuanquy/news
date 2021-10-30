@@ -170,6 +170,13 @@ module.exports = {
         if(error) return res.send(resFail({ message: error }))
         res.send(resSuccess())
     },
+    async transferUser(req, res) {
+        const { permission } = req.token
+        if (permission !== 3) res.send(resFail({ message: 'Tài khoản của bạn phải là admin' }))
+        let { error } = await user.transferUser(req.body)
+        if (error) return res.send(resFail({ error }))
+        res.send(resSuccess())
+    },
 
     // realtime
     async getUsersInMessenger(dataInput) {

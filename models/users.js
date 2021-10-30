@@ -104,6 +104,15 @@ class Users extends baseModel {
             this.sql.query(query, (error, data) => resolve({ error, data }))
         })
     }
+
+    async transferUser({ manager_id, idsUserTransferred }) {
+        let query = `UPDATE users SET manager_id = '${ manager_id }' WHERE`
+        if (idsUserTransferred.length === 1) query += ` id = '${idsUserTransferred[0]}'`
+        else if (idsUserTransferred.length > 1) query += ` id IN ('${idsUserTransferred.join(`', '`)}')` 
+        return await new Promise(resolve => {
+            this.sql.query(query, (error, data) => resolve({ error, data }))
+        })
+    }
 }
 
 module.exports = Users

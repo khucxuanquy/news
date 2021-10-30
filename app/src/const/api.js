@@ -47,6 +47,7 @@ export default {
         VERIFY_FORGOT_PASSWORD: URL + 'users/verifyForgotPassword',
         CHANGE_PASSWORD: URL + 'users/changePassword',
         CHANGE_USER_INFO:  URL + 'users/changeUserInfo',
+        TRANSFER_USERS: URL + 'users/transferUser',
     },
     STATISTICS: {
         GET: URL + 'statistics/getStatistics',

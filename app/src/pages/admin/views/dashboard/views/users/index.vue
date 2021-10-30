@@ -26,7 +26,7 @@
             </div>
             <ManagerUser @editRow="editRow" @deleteRow="submitDelete" @rowClicked="rowClicked" />
           </el-tab-pane>
-          <el-tab-pane label="Chuyển đổi nhân sự" name="2">
+          <el-tab-pane v-if="Number(myAccount.permission) === 3" label="Chuyển đổi nhân sự" name="2">
             <!-- SELECT USER -->
             <el-select v-model="idUserSelected" clearable @change="selectedUser" placeholder="Chọn quản lý" style="margin:0 1em 1.5em; 0">
               <el-option
@@ -41,10 +41,10 @@
             </el-tooltip>
             <!-- TRANSFER USERS -->
             <el-transfer
-              :titles="['DS nhân viên',  '']"
+              :titles="['Tổng nhân sự',  'Nhân sự hiện có']"
               v-model="usersTransfered"
               :data="dataUserTransfer"
-               @change="transferedUsers"
+              @change="transferedUsers"
             />
           </el-tab-pane>
         </el-tabs>
@@ -92,7 +92,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      CHANGE_USERS: '_USERS/CHANGE'
+      CHANGE_USERS: '_USERS/CHANGE',
+      TRANSFER_USERS: '_USERS/TRANSFER_USERS',
     }),
     submit() {
       const {users, formUser, myAccount} = this
@@ -239,8 +240,15 @@ export default {
       this.idUserSelected = ''
       this.usersTransfered = []
     },
-    transferedUsers(keysRight) {
-      console.log(keysRight)
+    transferedUsers(idsRight, event, idsUserTransferred) {
+      if (!this.idUserSelected) return
+      let manager_id = event.toLowerCase() === 'left' ? '' : this.idUserSelected
+      // transfer user phai co id user lam manager
+      this.putAPI(USERS.TRANSFER_USERS, { manager_id, idsUserTransferred }, async response => {
+        if (!response.ok) return this.$message({ message: 'Có lỗi xảy ra', type: 'warning' })
+        this.$message({ message: 'Chuyển nhân sự thành công', type: 'success' })
+        this.TRANSFER_USERS({ manager_id, idsUserTransferred })
+      })
     },
     /**
      * Hàm này được gọi khi select 1 user
@@ -249,7 +257,6 @@ export default {
       if (!id) return this.usersTransfered = []
       this.usersTransfered = this.dataUserTransfer.filter(i => i.manager_id === id).map(i => i.key)
     },
-    
   },
   mounted() {
   },
