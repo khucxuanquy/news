@@ -1,6 +1,6 @@
 const Users = require('../models/users')
 const FIELDS = ['id', 'fullName', 'avatar', 'manager_id', 'permission', 'username', 'dateCreated'].join()
-const { signToken, resFail, resSuccess, randomId, sendToEmailToVerifyAccount, decodeToken, FIFTEEN_MINUTES, hashPassword, checkTypeEmail, sendToEmailToChangePassword, ONE_DAY } = require('../helpers')
+const { signToken, resFail, resSuccess, randomId, sendToEmailToVerifyAccount, decodeToken, FIFTEEN_MINUTES, hashPassword, checkTypeEmail, sendToEmailToChangePassword, ONE_DAY, sendMessageToBotTelegram } = require('../helpers')
 const { l } = require('../config')
 const user = new Users()
 
@@ -37,7 +37,7 @@ module.exports = {
         
         // đoạn dưới đây để lấy dữ liệu lần cuối trước khi xóa
         const result = await user.get({ conditions: { id } })
-        sendMessageToBotTelegram(`[USERS][delete] ${result}`)
+        sendMessageToBotTelegram(`[USERS][delete] ${JSON.stringify(result)}`)
 
         let { error } = await user.delete(id)
         if (error) return res.send(resFail({ error }))

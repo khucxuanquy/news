@@ -74,6 +74,7 @@ export default {
       },
       openForm: false,
       isEditRow: false,
+      isDeleteRow: false,
       showDialog: false,
       dataRenderDetail: {},
     
@@ -160,6 +161,7 @@ export default {
       }
     },
     submitDelete(data){
+      this.isDeleteRow = true
       const { users } = this
       const { id } = data
 
@@ -176,9 +178,9 @@ export default {
             this.$message({ type: 'success', message: 'Xóa thành công' })
             this.CHANGE_USERS([...users])
             this.clear()
+            this.isDeleteRow = false
           })
-          
-        }).catch(() => '')
+        }).catch(() => this.isDeleteRow = false)
     },
     editRow(data) {
       const { id, fullName, password, permission, username } = data
@@ -195,12 +197,15 @@ export default {
       }
       this.openForm = false
       this.isEditRow = false
+      this.isDeleteRow = false
     },
     getBoxCategryById(id) {
       if (!id) return {};
       return this.categories.find(i => i.id == id) || {}
     },
     rowClicked(info) {
+      if(this.isEditRow || this.isDeleteRow) return
+
       this.getAPI(POSTS.STATISTIC_USER, { idUser: info.id, permission: info.permission }, async response => {
       let { ok, data, listUsers } = response
       if(!ok) return;
@@ -233,7 +238,7 @@ export default {
         listUsers
       }
       await this.$nextTick()
-      if(!this.isEditRow) this.showDialog = true
+      this.showDialog = true
     })
     },
     handleChangeTab() {

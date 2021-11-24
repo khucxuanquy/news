@@ -33,7 +33,7 @@ module.exports = {
 
         // đoạn dưới đây để lấy dữ liệu lần cuối trước khi xóa
         const result = await post.get({ conditions: { id } })
-        sendMessageToBotTelegram(`[POSTS][delete] ${result}`)
+        sendMessageToBotTelegram(`[POSTS][delete] ${JSON.stringify(result)}`)
 
         let { error } = await post.delete(id)
         if (error) return res.send(resFail({ error }))
